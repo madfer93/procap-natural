@@ -189,7 +189,7 @@ export function TransformacionesReels() {
                     loop
                     muted={isMuted}
                     playsInline
-                    preload="metadata"
+                    preload="none"
                     onClick={() => handlePlayToggle(reel.id)}
                     className="w-full h-full object-cover cursor-pointer transition-transform duration-500 group-hover:scale-[1.02]"
                   />

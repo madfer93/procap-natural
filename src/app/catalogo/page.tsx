@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { 
@@ -171,15 +172,27 @@ export default function CatalogoPage() {
 
                     {/* Body Content */}
                     <div>
-                      <div className="w-12 h-12 rounded-xl bg-sky-500/10 border border-sky-400/30 flex items-center justify-center text-sky-400 text-xl mb-4 group-hover:scale-110 transition-transform">
-                        {product.category === "sistemas" ? (
-                          <Crown size={22} />
-                        ) : product.category === "servicios" ? (
-                          <Scissors size={22} />
-                        ) : (
-                          <Package size={22} />
-                        )}
-                      </div>
+                      {/* Product Image or Icon */}
+                      {product.image_url ? (
+                        <div className="relative w-full h-52 rounded-xl overflow-hidden mb-4 bg-slate-900 border border-slate-800 shadow-inner group-hover:border-sky-400/40 transition-all">
+                          <Image
+                            src={product.image_url}
+                            alt={product.name}
+                            fill
+                            className="object-cover group-hover:scale-105 transition-transform duration-500"
+                          />
+                        </div>
+                      ) : (
+                        <div className="w-12 h-12 rounded-xl bg-sky-500/10 border border-sky-400/30 flex items-center justify-center text-sky-400 text-xl mb-4 group-hover:scale-110 transition-transform">
+                          {product.category === "sistemas" ? (
+                            <Crown size={22} />
+                          ) : product.category === "servicios" ? (
+                            <Scissors size={22} />
+                          ) : (
+                            <Package size={22} />
+                          )}
+                        </div>
+                      )}
 
                       <span className="text-xs font-medium text-slate-400 uppercase tracking-wider">
                         {product.type}

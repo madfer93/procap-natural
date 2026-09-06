@@ -192,7 +192,26 @@ export function AiChatBubble() {
                       : "bg-slate-900/90 text-slate-100 border border-sky-400/20 rounded-tl-none"
                   }`}
                 >
-                  <p className="whitespace-pre-line">{msg.content}</p>
+                  <div className="whitespace-pre-line space-y-1">
+                    {msg.content.split('\n').map((line, lIdx) => {
+                      // Parsear **negritas**
+                      const parts = line.split(/(\*\*.*?\*\*)/g);
+                      return (
+                        <p key={lIdx}>
+                          {parts.map((part, pIdx) => {
+                            if (part.startsWith('**') && part.endsWith('**')) {
+                              return (
+                                <strong key={pIdx} className="font-bold text-sky-300">
+                                  {part.slice(2, -2)}
+                                </strong>
+                              );
+                            }
+                            return part;
+                          })}
+                        </p>
+                      );
+                    })}
+                  </div>
                   <span
                     className={`block text-[10px] mt-1.5 ${
                       msg.role === "user" ? "text-slate-950/70 text-right" : "text-slate-400"

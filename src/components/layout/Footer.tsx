@@ -21,9 +21,34 @@ export function Footer() {
             <p className="text-slate-400 text-xs leading-relaxed max-w-md">
               Especialistas en la adaptación, instalación y mantenimiento de prótesis capilares masculinas indetectables de cabello humano en Bogotá. Sede en Barrio Chicó Norte.
             </p>
-            <div className="pt-2 text-[11px] text-slate-500">
-              <p>Carrera 16 #96-64, Bogotá D.C., Colombia • CP: 110221</p>
-              <p>Tel: +{whatsappPhone} • Email: procapnatural@gmail.com</p>
+            <div className="pt-3 flex flex-wrap gap-2 text-xs">
+              <a
+                href="https://maps.google.com/?q=Calle+16+%2383a-15,+Bogot%C3%A1"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900/90 hover:bg-sky-500/20 text-slate-300 hover:text-sky-300 border border-slate-800 hover:border-sky-500/40 transition-all font-medium text-[11px] group"
+              >
+                <i className="fa-solid fa-location-dot text-sky-400 group-hover:scale-110 transition-transform"></i>
+                <span>Calle 16 #83a-15, Bogotá (Sede Principal)</span>
+              </a>
+
+              <a
+                href={`https://wa.me/${whatsappPhone}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900/90 hover:bg-emerald-500/20 text-slate-300 hover:text-emerald-300 border border-slate-800 hover:border-emerald-500/40 transition-all font-medium text-[11px] group"
+              >
+                <i className="fa-brands fa-whatsapp text-emerald-400 group-hover:scale-110 transition-transform"></i>
+                <span>+{whatsappPhone}</span>
+              </a>
+
+              <a
+                href="mailto:infprocap@gmail.com"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900/90 hover:bg-amber-500/20 text-slate-300 hover:text-amber-300 border border-slate-800 hover:border-amber-500/40 transition-all font-medium text-[11px] group"
+              >
+                <i className="fa-solid fa-envelope text-amber-400 group-hover:scale-110 transition-transform"></i>
+                <span>infprocap@gmail.com</span>
+              </a>
             </div>
           </div>
 

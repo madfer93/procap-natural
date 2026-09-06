@@ -22,26 +22,49 @@ interface SedeVideoPlayerProps {
 
 export function SedeVideoPlayer({
   title = "Recorrido & Acceso a Nuestras Instalaciones",
-  subtitle = "Conoce nuestra sede privada en Chicó Norte, Bogotá (Cra 16 #96-64) antes de tu visita.",
+  subtitle = "Conoce nuestra sede privada en Chicó Norte, Bogotá (Calle 16 #83a-15) antes de tu visita.",
   className = "",
-  autoPlay = true,
+  autoPlay = false,
 }: SedeVideoPlayerProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [isPlaying, setIsPlaying] = useState(true);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
   const [isLoaded, setIsLoaded] = useState(false);
 
   const videoUrl = "https://pub-426a082ba0a64de0bcf1da7c816f7c38.r2.dev/PROCAPS-OFICINA.mp4";
 
+  // Solo reproducir cuando el usuario realmente hace scroll y llega a la sección del video
   useEffect(() => {
-    if (videoRef.current) {
-      if (autoPlay) {
-        videoRef.current.play().catch(() => {
-          setIsPlaying(false);
+    const videoEl = videoRef.current;
+    const containerEl = containerRef.current;
+    if (!videoEl || !containerEl) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            // El usuario llegó a la sección del video
+            videoEl.play().then(() => {
+              setIsPlaying(true);
+            }).catch(() => {
+              setIsPlaying(false);
+            });
+          } else {
+            // El usuario hizo scroll hacia otra parte, pausar video para no consumir datos
+            if (!videoEl.paused) {
+              videoEl.pause();
+              setIsPlaying(false);
+            }
+          }
         });
-      }
-    }
-  }, [autoPlay]);
+      },
+      { threshold: 0.4 } // Requiere que al menos el 40% del video esté visible
+    );
+
+    observer.observe(containerEl);
+    return () => observer.disconnect();
+  }, []);
 
   const togglePlay = () => {
     if (!videoRef.current) return;
@@ -68,7 +91,7 @@ export function SedeVideoPlayer({
   };
 
   return (
-    <div className={`relative group ${className}`}>
+    <div ref={containerRef} className={`relative group ${className}`}>
       
       {/* Decorative Glow */}
       <div className="absolute -inset-1 rounded-[2rem] bg-gradient-to-r from-sky-500/20 via-cyan-400/20 to-amber-500/20 blur-xl opacity-60 group-hover:opacity-100 transition-opacity duration-500 -z-10"></div>
@@ -81,11 +104,10 @@ export function SedeVideoPlayer({
           <video
             ref={videoRef}
             src={videoUrl}
-            autoPlay={autoPlay}
             muted={isMuted}
             loop
             playsInline
-            preload="metadata"
+            preload="none"
             onLoadedData={() => setIsLoaded(true)}
             onClick={togglePlay}
             className="w-full h-full object-cover cursor-pointer transition-transform duration-700 group-hover:scale-[1.01]"

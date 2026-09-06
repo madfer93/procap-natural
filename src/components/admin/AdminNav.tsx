@@ -11,7 +11,9 @@ import {
   Bot, 
   ExternalLink, 
   LogOut,
-  Sparkles
+  Sparkles,
+  Calendar,
+  MapPin
 } from "lucide-react";
 
 interface AdminNavProps {
@@ -23,6 +25,8 @@ export function AdminNav({ onLogout }: AdminNavProps) {
 
   const navItems = [
     { href: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
+    { href: "/admin/appointments", label: "Agenda & Citas", icon: Calendar },
+    { href: "/admin/events", label: "Giras & Eventos", icon: MapPin },
     { href: "/admin/products", label: "Productos & Sistemas", icon: Package },
     { href: "/admin/leads", label: "Leads & Chatbot IA", icon: Bot },
     { href: "/admin/settings", label: "Ajustes & Pasarelas", icon: Settings },
