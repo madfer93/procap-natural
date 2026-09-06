@@ -44,8 +44,6 @@ export default function AdminOrdersPage() {
   const [isSendingEmail, setIsSendingEmail] = useState(false);
   const [emailFeedback, setEmailFeedback] = useState<{ success: boolean; message: string } | null>(null);
 
-  const whatsappPhone = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "573151189795";
-
   useEffect(() => {
     fetchOrders();
   }, []);

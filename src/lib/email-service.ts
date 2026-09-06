@@ -2,13 +2,17 @@ import nodemailer from "nodemailer";
 import { OrderShipment } from "./orders-store";
 import { formatPriceCOP } from "./products-store";
 
-// Configuración del transporte SMTP con variables de entorno y fallback seguro
+// Configuración segura del transporte SMTP exclusivamente a través de variables de entorno
 export function getEmailTransporter() {
   const host = process.env.SMTP_HOST || "mail.privateemail.com";
   const port = parseInt(process.env.SMTP_PORT || "465");
   const secure = port === 465;
-  const user = process.env.SMTP_USER || "infprocap@gmail.com";
-  const pass = process.env.SMTP_PASS || "Pro-cap33";
+  const user = process.env.SMTP_USER;
+  const pass = process.env.SMTP_PASS;
+
+  if (!user || !pass) {
+    throw new Error("Credenciales SMTP no configuradas. Por favor define SMTP_USER y SMTP_PASS en las variables de entorno.");
+  }
 
   return nodemailer.createTransport({
     host,
@@ -21,12 +25,37 @@ export function getEmailTransporter() {
   });
 }
 
+// Función de sanitización contra HTML Injection / XSS
+function escapeHtml(str: string | undefined | null): string {
+  if (!str) return "";
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
 /**
  * Genera la plantilla HTML responsive y premium para el cliente según el estado de la orden o pago
  */
 export function generateOrderConfirmationHtml(order: OrderShipment): string {
-  const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "573151189795";
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://protesiscapilarcolombia.com";
+  const whatsappNumber = escapeHtml(process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "");
+  const siteUrl = escapeHtml(process.env.NEXT_PUBLIC_SITE_URL || "https://protesiscapilarcolombia.com");
+
+  // Sanitizar todos los campos provenientes del usuario
+  const safeCustomerName = escapeHtml(order.customer_name);
+  const safeProductName = escapeHtml(order.product_name);
+  const safeOrderId = escapeHtml(order.id);
+  const safeShippingAddress = escapeHtml(order.shipping_address);
+  const safeShippingCity = escapeHtml(order.shipping_city);
+  const safeShippingDept = escapeHtml(order.shipping_department);
+  const safeDocument = escapeHtml(order.customer_document);
+  const safePhone = escapeHtml(order.customer_phone);
+  const safeCarrier = escapeHtml(order.carrier);
+  const safeTracking = escapeHtml(order.tracking_number);
+  const safeTrackingUrl = order.tracking_url && /^https?:\/\//i.test(order.tracking_url) ? encodeURI(order.tracking_url) : "";
+  const safePaymentMethod = escapeHtml(order.payment_method || "Wompi Pasarela");
 
   const isPending = order.payment_status === "PENDING";
   const isShipped = order.shipping_status === "despachado" || order.shipping_status === "en_transito";
@@ -46,7 +75,7 @@ export function generateOrderConfirmationHtml(order: OrderShipment): string {
     headerTitle = "Tu Pago está en Proceso";
     headerSubtitle = "Tu entidad bancaria o Wompi están validando la transacción. En cuanto se confirme, comenzaremos el despacho.";
   } else if (isShipped) {
-    headerBadgeText = `🚚 Despachado por ${order.carrier || "Transportadora"}`;
+    headerBadgeText = `🚚 Despachado por ${safeCarrier || "Transportadora"}`;
     headerBadgeBg = "rgba(56, 189, 248, 0.15)";
     headerBadgeBorder = "rgba(56, 189, 248, 0.4)";
     headerBadgeColor = "#38bdf8";
@@ -184,7 +213,7 @@ export function generateOrderConfirmationHtml(order: OrderShipment): string {
         
         <!-- Saludo -->
         <p style="font-size: 14px; margin-top: 0; margin-bottom: 20px; line-height: 1.5;">
-          Hola, <strong style="color: #ffffff;">${order.customer_name}</strong> 👋<br>
+          Hola, <strong style="color: #ffffff;">${safeCustomerName}</strong> 👋<br>
           ${isPending 
             ? "Hemos registrado la solicitud de pago de tu orden en la pasarela Wompi. A continuación te presentamos los detalles:" 
             : isShipped 
@@ -194,22 +223,22 @@ export function generateOrderConfirmationHtml(order: OrderShipment): string {
         </p>
 
         <!-- Información de Guía si ya fue Despachado -->
-        ${order.tracking_number ? `
+        ${safeTracking ? `
         <div class="card" style="border: 1px solid #0284c7; background: linear-gradient(135deg, #021636 0%, #032357 100%);">
           <div class="card-title" style="color: #38bdf8;">🚚 Datos de Seguimiento / Guía</div>
           <table style="width: 100%; font-size: 13px; border-collapse: collapse;">
             <tr style="border-bottom: 1px solid #1e3a68;">
               <td style="padding: 8px 0; color: #94a3b8;">Transportadora:</td>
-              <td style="padding: 8px 0; color: #ffffff; font-weight: 800; text-align: right;">${order.carrier || "Transportadora Nacional"}</td>
+              <td style="padding: 8px 0; color: #ffffff; font-weight: 800; text-align: right;">${safeCarrier || "Transportadora Nacional"}</td>
             </tr>
             <tr style="border-bottom: 1px solid #1e3a68;">
               <td style="padding: 8px 0; color: #94a3b8;">Número de Guía:</td>
-              <td style="padding: 8px 0; color: #38bdf8; font-weight: 900; font-family: monospace; font-size: 15px; text-align: right;">${order.tracking_number}</td>
+              <td style="padding: 8px 0; color: #38bdf8; font-weight: 900; font-family: monospace; font-size: 15px; text-align: right;">${safeTracking}</td>
             </tr>
-            ${order.tracking_url ? `
+            ${safeTrackingUrl ? `
             <tr>
               <td colspan="2" style="padding: 12px 0 0 0; text-align: center;">
-                <a href="${order.tracking_url}" target="_blank" style="display: inline-block; background: #0284c7; color: #ffffff; text-decoration: none; padding: 10px 20px; border-radius: 8px; font-weight: 800; font-size: 12px;">
+                <a href="${safeTrackingUrl}" target="_blank" style="display: inline-block; background: #0284c7; color: #ffffff; text-decoration: none; padding: 10px 20px; border-radius: 8px; font-weight: 800; font-size: 12px;">
                   🔗 Rastrear mi Paquete en Línea
                 </a>
               </td>
@@ -226,15 +255,15 @@ export function generateOrderConfirmationHtml(order: OrderShipment): string {
           <table style="width: 100%; font-size: 13px; border-collapse: collapse;">
             <tr style="border-bottom: 1px solid #1e293b;">
               <td style="padding: 8px 0; color: #94a3b8;">Número de Pedido:</td>
-              <td style="padding: 8px 0; color: #38bdf8; font-weight: 800; text-align: right; font-family: monospace;">${order.id}</td>
+              <td style="padding: 8px 0; color: #38bdf8; font-weight: 800; text-align: right; font-family: monospace;">${safeOrderId}</td>
             </tr>
             <tr style="border-bottom: 1px solid #1e293b;">
               <td style="padding: 8px 0; color: #94a3b8;">Producto / Sistema:</td>
-              <td style="padding: 8px 0; color: #ffffff; font-weight: 700; text-align: right;">${order.product_name}</td>
+              <td style="padding: 8px 0; color: #ffffff; font-weight: 700; text-align: right;">${safeProductName}</td>
             </tr>
             <tr style="border-bottom: 1px solid #1e293b;">
               <td style="padding: 8px 0; color: #94a3b8;">Método de Pago:</td>
-              <td style="padding: 8px 0; color: #cbd5e1; font-weight: 600; text-align: right;">${order.payment_method || "Wompi Pasarela"}</td>
+              <td style="padding: 8px 0; color: #cbd5e1; font-weight: 600; text-align: right;">${safePaymentMethod}</td>
             </tr>
             <tr style="border-bottom: 1px solid #1e293b;">
               <td style="padding: 8px 0; color: #94a3b8;">Estado del Pago:</td>
@@ -256,25 +285,25 @@ export function generateOrderConfirmationHtml(order: OrderShipment): string {
           <table style="width: 100%; font-size: 13px; border-collapse: collapse;">
             <tr style="border-bottom: 1px solid #1e293b;">
               <td style="padding: 8px 0; color: #94a3b8;">Destinatario:</td>
-              <td style="padding: 8px 0; color: #ffffff; font-weight: 700; text-align: right;">${order.customer_name}</td>
+              <td style="padding: 8px 0; color: #ffffff; font-weight: 700; text-align: right;">${safeCustomerName}</td>
             </tr>
-            ${order.customer_document ? `
+            ${safeDocument ? `
             <tr style="border-bottom: 1px solid #1e293b;">
               <td style="padding: 8px 0; color: #94a3b8;">Cédula / Documento:</td>
-              <td style="padding: 8px 0; color: #cbd5e1; font-weight: 600; text-align: right;">${order.customer_document}</td>
+              <td style="padding: 8px 0; color: #cbd5e1; font-weight: 600; text-align: right;">${safeDocument}</td>
             </tr>
             ` : ""}
             <tr style="border-bottom: 1px solid #1e293b;">
               <td style="padding: 8px 0; color: #94a3b8;">Teléfono de Contacto:</td>
-              <td style="padding: 8px 0; color: #34d399; font-weight: 700; text-align: right;">${order.customer_phone.startsWith('+') ? order.customer_phone : `+${order.customer_phone}`}</td>
+              <td style="padding: 8px 0; color: #34d399; font-weight: 700; text-align: right;">${safePhone.startsWith('+') ? safePhone : `+${safePhone}`}</td>
             </tr>
             <tr style="border-bottom: 1px solid #1e293b;">
               <td style="padding: 8px 0; color: #94a3b8;">Dirección:</td>
-              <td style="padding: 8px 0; color: #ffffff; font-weight: 700; text-align: right;">${order.shipping_address}</td>
+              <td style="padding: 8px 0; color: #ffffff; font-weight: 700; text-align: right;">${safeShippingAddress}</td>
             </tr>
             <tr>
               <td style="padding: 8px 0; color: #94a3b8;">Ciudad / Región:</td>
-              <td style="padding: 8px 0; color: #38bdf8; font-weight: 700; text-align: right;">${order.shipping_city} ${order.shipping_department ? `(${order.shipping_department})` : ""}</td>
+              <td style="padding: 8px 0; color: #38bdf8; font-weight: 700; text-align: right;">${safeShippingCity} ${safeShippingDept ? `(${safeShippingDept})` : ""}</td>
             </tr>
           </table>
         </div>
@@ -313,7 +342,7 @@ export function generateOrderConfirmationHtml(order: OrderShipment): string {
 
         <!-- Botón WhatsApp -->
         <div class="btn-container">
-          <a href="https://wa.me/${whatsappNumber}?text=${encodeURIComponent(`¡Hola Procap Natural! Acabo de gestionar mi pedido *${order.id}* (${order.product_name}). ¿Me confirman estado de despacho?`)}" target="_blank" class="btn">
+          <a href="https://wa.me/${whatsappNumber}?text=${encodeURIComponent(`¡Hola Procap Natural! Acabo de gestionar mi pedido *${safeOrderId}* (${safeProductName}). ¿Me confirman estado de despacho?`)}" target="_blank" class="btn">
             💬 Hablar con mi Asesor por WhatsApp
           </a>
         </div>
@@ -323,8 +352,8 @@ export function generateOrderConfirmationHtml(order: OrderShipment): string {
       <!-- Pie de Página -->
       <div class="footer">
         <strong style="color: #ffffff;">Procap Natural • Solución Capilar Indetectable</strong><br>
-        📍 Calle 16 # 83a-15, Bogotá D.C., Colombia • Tel: +57 315 118 9795<br>
-        Email: <a href="mailto:infprocap@gmail.com">infprocap@gmail.com</a> • Web: <a href="${siteUrl}">${siteUrl.replace('https://', '')}</a><br>
+        📍 Calle 16 # 83a-15, Bogotá D.C., Colombia • Tel: +${whatsappNumber}<br>
+        Web: <a href="${siteUrl}">${siteUrl.replace('https://', '')}</a><br>
         <p style="margin-top: 10px; font-size: 10px; color: #475569;">
           Este correo es una confirmación automática generada por el sistema tras una transacción en Wompi.
         </p>
@@ -360,10 +389,12 @@ export async function sendOrderConfirmationEmail(order: OrderShipment): Promise<
       subject = `¡Tu pedido ha sido Despachado! 🚚 Guía #${order.tracking_number} - Procap Natural`;
     }
 
+    const senderEmail = process.env.SMTP_USER || "notificaciones@protesiscapilarcolombia.com";
+
     const mailOptions = {
-      from: `"Procap Natural" <${process.env.SMTP_USER || "infprocap@gmail.com"}>`,
+      from: `"Procap Natural" <${senderEmail}>`,
       to: order.customer_email,
-      bcc: "infprocap@gmail.com", // Copia oculta al equipo de Procap para aviso inmediato
+      bcc: process.env.SMTP_USER || undefined,
       subject: subject,
       html: htmlContent,
     };

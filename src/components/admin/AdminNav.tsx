@@ -14,7 +14,8 @@ import {
   Sparkles,
   Calendar,
   MapPin,
-  Truck
+  Truck,
+  Scale
 } from "lucide-react";
 
 interface AdminNavProps {
@@ -30,6 +31,7 @@ export function AdminNav({ onLogout }: AdminNavProps) {
     { href: "/admin/appointments", label: "Agenda & Citas", icon: Calendar },
     { href: "/admin/events", label: "Giras & Eventos", icon: MapPin },
     { href: "/admin/products", label: "Productos & Sistemas", icon: Package },
+    { href: "/admin/legal", label: "Políticas & Legal (ISO)", icon: Scale },
     { href: "/admin/leads", label: "Leads & Chatbot IA", icon: Bot },
     { href: "/admin/settings", label: "Ajustes & Pasarelas", icon: Settings },
   ];

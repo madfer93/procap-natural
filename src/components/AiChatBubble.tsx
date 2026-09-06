@@ -12,7 +12,8 @@ import {
   Scissors, 
   DollarSign, 
   MapPin, 
-  ExternalLink 
+  ExternalLink,
+  RotateCcw
 } from "lucide-react";
 
 interface ChatMessage {
@@ -32,14 +33,46 @@ const QUICK_PROMPTS = [
 export function AiChatBubble() {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState<ChatMessage[]>([
-    {
-      id: "welcome-1",
-      role: "assistant",
-      content: "¡Hola! 👋 Soy **CapilarBot**, asesor de IA de **Procap Natural Bogotá**.\n\n¿En qué puedo ayudarte hoy sobre nuestras prótesis capilares indetectables, precios o servicios en Chicó Norte?",
-      time: "Ahora"
+  
+  const DEFAULT_WELCOME: ChatMessage = {
+    id: "welcome-1",
+    role: "assistant",
+    content: "¡Hola! 👋 Soy **CapilarBot**, asesor oficial de **Procap Natural**.\n\n¿En qué puedo ayudarte hoy sobre nuestras prótesis capilares indetectables, precios o citas?",
+    time: "Ahora"
+  };
+
+  const [messages, setMessages] = useState<ChatMessage[]>([DEFAULT_WELCOME]);
+
+  // Cargar memoria previa desde localStorage al iniciar
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("procap_capilarbot_history");
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setMessages(parsed);
+        }
+      }
+    } catch (e) {
+      console.warn("No se pudo cargar historial local del chat");
     }
-  ]);
+  }, []);
+
+  // Guardar en localStorage cada vez que los mensajes cambian
+  useEffect(() => {
+    try {
+      if (messages.length > 1) {
+        localStorage.setItem("procap_capilarbot_history", JSON.stringify(messages));
+      }
+    } catch (e) {}
+  }, [messages]);
+
+  const clearChatHistory = () => {
+    try {
+      localStorage.removeItem("procap_capilarbot_history");
+    } catch (e) {}
+    setMessages([DEFAULT_WELCOME]);
+  };
 
   if (pathname && pathname.startsWith("/admin")) {
     return null;
@@ -163,35 +196,59 @@ export function AiChatBubble() {
               </div>
             </div>
 
-            <button
-              onClick={() => setIsOpen(false)}
-              className="w-8 h-8 rounded-xl bg-slate-900/80 hover:bg-slate-800 text-slate-300 hover:text-white flex items-center justify-center transition-colors border border-slate-700"
-              aria-label="Cerrar chat"
-            >
-              <X size={18} />
-            </button>
+            <div className="flex items-center gap-1.5">
+              <button
+                onClick={clearChatHistory}
+                title="Reiniciar conversación y memoria"
+                className="w-8 h-8 rounded-xl bg-slate-900/80 hover:bg-slate-800 text-slate-400 hover:text-sky-300 flex items-center justify-center transition-colors border border-slate-700 text-xs"
+                aria-label="Reiniciar conversación"
+              >
+                <RotateCcw size={14} />
+              </button>
+              <button
+                onClick={() => setIsOpen(false)}
+                className="w-8 h-8 rounded-xl bg-slate-900/80 hover:bg-slate-800 text-slate-300 hover:text-white flex items-center justify-center transition-colors border border-slate-700"
+                aria-label="Cerrar chat"
+              >
+                <X size={18} />
+              </button>
+            </div>
           </div>
 
           {/* Messages Container */}
           <div className="flex-1 p-4 overflow-y-auto space-y-4 scrollbar-thin scrollbar-thumb-slate-700">
-            {messages.map((msg) => (
-              <div
-                key={msg.id}
-                className={`flex gap-2.5 ${msg.role === "user" ? "justify-end" : "justify-start"}`}
-              >
-                {msg.role === "assistant" && (
-                  <div className="w-7 h-7 rounded-lg bg-sky-500/20 border border-sky-400/30 text-sky-400 flex items-center justify-center shrink-0 mt-0.5">
-                    <Bot size={14} />
-                  </div>
-                )}
+            {messages.map((msg) => {
+              const isSecurityWarning = msg.content.includes("⚠️") || msg.content.includes("🚨");
+              const isBlocked = msg.content.includes("⛔");
 
+              return (
                 <div
-                  className={`max-w-[85%] p-3.5 rounded-2xl text-xs sm:text-sm leading-relaxed ${
-                    msg.role === "user"
-                      ? "bg-gradient-to-r from-sky-500 to-blue-600 text-slate-950 font-semibold rounded-tr-none shadow-md"
-                      : "bg-slate-900/90 text-slate-100 border border-sky-400/20 rounded-tl-none"
-                  }`}
+                  key={msg.id}
+                  className={`flex gap-2.5 ${msg.role === "user" ? "justify-end" : "justify-start"}`}
                 >
+                  {msg.role === "assistant" && (
+                    <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 mt-0.5 ${
+                      isBlocked
+                        ? "bg-red-500/20 border border-red-500/40 text-red-400"
+                        : isSecurityWarning
+                        ? "bg-amber-500/20 border border-amber-500/40 text-amber-400"
+                        : "bg-sky-500/20 border border-sky-400/30 text-sky-400"
+                    }`}>
+                      <Bot size={14} />
+                    </div>
+                  )}
+
+                  <div
+                    className={`max-w-[85%] p-3.5 rounded-2xl text-xs sm:text-sm leading-relaxed ${
+                      msg.role === "user"
+                        ? "bg-gradient-to-r from-sky-500 to-blue-600 text-slate-950 font-semibold rounded-tr-none shadow-md"
+                        : isBlocked
+                        ? "bg-red-950/80 text-red-200 border border-red-500/50 rounded-tl-none"
+                        : isSecurityWarning
+                        ? "bg-amber-950/70 text-amber-200 border border-amber-500/40 rounded-tl-none"
+                        : "bg-slate-900/90 text-slate-100 border border-sky-400/20 rounded-tl-none"
+                    }`}
+                  >
                   <div className="whitespace-pre-line space-y-1">
                     {msg.content.split('\n').map((line, lIdx) => {
                       // Parsear **negritas**
@@ -221,7 +278,8 @@ export function AiChatBubble() {
                   </span>
                 </div>
               </div>
-            ))}
+              );
+            })}
 
             {isLoading && (
               <div className="flex items-center gap-2 text-sky-300 text-xs py-2 px-3 bg-slate-900/80 rounded-xl w-fit border border-sky-400/20">

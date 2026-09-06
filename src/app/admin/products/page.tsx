@@ -489,7 +489,7 @@ export default function ProductsAdminPage() {
                   type="url"
                   value={formData.payment_link || ""}
                   onChange={(e) => setFormData({ ...formData, payment_link: e.target.value })}
-                  placeholder="https://checkout.wompi.co/l/QQnlym (Enlace generado en Wompi Comercios)"
+                  placeholder="https://checkout.wompi.co/l/..."
                   className="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-amber-400 font-mono"
                 />
                 <span className="text-[11px] text-slate-400 block">

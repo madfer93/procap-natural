@@ -50,18 +50,51 @@ export default function AdminLayout({
     setError("");
 
     try {
+      // 1. Verificar Rate Limit del servidor antes de procesar
+      const checkRes = await fetch("/api/admin/auth-check", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "check" })
+      });
+      const checkData = await checkRes.json();
+
+      if (checkData.allowed === false) {
+        setError(`Acceso bloqueado por seguridad: has superado el límite de intentos fallidos. Intenta nuevamente en ${checkData.lockedMinutesRemaining || 15} minutos.`);
+        setLoading(false);
+        return;
+      }
+
+      // 2. Intentar autenticación con Supabase Auth
       const { data, error: authError } = await supabase.auth.signInWithPassword({
         email: email.trim(),
         password,
       });
 
       if (authError) {
-        if (authError.message.includes("Invalid login credentials")) {
-          setError("Credenciales inválidas. Verifica tu correo y contraseña de Supabase.");
+        // Registrar intento fallido en el servidor
+        const failRes = await fetch("/api/admin/auth-check", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ action: "failed" })
+        });
+        const failData = await failRes.json();
+
+        if (failData.locked) {
+          setError(`Acceso bloqueado temporalmente por 15 minutos debido a reiterados intentos fallidos.`);
+        } else if (authError.message.includes("Invalid login credentials")) {
+          const remaining = failData.remainingAttempts !== undefined ? ` (${failData.remainingAttempts} intentos restantes)` : "";
+          setError(`Credenciales inválidas. Verifica tu correo y contraseña${remaining}.`);
         } else {
           setError(authError.message);
         }
       } else if (data?.session) {
+        // Limpiar contador tras éxito
+        await fetch("/api/admin/auth-check", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ action: "success" })
+        }).catch(() => {});
+
         setIsAuthenticated(true);
       }
     } catch (err) {

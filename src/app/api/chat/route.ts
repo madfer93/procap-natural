@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getGroqClient, PROCAP_AI_SYSTEM_PROMPT } from "@/lib/groq";
+import { getGroqClient, buildDynamicSystemPrompt } from "@/lib/groq";
+import { getClientIp, isIpBlocked, registerSabotageStrike } from "@/lib/security-service";
 
 // Modelos soportados en la cuenta de Groq con fallback en cascada
 const GROQ_MODELS = [
@@ -10,22 +11,135 @@ const GROQ_MODELS = [
   "llama-3.3-70b-versatile"
 ];
 
+// --- 1. RATE LIMITING EN MEMORIA POR IP ---
+interface RateLimitEntry {
+  count: number;
+  resetTime: number;
+}
+const ipRateLimitMap = new Map<string, RateLimitEntry>();
+const RATE_LIMIT_WINDOW_MS = 60 * 1000; // 1 minuto
+const MAX_REQUESTS_PER_WINDOW = 12; // Máximo 12 preguntas por minuto por IP
+
+function checkRateLimit(ip: string): { allowed: boolean; remaining: number } {
+  const now = Date.now();
+  const entry = ipRateLimitMap.get(ip);
+
+  // Limpieza periódica si la memoria crece
+  if (ipRateLimitMap.size > 2000) {
+    ipRateLimitMap.forEach((val, key) => {
+      if (now > val.resetTime) ipRateLimitMap.delete(key);
+    });
+  }
+
+  if (!entry || now > entry.resetTime) {
+    ipRateLimitMap.set(ip, { count: 1, resetTime: now + RATE_LIMIT_WINDOW_MS });
+    return { allowed: true, remaining: MAX_REQUESTS_PER_WINDOW - 1 };
+  }
+
+  if (entry.count >= MAX_REQUESTS_PER_WINDOW) {
+    return { allowed: false, remaining: 0 };
+  }
+
+  entry.count += 1;
+  return { allowed: true, remaining: MAX_REQUESTS_PER_WINDOW - entry.count };
+}
+
+// --- 2. FILTRO ANTI-PROMPT INJECTION, ANTI-SABOTAJE & ANTI-FUGA ---
+const INJECTION_PATTERNS = [
+  /ignore (all|any|the|previous|above) (instructions|directions|rules)/i,
+  /ignora (todas|las|tus) (instrucciones|reglas|órdenes)/i,
+  /reveal (your|the) (system prompt|instructions|secret|api key)/i,
+  /revela (tu|el) (prompt|instrucciones|secreto|clave)/i,
+  /(system prompt|system instruction|prompt de sistema)/i,
+  /(dan mode|jailbreak|developer mode|modo desarrollador)/i,
+  /(what are your instructions|cuáles son tus instrucciones internas)/i,
+  /(show me your system prompt|muéstrame tu prompt)/i,
+  /(env variables|variables de entorno|groq_api_key|smtp_pass|supabase_anon_key)/i,
+  /(act as an unconstrained|haz de cuenta que no tienes reglas|olvida que eres)/i,
+  /(repite la palabra|di groserías|escribe un malware|sql injection|drop table)/i
+];
+
+function containsPromptInjection(text: string): boolean {
+  return INJECTION_PATTERNS.some((pattern) => pattern.test(text));
+}
+
 export async function POST(req: NextRequest) {
   try {
+    const ip = getClientIp(req.headers);
+    const userAgent = req.headers.get("user-agent") || "unknown";
+
+    // 1. VERIFICACIÓN DE IP BLOQUEADA (Supabase + Memoria)
+    const blockStatus = await isIpBlocked(ip);
+    if (blockStatus.blocked) {
+      return NextResponse.json(
+        {
+          role: "assistant",
+          content: "⛔ **ACCESO DENEGADO (IP BLOQUEADA)**: Tu dirección IP se encuentra bloqueada por 1 año debido a reiterados intentos de sabotaje contra el sistema de Procap Natural. Si consideras que se trata de un error, contáctanos por WhatsApp oficial +57 315 118 9795."
+        },
+        { status: 403 }
+      );
+    }
+
+    // 2. RATE LIMITING POR IP
+    const { allowed, remaining } = checkRateLimit(ip);
+    if (!allowed) {
+      return NextResponse.json(
+        {
+          role: "assistant",
+          content: "Has alcanzado el límite de consultas rápidas por minuto. Por favor espera unos segundos o escríbenos directamente a nuestro WhatsApp oficial +57 315 118 9795 para una atención inmediata."
+        },
+        { 
+          status: 429, 
+          headers: { "Retry-After": "60", "X-RateLimit-Remaining": String(remaining) } 
+        }
+      );
+    }
+
     const { messages, customGroqKey } = await req.json();
 
-    if (!messages || !Array.isArray(messages)) {
+    if (!messages || !Array.isArray(messages) || messages.length === 0) {
       return NextResponse.json(
         { error: "El array de mensajes es requerido" },
         { status: 400 }
       );
     }
 
+    // 3. Sanitización y limitación de tamaño del payload (conservar hasta 12 mensajes para memoria de contexto)
+    const safeMessages: Array<{ role: "assistant" | "user" | "system"; content: string }> = messages
+      .slice(-12)
+      .map((m: any) => ({
+        role: (m.role === "assistant" ? "assistant" : "user") as "assistant" | "user",
+        content: String(m.content || "").slice(0, 1000)
+      }));
+
+    const lastUserMessage = safeMessages[safeMessages.length - 1]?.content || "";
+
+    // 4. DETECCIÓN DE SABOTAJE / INYECCIÓN CON SISTEMA DE 3 STRIKES (2 ADVERTENCIAS + BLOQUEO POR 1 AÑO)
+    if (containsPromptInjection(lastUserMessage)) {
+      console.warn(`[Security Alert] Sabotaje detectado desde IP ${ip}: "${lastUserMessage.slice(0, 100)}"`);
+      const strikeResult = await registerSabotageStrike(ip, userAgent, lastUserMessage.slice(0, 100));
+
+      if (strikeResult.blocked) {
+        return NextResponse.json(
+          {
+            role: "assistant",
+            content: strikeResult.message
+          },
+          { status: 403 }
+        );
+      }
+
+      return NextResponse.json({
+        role: "assistant",
+        content: strikeResult.message
+      });
+    }
+
     const groq = getGroqClient(customGroqKey);
 
     // Fallback inteligente simulado si no hay API key configurada
     if (!groq) {
-      const lastUserMsg = messages[messages.length - 1]?.content?.toLowerCase() || "";
+      const lastUserMsg = lastUserMessage.toLowerCase();
       let simulatedReply = "¡Hola! Soy CapilarBot, asesor de Procap Natural en Bogotá. ";
 
       if (lastUserMsg.includes("precio") || lastUserMsg.includes("cuanto") || lastUserMsg.includes("costo")) {
@@ -37,7 +151,7 @@ export async function POST(req: NextRequest) {
       } else if (lastUserMsg.includes("deporte") || lastUserMsg.includes("piscina") || lastUserMsg.includes("agua") || lastUserMsg.includes("nadar") || lastUserMsg.includes("casco")) {
         simulatedReply += "¡Totalmente seguro! Las prótesis capilares de Procap Natural están fijadas con adhesivos médicos impermeables que resisten el sudor del gimnasio, duchas, piscina y el uso de casco de moto sin desprenderse.";
       } else {
-        simulatedReply += "Te ayudamos a recuperar tu cabello y seguridad con prótesis capilares 100% indetectables de cabello humano. Puedes escribirnos directamente a nuestro WhatsApp oficial +57 315 1189795 para una atención inmediata.";
+        simulatedReply += "Te ayudamos a recuperar tu cabello y seguridad con prótesis capilares 100% indetectables de cabello humano. Puedes escribirnos directamente a nuestro WhatsApp oficial +57 315 118 9795 para una atención inmediata.";
       }
 
       return NextResponse.json({
@@ -46,7 +160,10 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    // Intentar llamadas a Groq iterando por la lista de modelos
+    // Obtener System Prompt dinámico conectado a la base de datos Supabase
+    const systemPrompt = await buildDynamicSystemPrompt();
+
+    // Intentar llamadas a Groq iterando por la lista de modelos con fallback
     let reply = "";
     let lastError = null;
 
@@ -55,8 +172,8 @@ export async function POST(req: NextRequest) {
         const completion = await groq.chat.completions.create({
           model,
           messages: [
-            { role: "system", content: PROCAP_AI_SYSTEM_PROMPT },
-            ...messages
+            { role: "system", content: systemPrompt },
+            ...safeMessages
           ],
           temperature: 0.6,
           max_tokens: 500,
@@ -86,7 +203,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(
       { 
         role: "assistant", 
-        content: "¡Hola! Estoy experimentando un momento de alta demanda, pero puedes escribirnos directamente a nuestro WhatsApp oficial +57 315 1189795 para atenderte de inmediato." 
+        content: "¡Hola! Estoy experimentando un momento de alta demanda, pero puedes escribirnos directamente a nuestro WhatsApp oficial +57 315 118 9795 para atenderte de inmediato." 
       },
       { status: 200 }
     );
