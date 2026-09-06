@@ -143,17 +143,13 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossOrigin="anonymous" />
 
-        {/* FontAwesome diferido no bloqueante */}
+        {/* FontAwesome Icons */}
         <link 
           rel="stylesheet" 
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" 
-          media="print" 
-          // @ts-ignore
-          onLoad="this.media='all'" 
+          crossOrigin="anonymous" 
+          referrerPolicy="no-referrer"
         />
-        <noscript>
-          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
-        </noscript>
         
         {/* Google Tag Manager (Optimizado no bloqueante) */}
         <Script
@@ -432,10 +428,28 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                   ]
                 },
                 {
+                  "@type": "WebSite",
+                  "@id": "https://protesiscapilarcolombia.com/#website",
+                  "url": "https://protesiscapilarcolombia.com/",
+                  "name": "Procap Natural | Prótesis Capilares Indetectables",
+                  "alternateName": "Procap Colombia",
+                  "description": "Prótesis capilares masculinas 100% indetectables de cabello humano en Bogotá y Cali.",
+                  "publisher": { "@id": "https://protesiscapilarcolombia.com/#organization" },
+                  "creator": {
+                    "@type": "Organization",
+                    "@id": "https://www.jymtechsolutions.online/#organization",
+                    "name": "J&M Tech Solutions",
+                    "url": "https://www.jymtechsolutions.online/es",
+                    "description": "Agencia de automatización con IA y desarrollo de software"
+                  },
+                  "inLanguage": "es-CO"
+                },
+                {
                   "@type": "Organization",
-                  "@id": "https://protesiscapilarcolombia.com/#creator",
+                  "@id": "https://www.jymtechsolutions.online/#organization",
                   "name": "J&M Tech Solutions",
                   "url": "https://www.jymtechsolutions.online/es",
+                  "logo": "https://www.jymtechsolutions.online/logo.png",
                   "description": "Agencia de automatización con IA y desarrollo de software"
                 }
               ]
