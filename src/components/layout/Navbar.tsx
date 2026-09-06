@@ -17,7 +17,8 @@ export function Navbar() {
     { href: "/servicios", label: "Servicios" },
     { href: "/catalogo", label: "Catálogo & Precios" },
     { href: "/cotizador", label: "Cotizador" },
-    { href: "/ubicacion", label: "Ubicación" },
+    { href: "/eventos", label: "Giras & Eventos" },
+    { href: "/ubicacion", label: "Sedes" },
     { href: "/faqs", label: "Preguntas" },
   ];
 

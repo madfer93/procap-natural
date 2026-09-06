@@ -32,10 +32,11 @@ export function Footer() {
             <ul className="space-y-1.5">
               <li><Link href="/" className="hover:text-sky-400 transition-colors">Inicio</Link></li>
               <li><Link href="/beneficios" className="hover:text-sky-400 transition-colors">Beneficios del Sistema</Link></li>
-              <li><Link href="/servicios" className="hover:text-sky-400 transition-colors">Servicios en Bogotá</Link></li>
+              <li><Link href="/servicios" className="hover:text-sky-400 transition-colors">Servicios & Instalación</Link></li>
               <li><Link href="/catalogo" className="hover:text-sky-400 transition-colors">Catálogo de Productos</Link></li>
               <li><Link href="/cotizador" className="hover:text-sky-400 transition-colors">Cotizador Rápido</Link></li>
-              <li><Link href="/ubicacion" className="hover:text-sky-400 transition-colors">Ubicación & Contacto</Link></li>
+              <li><Link href="/eventos" className="hover:text-sky-400 transition-colors">Giras & Eventos Colombia</Link></li>
+              <li><Link href="/ubicacion" className="hover:text-sky-400 transition-colors">Sedes Bogotá & Cali</Link></li>
               <li><Link href="/faqs" className="hover:text-sky-400 transition-colors">Preguntas Frecuentes</Link></li>
               <li><Link href="/admin" className="text-sky-400/80 hover:text-sky-400 transition-colors">Panel Admin 🔒</Link></li>
             </ul>
