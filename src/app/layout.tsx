@@ -32,6 +32,9 @@ export const metadata: Metadata = {
     apple: "/favicons/apple-touch-icon.png",
   },
   manifest: "/favicons/site.webmanifest",
+  verification: {
+    google: "OWgJcQ-rxT4oQfCfVTKLt_002O9SLeg5gRa4BfADuZM",
+  },
 };
 
 export default function RootLayout({
@@ -42,7 +45,19 @@ export default function RootLayout({
   return (
     <html lang="es" className="scroll-smooth">
       <head>
+        <meta name="google-site-verification" content="OWgJcQ-rxT4oQfCfVTKLt_002O9SLeg5gRa4BfADuZM" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+        
+        {/* Google Tag Manager */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-5RR6XK2W');`,
+          }}
+        />
         
         {/* Schema JSON-LD SEO & J&M Tech Solutions Creator */}
         <script
@@ -86,6 +101,16 @@ export default function RootLayout({
         />
       </head>
       <body className="bg-[#031C45] text-slate-100 antialiased selection:bg-sky-400 selection:text-slate-950 relative overflow-x-hidden">
+        {/* Google Tag Manager (noscript) */}
+        <noscript>
+          <iframe
+            src="https://www.googletagmanager.com/ns.html?id=GTM-5RR6XK2W"
+            height="0"
+            width="0"
+            style={{ display: "none", visibility: "hidden" }}
+          />
+        </noscript>
+        
         {children}
         <AiChatBubble />
         <WhatsAppFloatingButton />
