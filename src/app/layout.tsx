@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { AiChatBubble } from "@/components/AiChatBubble";
 import { WhatsAppFloatingButton } from "@/components/WhatsAppFloatingButton";
+import { Analytics } from "@vercel/analytics/next";
 
 export const metadata: Metadata = {
   title: "Procap Natural | Prótesis Capilares Indetectables para Hombres en Bogotá",
@@ -88,6 +89,7 @@ export default function RootLayout({
         {children}
         <AiChatBubble />
         <WhatsAppFloatingButton />
+        <Analytics />
       </body>
     </html>
   );
