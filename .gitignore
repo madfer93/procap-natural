@@ -1,0 +1,42 @@
+# Dependencies
+/node_modules
+/.pnp
+.pnp.js
+
+# Testing
+/coverage
+
+# Next.js build output
+/.next/
+/out/
+
+# Production
+/build
+
+# Environment variables
+.env*.local
+.env
+
+# Vercel
+.vercel
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# Database schemas & Local SQL backups (Protección de arquitectura)
+/src/database/
+/database/
+*.sql
+*.dump
+
+# Local raw media & archives
+/assets/raw-sources/
+*.zip
+*.tar.gz
+*.rar
+
