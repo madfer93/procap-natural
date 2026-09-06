@@ -249,7 +249,25 @@ export default function AdminLeadsPage() {
                           : "bg-slate-900 text-slate-200 border border-slate-800 rounded-tl-sm"
                       }`}
                     >
-                      {msg.content}
+                      <div className="whitespace-pre-line space-y-1">
+                        {msg.content.split('\n').map((line, lIdx) => {
+                          const parts = line.split(/(\*\*.*?\*\*)/g);
+                          return (
+                            <p key={lIdx}>
+                              {parts.map((part, pIdx) => {
+                                if (part.startsWith('**') && part.endsWith('**')) {
+                                  return (
+                                    <strong key={pIdx} className={isUser ? "font-black text-black" : "font-bold text-sky-400"}>
+                                      {part.slice(2, -2)}
+                                    </strong>
+                                  );
+                                }
+                                return part;
+                              })}
+                            </p>
+                          );
+                        })}
+                      </div>
                     </div>
                   </div>
                 );
