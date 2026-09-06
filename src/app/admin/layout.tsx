@@ -2,7 +2,8 @@
 
 import React, { useState, useEffect } from "react";
 import { AdminNav } from "@/components/admin/AdminNav";
-import { Lock, ShieldCheck, ArrowRight, Sparkles } from "lucide-react";
+import { supabase } from "@/lib/supabase";
+import { Lock, ShieldCheck, ArrowRight, Sparkles, Mail, KeyRound, AlertCircle, Loader2 } from "lucide-react";
 
 export default function AdminLayout({
   children,
@@ -10,35 +11,72 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
-  const [pinInput, setPinInput] = useState("");
-  const [pinError, setPinError] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    // Verificar si ya tiene sesión guardada
-    const authSession = localStorage.getItem("procap_admin_auth");
-    if (authSession === "true") {
-      setIsAuthenticated(true);
-    } else {
-      setIsAuthenticated(false);
-    }
+    // 1. Verificar sesión existente en Supabase Auth
+    const checkAuth = async () => {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        setIsAuthenticated(!!session);
+      } catch (e) {
+        setIsAuthenticated(false);
+      }
+    };
+
+    checkAuth();
+
+    // 2. Escuchar cambios de estado de autenticación en tiempo real
+    const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
+      setIsAuthenticated(!!session);
+    });
+
+    return () => {
+      authListener?.subscription?.unsubscribe();
+    };
   }, []);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    // PIN por defecto 'procap2026' o personalizado en localStorage
-    const validPin = localStorage.getItem("procap_admin_custom_pin") || "procap2026";
+    if (!email.trim() || !password) {
+      setError("Por favor ingresa tu correo y contraseña.");
+      return;
+    }
 
-    if (pinInput === validPin || pinInput === "procap2026" || pinInput === "1193") {
-      localStorage.setItem("procap_admin_auth", "true");
-      setIsAuthenticated(true);
-      setPinError("");
-    } else {
-      setPinError("PIN de seguridad incorrecto.");
+    setLoading(true);
+    setError("");
+
+    try {
+      const { data, error: authError } = await supabase.auth.signInWithPassword({
+        email: email.trim(),
+        password,
+      });
+
+      if (authError) {
+        if (authError.message.includes("Invalid login credentials")) {
+          setError("Credenciales inválidas. Verifica tu correo y contraseña de Supabase.");
+        } else {
+          setError(authError.message);
+        }
+      } else if (data?.session) {
+        setIsAuthenticated(true);
+      }
+    } catch (err) {
+      setError("Error al conectar con el servidor de autenticación.");
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem("procap_admin_auth");
+  const handleLogout = async () => {
+    try {
+      await supabase.auth.signOut();
+    } catch (e) {
+      // Ignorar error al cerrar sesión
+    }
     setIsAuthenticated(false);
   };
 
@@ -50,11 +88,11 @@ export default function AdminLayout({
     );
   }
 
-  // Pantalla de Bloqueo / Login
+  // Pantalla de Bloqueo / Login con Supabase Auth
   if (!isAuthenticated) {
     return (
       <div className="min-h-screen bg-[#07090e] flex items-center justify-center p-4 relative overflow-hidden">
-        {/* Glow */}
+        {/* Ambient Glow */}
         <div className="absolute w-96 h-96 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
 
         <div className="max-w-md w-full p-8 rounded-3xl bg-slate-950 border border-amber-500/30 shadow-2xl backdrop-blur-xl relative z-10">
@@ -64,40 +102,74 @@ export default function AdminLayout({
               <Lock size={30} />
             </div>
             <h2 className="text-2xl font-black font-heading text-white">Panel Procap Natural</h2>
-            <p className="text-xs text-slate-400 mt-1">Ingresa tu clave o PIN de administrador para continuar</p>
+            <p className="text-xs text-slate-400 mt-1">Inicia sesión con tu cuenta de administrador autorizada</p>
           </div>
 
           <form onSubmit={handleLogin} className="space-y-4">
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-2">
-                PIN de Acceso
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
+                Correo Electrónico
               </label>
-              <input
-                type="password"
-                value={pinInput}
-                onChange={(e) => setPinInput(e.target.value)}
-                placeholder="••••••••"
-                className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-center text-lg tracking-widest text-white focus:outline-none focus:border-amber-400"
-                autoFocus
-              />
+              <div className="relative">
+                <Mail size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500" />
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="admin@protesiscapilarcolombia.com"
+                  className="w-full bg-slate-900 border border-slate-700 rounded-xl pl-10 pr-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-amber-400 transition-colors"
+                  required
+                  autoFocus
+                />
+              </div>
             </div>
 
-            {pinError && (
-              <p className="text-xs text-red-400 font-semibold text-center">{pinError}</p>
+            <div>
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
+                Contraseña
+              </label>
+              <div className="relative">
+                <KeyRound size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500" />
+                <input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••••••"
+                  className="w-full bg-slate-900 border border-slate-700 rounded-xl pl-10 pr-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-amber-400 transition-colors"
+                  required
+                />
+              </div>
+            </div>
+
+            {error && (
+              <div className="p-3 rounded-xl bg-red-500/10 border border-red-500/30 flex items-center gap-2 text-xs text-red-400">
+                <AlertCircle size={15} className="shrink-0" />
+                <span>{error}</span>
+              </div>
             )}
 
             <button
               type="submit"
-              className="w-full py-3.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-sm flex items-center justify-center gap-2 shadow-lg shadow-amber-500/20 transition-all hover:scale-[1.02]"
+              disabled={loading}
+              className="w-full py-3.5 rounded-xl bg-amber-500 hover:bg-amber-400 disabled:opacity-50 text-slate-950 font-bold text-sm flex items-center justify-center gap-2 shadow-lg shadow-amber-500/20 transition-all hover:scale-[1.02] mt-2"
             >
-              <span>Entrar al Panel</span>
-              <ArrowRight size={16} />
+              {loading ? (
+                <>
+                  <Loader2 size={16} className="animate-spin" />
+                  <span>Verificando...</span>
+                </>
+              ) : (
+                <>
+                  <span>Iniciar Sesión</span>
+                  <ArrowRight size={16} />
+                </>
+              )}
             </button>
           </form>
 
           <div className="mt-8 text-center text-[11px] text-slate-500 flex items-center justify-center gap-1">
             <ShieldCheck size={14} className="text-amber-400" />
-            <span>Acceso Seguro • J&M Tech Solutions</span>
+            <span>Autenticación Segura • Supabase Auth & J&M Tech Solutions</span>
           </div>
 
         </div>
@@ -115,3 +187,4 @@ export default function AdminLayout({
     </div>
   );
 }
+

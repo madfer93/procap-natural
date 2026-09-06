@@ -38,7 +38,6 @@ export function Footer() {
               <li><Link href="/eventos" className="hover:text-sky-400 transition-colors">Giras & Eventos Colombia</Link></li>
               <li><Link href="/ubicacion" className="hover:text-sky-400 transition-colors">Sedes Bogotá & Cali</Link></li>
               <li><Link href="/faqs" className="hover:text-sky-400 transition-colors">Preguntas Frecuentes</Link></li>
-              <li><Link href="/admin" className="text-sky-400/80 hover:text-sky-400 transition-colors">Panel Admin 🔒</Link></li>
             </ul>
           </div>
 

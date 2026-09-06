@@ -95,7 +95,7 @@ export function AdminNav({ onLogout }: AdminNavProps) {
           </Link>
 
           <a
-            href="https://sbfxirefisjusosfotks.supabase.co"
+            href={process.env.NEXT_PUBLIC_SUPABASE_URL || "https://supabase.com/dashboard"}
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center justify-between px-3.5 py-2 rounded-xl text-xs text-slate-400 hover:text-white hover:bg-slate-900 transition-colors"
