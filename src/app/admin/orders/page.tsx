@@ -41,6 +41,8 @@ export default function AdminOrdersPage() {
   const [notes, setNotes] = useState("");
   const [isSaving, setIsSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
+  const [isSendingEmail, setIsSendingEmail] = useState(false);
+  const [emailFeedback, setEmailFeedback] = useState<{ success: boolean; message: string } | null>(null);
 
   const whatsappPhone = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "573151189795";
 
@@ -75,6 +77,38 @@ export default function AdminOrdersPage() {
     setShippingCost(order.shipping_cost || 0);
     setNotes(order.notes || "");
     setSaveSuccess(false);
+    setEmailFeedback(null);
+  };
+
+  const handleSendEmail = async () => {
+    if (!selectedOrder) return;
+    if (!selectedOrder.customer_email) {
+      setEmailFeedback({ success: false, message: "El pedido no tiene un email registrado." });
+      return;
+    }
+
+    setIsSendingEmail(true);
+    setEmailFeedback(null);
+
+    try {
+      const res = await fetch("/api/orders/email", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ orderId: selectedOrder.id }),
+      });
+
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setEmailFeedback({ success: true, message: `Correo enviado a ${selectedOrder.customer_email}` });
+      } else {
+        setEmailFeedback({ success: false, message: data.error || "Error al enviar el correo." });
+      }
+    } catch (err: any) {
+      setEmailFeedback({ success: false, message: err.message || "Error de conexión al enviar correo." });
+    } finally {
+      setIsSendingEmail(false);
+      setTimeout(() => setEmailFeedback(null), 5000);
+    }
   };
 
   const handleCarrierChange = (newCarrierName: string) => {
@@ -478,34 +512,70 @@ export default function AdminOrdersPage() {
 
             </div>
 
+            {/* Email Feedback Banner */}
+            {emailFeedback && (
+              <div className={`p-3 rounded-xl text-xs font-bold flex items-center justify-between gap-2 ${
+                emailFeedback.success 
+                  ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" 
+                  : "bg-red-500/10 text-red-400 border border-red-500/20"
+              }`}>
+                <div className="flex items-center gap-2">
+                  {emailFeedback.success ? <CheckCircle2 size={14} /> : <AlertCircle size={14} />}
+                  <span>{emailFeedback.message}</span>
+                </div>
+                <button 
+                  onClick={() => setEmailFeedback(null)}
+                  className="text-slate-400 hover:text-white"
+                >
+                  <X size={12} />
+                </button>
+              </div>
+            )}
+
             {/* Action Buttons */}
             <div className="pt-3 border-t border-slate-800 flex flex-wrap items-center justify-between gap-3">
-              <button
-                type="button"
-                onClick={handleSaveShipment}
-                disabled={isSaving}
-                className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs shadow-md shadow-amber-500/20 transition-all hover:scale-105 disabled:opacity-50"
-              >
-                <Save size={14} />
-                <span>{isSaving ? "Guardando..." : "Guardar Envío"}</span>
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={handleSaveShipment}
+                  disabled={isSaving}
+                  className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs shadow-md shadow-amber-500/20 transition-all hover:scale-105 disabled:opacity-50"
+                >
+                  <Save size={14} />
+                  <span>{isSaving ? "Guardando..." : "Guardar Envío"}</span>
+                </button>
 
-              {saveSuccess && (
-                <span className="text-emerald-400 text-xs font-bold flex items-center gap-1">
-                  <CheckCircle2 size={14} /> ¡Guardado con éxito!
-                </span>
-              )}
+                {saveSuccess && (
+                  <span className="text-emerald-400 text-xs font-bold flex items-center gap-1">
+                    <CheckCircle2 size={14} /> ¡Guardado!
+                  </span>
+                )}
+              </div>
 
-              {/* Botón de Enviar Guía por WhatsApp */}
-              <a
-                href={`https://wa.me/${selectedOrder.customer_phone.replace(/\D/g, "")}?text=${generateWhatsAppMessage()}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs shadow-md shadow-emerald-500/20 transition-all hover:scale-105"
-              >
-                <i className="fa-brands fa-whatsapp text-sm"></i>
-                <span>Enviar Guía por WhatsApp</span>
-              </a>
+              <div className="flex items-center gap-2">
+                {/* Botón Enviar Correo */}
+                <button
+                  type="button"
+                  onClick={handleSendEmail}
+                  disabled={isSendingEmail || !selectedOrder.customer_email}
+                  title={selectedOrder.customer_email ? `Enviar confirmación a ${selectedOrder.customer_email}` : "Sin correo registrado"}
+                  className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-bold text-xs shadow-md shadow-sky-600/20 transition-all hover:scale-105 disabled:opacity-50 disabled:hover:scale-100"
+                >
+                  <Mail size={13} className={isSendingEmail ? "animate-pulse" : ""} />
+                  <span>{isSendingEmail ? "Enviando..." : "Notificar por Correo"}</span>
+                </button>
+
+                {/* Botón de Enviar Guía por WhatsApp */}
+                <a
+                  href={`https://wa.me/${selectedOrder.customer_phone.replace(/\D/g, "")}?text=${generateWhatsAppMessage()}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs shadow-md shadow-emerald-500/20 transition-all hover:scale-105"
+                >
+                  <i className="fa-brands fa-whatsapp text-sm"></i>
+                  <span>WhatsApp</span>
+                </a>
+              </div>
             </div>
 
           </div>

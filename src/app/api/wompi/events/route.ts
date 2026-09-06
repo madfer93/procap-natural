@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabase, isSupabaseConfigured } from "@/lib/supabase";
 import { OrderShipment } from "@/lib/orders-store";
+import { sendOrderConfirmationEmail } from "@/lib/email-service";
 
 export const dynamic = "force-dynamic";
 
@@ -17,7 +18,7 @@ export async function POST(req: NextRequest) {
     }
 
     const txId = transaction.id;
-    const status = transaction.status; // 'APPROVED', 'DECLINED', 'VOIDED', 'ERROR'
+    const status = transaction.status; // 'APPROVED', 'PENDING', 'DECLINED', 'VOIDED', 'ERROR'
     const amountInCents = transaction.amount_in_cents || 0;
     const amountCop = amountInCents / 100;
     const reference = transaction.reference || "Venta Web Procap";
@@ -62,17 +63,29 @@ export async function POST(req: NextRequest) {
       updated_at: new Date().toISOString()
     };
 
+    // Guardar o actualizar en Supabase
     if (isSupabaseConfigured()) {
       await supabase
         .from("orders")
         .upsert(newOrder, { onConflict: "id" });
     }
 
+    // Disparar envío automático de correo electrónico corporativo al cliente
+    let emailResult: { success: boolean; error?: string } = { success: false, error: "No intentado" };
+    if (customerEmail && (status === "APPROVED" || status === "PENDING")) {
+      try {
+        emailResult = await sendOrderConfirmationEmail(newOrder);
+      } catch (e: any) {
+        console.error(`[Wompi Webhook] Error al enviar email:`, e);
+      }
+    }
+
     return NextResponse.json({ 
       success: true, 
       message: "Evento Wompi procesado y registrado exitosamente en despachos.",
       orderId: orderId,
-      status: status
+      status: status,
+      emailSent: emailResult.success
     }, { status: 200 });
 
   } catch (err: any) {
