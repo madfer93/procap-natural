@@ -9,7 +9,8 @@ export interface Product {
   badge: string;
   icon?: string;
   image_url?: string;
-  payment_link?: string; // Enlace directo a pasarela (Wompi / Addi / Sistecrédito / Checkout)
+  payment_link?: string; // Pasarela 1: Enlace directo Wompi (Bancolombia / PSE / Tarjeta)
+  payment_link_credit?: string; // Pasarela 2: Enlace directo Sistecrédito / Addi (Financiamiento a Cuotas)
   is_available: boolean;
   is_featured?: boolean;
   order_index?: number;

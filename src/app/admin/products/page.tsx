@@ -19,7 +19,8 @@ import {
   Tag,
   Layers,
   Image as ImageIcon,
-  Loader2
+  Loader2,
+  CreditCard
 } from "lucide-react";
 import { supabase, isSupabaseConfigured } from "@/lib/supabase";
 import { Product, INITIAL_PRODUCTS, formatPriceCOP } from "@/lib/products-store";
@@ -44,6 +45,8 @@ export default function ProductsAdminPage() {
     price_regular: 0,
     badge: "",
     image_url: "",
+    payment_link: "",
+    payment_link_credit: "",
     is_available: true,
     is_featured: false,
     order_index: 0
@@ -88,6 +91,7 @@ export default function ProductsAdminPage() {
       badge: "Nuevo",
       image_url: "",
       payment_link: "",
+      payment_link_credit: "",
       is_available: true,
       is_featured: false,
       order_index: products.length + 1
@@ -98,7 +102,11 @@ export default function ProductsAdminPage() {
 
   const handleOpenEdit = (product: Product) => {
     setEditingProduct(product);
-    setFormData({ ...product });
+    setFormData({ 
+      ...product,
+      payment_link: product.payment_link || "",
+      payment_link_credit: product.payment_link_credit || ""
+    });
     setIsFormOpen(true);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -468,12 +476,12 @@ export default function ProductsAdminPage() {
                 </div>
               </div>
 
-              {/* Link de Pago Directo (Wompi / Pasarela / Addi / Sistecrédito) */}
-              <div className="sm:col-span-12 p-4 rounded-2xl bg-slate-900/60 border border-amber-500/20 space-y-2">
+              {/* Pasarela 1: Link de Pago Wompi */}
+              <div className="sm:col-span-12 p-4 rounded-2xl bg-slate-900/60 border border-amber-500/30 space-y-2">
                 <div className="flex items-center justify-between">
                   <label className="text-xs font-bold uppercase tracking-wider text-amber-400 flex items-center gap-2">
                     <Sparkles size={14} />
-                    <span>Link de Pago Directo (Wompi / Addi / Sistecrédito / Pasarela)</span>
+                    <span>1. Pasarela Wompi (Link de Pago Directo / Bancolombia / PSE / Tarjeta)</span>
                   </label>
                   <span className="text-[10px] text-slate-400">Opcional</span>
                 </div>
@@ -481,11 +489,32 @@ export default function ProductsAdminPage() {
                   type="url"
                   value={formData.payment_link || ""}
                   onChange={(e) => setFormData({ ...formData, payment_link: e.target.value })}
-                  placeholder="https://checkout.wompi.co/l/enlace-de-este-producto o link de Addi/Sistecrédito"
-                  className="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-amber-400"
+                  placeholder="https://checkout.wompi.co/l/QQnlym (Enlace generado en Wompi Comercios)"
+                  className="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-amber-400 font-mono"
                 />
                 <span className="text-[11px] text-slate-400 block">
-                  Si agregas este link, los clientes verán un botón de pago directo en línea además del botón de WhatsApp.
+                  Los clientes verán el botón de pago con Wompi (tarjetas de crédito, débito, transferencias Bancolombia y PSE).
+                </span>
+              </div>
+
+              {/* Pasarela 2: Link de Financiamiento / Sistecrédito / Addi */}
+              <div className="sm:col-span-12 p-4 rounded-2xl bg-slate-900/60 border border-sky-500/30 space-y-2">
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-bold uppercase tracking-wider text-sky-400 flex items-center gap-2">
+                    <CreditCard size={14} />
+                    <span>2. Pasarela a Cuotas / Crédito (Sistecrédito / Addi / Financiamiento)</span>
+                  </label>
+                  <span className="text-[10px] text-slate-400">Opcional</span>
+                </div>
+                <input
+                  type="url"
+                  value={formData.payment_link_credit || ""}
+                  onChange={(e) => setFormData({ ...formData, payment_link_credit: e.target.value })}
+                  placeholder="https://... (Link de pago Sistecrédito o Addi para compra a cuotas)"
+                  className="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-sky-400 font-mono"
+                />
+                <span className="text-[11px] text-slate-400 block">
+                  Los clientes verán un botón adicional para financiar la compra a cuotas con Sistecrédito o Addi.
                 </span>
               </div>
 

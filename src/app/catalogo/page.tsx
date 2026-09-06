@@ -217,26 +217,36 @@ export default function CatalogoPage() {
                       </div>
 
                       <div className="flex flex-col gap-2">
+                        {/* Botón Wompi */}
                         {product.payment_link && (
                           <a
                             href={product.payment_link}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-gradient-to-r from-amber-500 to-amber-400 hover:from-amber-400 hover:to-amber-300 text-slate-950 font-black text-xs shadow-md shadow-amber-500/20 transition-all hover:scale-[1.02]"
+                            className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-gradient-to-r from-amber-500 to-amber-400 hover:from-amber-400 hover:to-amber-300 text-slate-950 font-black text-xs shadow-md shadow-amber-500/20 transition-all hover:scale-[1.02]"
                           >
-                            <span>💳 Pagar en Línea / Crédito</span>
+                            <span>💳 Pagar con Wompi (PSE / Tarjeta)</span>
                           </a>
                         )}
 
+                        {/* Botón Sistecrédito / Addi */}
+                        {product.payment_link_credit && (
+                          <a
+                            href={product.payment_link_credit}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white font-black text-xs shadow-md shadow-sky-500/20 transition-all hover:scale-[1.02]"
+                          >
+                            <span>⚡ Financiar a Cuotas (Sistecrédito / Addi)</span>
+                          </a>
+                        )}
+
+                        {/* Botón WhatsApp */}
                         <a
                           href={`https://wa.me/${whatsappPhone}?text=${waMessage}`}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className={`w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl ${
-                            product.payment_link 
-                              ? "bg-slate-900 hover:bg-emerald-500 text-slate-200 hover:text-slate-950 border border-slate-700 hover:border-emerald-400" 
-                              : "bg-slate-900/90 hover:bg-emerald-500 text-slate-200 hover:text-slate-950 border border-slate-700 hover:border-emerald-400"
-                          } font-bold text-xs transition-all duration-200 shadow-sm group`}
+                          className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-slate-900 hover:bg-emerald-500 text-slate-200 hover:text-slate-950 border border-slate-700 hover:border-emerald-400 font-bold text-xs transition-all duration-200 shadow-sm group"
                         >
                           <i className="fa-brands fa-whatsapp text-base text-emerald-400 group-hover:text-slate-950"></i>
                           <span>Pedir por WhatsApp</span>
