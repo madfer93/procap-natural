@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { 
   Settings, 
   Bot, 
@@ -17,7 +17,13 @@ import {
   Wallet,
   Coins,
   Loader2,
-  ExternalLink
+  ExternalLink,
+  Video,
+  Upload,
+  Cloud,
+  Play,
+  Image as ImageIcon,
+  CheckCircle2
 } from "lucide-react";
 import { SiteSettingsData } from "@/app/api/settings/route";
 import { isSupabaseConfigured } from "@/lib/supabase";
@@ -35,13 +41,30 @@ export default function SettingsAdminPage() {
     sistecredito_url: "",
     addi_client_id: "",
     addi_widget_enabled: false,
-    addi_checkout_url: ""
+    addi_checkout_url: "",
+    hero_video_url: "",
+    hero_video_poster: "",
+    hero_video_title: "Sistema Mixto Indetectable",
+    hero_video_badge: "Transformación Real",
+    cloudflare_r2_account_id: "",
+    cloudflare_r2_access_key_id: "",
+    cloudflare_r2_secret_access_key: "",
+    cloudflare_r2_bucket_name: "",
+    cloudflare_r2_public_url: "",
   });
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [savedSuccess, setSavedSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+
+  // Estados de subida
+  const [uploadingVideo, setUploadingVideo] = useState(false);
+  const [uploadingPoster, setUploadingPoster] = useState(false);
+  const [uploadSuccessMessage, setUploadSuccessMessage] = useState("");
+
+  const videoFileInputRef = useRef<HTMLInputElement | null>(null);
+  const posterFileInputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
     fetchSettings();
@@ -69,6 +92,50 @@ export default function SettingsAdminPage() {
     }));
   };
 
+  // Subir video directo a Cloudflare R2 vía /api/upload
+  const handleFileUpload = async (
+    file: File,
+    type: "video" | "poster"
+  ) => {
+    try {
+      if (type === "video") setUploadingVideo(true);
+      if (type === "poster") setUploadingPoster(true);
+      setUploadSuccessMessage("");
+      setErrorMessage("");
+
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("folder", type === "video" ? "hero-videos" : "hero-posters");
+
+      const res = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await res.json();
+
+      if (!res.ok || !data.url) {
+        throw new Error(data.error || "Error al subir archivo");
+      }
+
+      if (type === "video") {
+        setSettings((prev) => ({ ...prev, hero_video_url: data.url }));
+        setUploadSuccessMessage(`¡Video subido a ${data.provider === "cloudflare_r2" ? "Cloudflare R2" : data.provider}!`);
+      } else {
+        setSettings((prev) => ({ ...prev, hero_video_poster: data.url }));
+        setUploadSuccessMessage(`¡Póster subido a ${data.provider === "cloudflare_r2" ? "Cloudflare R2" : data.provider}!`);
+      }
+
+      setTimeout(() => setUploadSuccessMessage(""), 5000);
+    } catch (err: any) {
+      console.error("Error al subir archivo:", err);
+      setErrorMessage(`Error al subir ${type}: ${err.message || err}`);
+    } finally {
+      if (type === "video") setUploadingVideo(false);
+      if (type === "poster") setUploadingPoster(false);
+    }
+  };
+
   const handleSaveSettings = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
@@ -92,6 +159,7 @@ export default function SettingsAdminPage() {
       if (settings.whatsapp_number) localStorage.setItem("procap_whatsapp_number", settings.whatsapp_number);
       if (settings.admin_pin) localStorage.setItem("procap_admin_custom_pin", settings.admin_pin);
       if (settings.address) localStorage.setItem("procap_address", settings.address);
+      if (settings.hero_video_url) localStorage.setItem("procap_hero_video_url", settings.hero_video_url);
 
       setSavedSuccess(true);
       setTimeout(() => setSavedSuccess(false), 4000);
@@ -102,56 +170,338 @@ export default function SettingsAdminPage() {
     }
   };
 
-  const supabaseReady = isSupabaseConfigured();
-
-  if (loading) {
-    return (
-      <div className="py-20 flex flex-col items-center justify-center text-amber-400 gap-3">
-        <Loader2 className="animate-spin" size={32} />
-        <span className="text-xs text-slate-400">Cargando configuración desde Supabase...</span>
-      </div>
-    );
-  }
-
   return (
-    <div className="space-y-8 max-w-4xl pb-16">
+    <div className="space-y-8 max-w-5xl mx-auto pb-16">
       
       {/* Header */}
-      <div className="pb-6 border-b border-slate-800">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl sm:text-3xl font-black font-heading text-white">
-              Ajustes del Sistema & Pasarelas
-            </h1>
-            <p className="text-xs sm:text-sm text-slate-400 mt-1">
-              Configura tus credenciales de Wompi, Sistecrédito, Addi, Groq IA y WhatsApp conectadas a Supabase.
-            </p>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-6">
+        <div className="space-y-1">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs font-bold">
+            <Settings size={13} />
+            <span>Centro de Configuración Global</span>
           </div>
+          <h1 className="text-2xl sm:text-3xl font-black text-white font-heading tracking-tight">
+            Ajustes del Sistema & Video Hero
+          </h1>
+          <p className="text-xs sm:text-sm text-slate-400">
+            Gestiona el video de presentación principal, Cloudflare R2, pasarelas de pago colombianas, Groq AI y credenciales.
+          </p>
+        </div>
 
-          <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-900 border border-slate-800 text-xs text-slate-300">
-            <Database size={14} className={supabaseReady ? "text-emerald-400" : "text-amber-400"} />
-            <span>{supabaseReady ? "Supabase Cloud Conectado" : "Almacenamiento Local"}</span>
-          </div>
+        <div className="flex items-center gap-3">
+          <span className={`px-3 py-1 rounded-full text-xs font-bold border flex items-center gap-1.5 ${
+            isSupabaseConfigured() 
+              ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400" 
+              : "bg-amber-500/10 border-amber-500/30 text-amber-400"
+          }`}>
+            <Database size={13} />
+            <span>{isSupabaseConfigured() ? "Supabase Conectado" : "Modo Local"}</span>
+          </span>
         </div>
       </div>
 
+      {/* Alerta de éxito o error */}
       {savedSuccess && (
-        <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/40 text-emerald-300 text-xs font-bold flex items-center gap-2 animate-in fade-in duration-300">
-          <Check size={16} />
-          <span>¡Ajustes guardados correctamente en Supabase y aplicados a la tienda!</span>
+        <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs flex items-center gap-3 animate-fade-in">
+          <CheckCircle2 size={18} className="shrink-0" />
+          <span><strong>¡Configuración guardada exitosamente!</strong> Todos los cambios ya están activos en la plataforma.</span>
+        </div>
+      )}
+
+      {uploadSuccessMessage && (
+        <div className="p-4 rounded-xl bg-sky-500/10 border border-sky-500/30 text-sky-400 text-xs flex items-center gap-3 animate-fade-in">
+          <Sparkles size={18} className="shrink-0" />
+          <span>{uploadSuccessMessage}</span>
         </div>
       )}
 
       {errorMessage && (
-        <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/40 text-red-300 text-xs font-bold">
-          {errorMessage}
+        <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs flex items-center gap-3 animate-fade-in">
+          <ShieldCheck size={18} className="shrink-0" />
+          <span>{errorMessage}</span>
         </div>
       )}
 
       <form onSubmit={handleSaveSettings} className="space-y-8">
         
         {/* ======================================================== */}
-        {/* SECCIÓN 1: PASARELAS DE PAGO Y CRÉDITOS EN COLOMBIA       */}
+        {/* SECCIÓN 1: VIDEO DE PRESENTACIÓN HERO (CLOUDFLARE R2)    */}
+        {/* ======================================================== */}
+        <div className="p-6 rounded-2xl bg-slate-950 border border-sky-500/40 space-y-6 shadow-xl relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-sky-500/5 rounded-full blur-3xl pointer-events-none" />
+
+          <div className="flex items-center justify-between border-b border-slate-800 pb-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-sky-500/10 text-sky-400 flex items-center justify-center border border-sky-500/20">
+                <Video size={20} />
+              </div>
+              <div>
+                <h3 className="text-base font-bold text-white">Video de Presentación del Hero (Página de Inicio)</h3>
+                <p className="text-xs text-slate-400">Reemplaza el cuadro de la portada por un video HD alojado en Cloudflare R2</p>
+              </div>
+            </div>
+            <span className="text-[10px] px-2.5 py-1 rounded bg-sky-500/10 text-sky-300 border border-sky-500/30 font-bold flex items-center gap-1">
+              <Cloud size={12} /> Cloudflare R2
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+            {/* Previsualizador en vivo del Video */}
+            <div className="lg:col-span-5 space-y-3">
+              <span className="text-xs font-bold text-slate-300 block">Vista Previa en Vivo</span>
+              <div className="aspect-[4/3] rounded-2xl bg-slate-900 border border-slate-800 relative overflow-hidden flex items-center justify-center shadow-lg">
+                {settings.hero_video_url ? (
+                  <video
+                    src={settings.hero_video_url}
+                    poster={settings.hero_video_poster}
+                    controls
+                    playsInline
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="flex flex-col items-center text-center p-6 text-slate-500 space-y-2">
+                    <Video size={40} className="text-slate-600 animate-pulse" />
+                    <span className="text-xs font-semibold text-slate-400">Sin video configurado aún</span>
+                    <span className="text-[11px] text-slate-500">Sube un video MP4/WebM o pega una URL directa abajo.</span>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Controles de Carga y Configuración */}
+            <div className="lg:col-span-7 space-y-4">
+              
+              {/* Botón de Carga de Archivo de Video */}
+              <div className="p-4 rounded-xl bg-slate-900/80 border border-slate-800 space-y-3">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <span className="text-xs font-bold text-white block">Subir Archivo de Video</span>
+                    <span className="text-[11px] text-slate-400">Formatos soportados: MP4, WebM (hasta 100MB)</span>
+                  </div>
+                  
+                  <input
+                    type="file"
+                    ref={videoFileInputRef}
+                    accept="video/mp4,video/webm,video/quicktime"
+                    className="hidden"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) handleFileUpload(file, "video");
+                    }}
+                  />
+
+                  <button
+                    type="button"
+                    disabled={uploadingVideo}
+                    onClick={() => videoFileInputRef.current?.click()}
+                    className="px-4 py-2 rounded-xl bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold text-xs flex items-center gap-2 transition-all shadow-md shadow-sky-500/20 disabled:opacity-50"
+                  >
+                    {uploadingVideo ? (
+                      <>
+                        <Loader2 size={14} className="animate-spin" />
+                        <span>Subiendo a R2...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Upload size={14} />
+                        <span>Subir Video a Cloudflare</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1">
+                    URL del Video (Cloudflare R2 o Externa)
+                  </label>
+                  <input
+                    type="url"
+                    value={settings.hero_video_url || ""}
+                    onChange={(e) => handleChange("hero_video_url", e.target.value)}
+                    placeholder="https://pub-xxxx.r2.dev/hero-videos/procap-video.mp4"
+                    className="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-sky-400 font-mono"
+                  />
+                </div>
+              </div>
+
+              {/* Botón de Carga de Póster / Miniatura */}
+              <div className="p-4 rounded-xl bg-slate-900/80 border border-slate-800 space-y-3">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <span className="text-xs font-bold text-white block">Imagen de Portada (Póster)</span>
+                    <span className="text-[11px] text-slate-400">Imagen mostrada antes de reproducir el video</span>
+                  </div>
+
+                  <input
+                    type="file"
+                    ref={posterFileInputRef}
+                    accept="image/jpeg,image/png,image/webp"
+                    className="hidden"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) handleFileUpload(file, "poster");
+                    }}
+                  />
+
+                  <button
+                    type="button"
+                    disabled={uploadingPoster}
+                    onClick={() => posterFileInputRef.current?.click()}
+                    className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs flex items-center gap-2 border border-slate-700 transition-all disabled:opacity-50"
+                  >
+                    {uploadingPoster ? (
+                      <>
+                        <Loader2 size={14} className="animate-spin" />
+                        <span>Subiendo...</span>
+                      </>
+                    ) : (
+                      <>
+                        <ImageIcon size={14} className="text-sky-400" />
+                        <span>Subir Póster</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+
+                <div>
+                  <input
+                    type="url"
+                    value={settings.hero_video_poster || ""}
+                    onChange={(e) => handleChange("hero_video_poster", e.target.value)}
+                    placeholder="https://pub-xxxx.r2.dev/hero-posters/poster.jpg"
+                    className="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-sky-400 font-mono"
+                  />
+                </div>
+              </div>
+
+              {/* Textos del Video */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1">
+                    Título sobre el Video
+                  </label>
+                  <input
+                    type="text"
+                    value={settings.hero_video_title || ""}
+                    onChange={(e) => handleChange("hero_video_title", e.target.value)}
+                    placeholder="Sistema Mixto Indetectable"
+                    className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2 text-xs text-white focus:outline-none focus:border-sky-400"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1">
+                    Texto del Badge Superior
+                  </label>
+                  <input
+                    type="text"
+                    value={settings.hero_video_badge || ""}
+                    onChange={(e) => handleChange("hero_video_badge", e.target.value)}
+                    placeholder="Transformación Real"
+                    className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2 text-xs text-white focus:outline-none focus:border-sky-400"
+                  />
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        {/* ======================================================== */}
+        {/* SECCIÓN 2: CREDENCIALES CLOUDFLARE R2 STORAGE             */}
+        {/* ======================================================== */}
+        <div className="p-6 rounded-2xl bg-slate-950 border border-slate-800 space-y-4">
+          <div className="flex items-center justify-between border-b border-slate-800 pb-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-orange-500/10 text-orange-400 flex items-center justify-center">
+                <Cloud size={20} />
+              </div>
+              <div>
+                <h3 className="text-base font-bold text-white">Credenciales Cloudflare R2 (Object Storage)</h3>
+                <p className="text-xs text-slate-400">Almacenamiento ultra rápido de videos e imágenes sin límite de cuota</p>
+              </div>
+            </div>
+            <a
+              href="https://dash.cloudflare.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-xs text-sky-400 hover:underline flex items-center gap-1"
+            >
+              <span>Consola Cloudflare</span>
+              <ExternalLink size={12} />
+            </a>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
+                Cloudflare Account ID
+              </label>
+              <input
+                type="text"
+                value={settings.cloudflare_r2_account_id || ""}
+                onChange={(e) => handleChange("cloudflare_r2_account_id", e.target.value)}
+                placeholder="ej: a1b2c3d4e5f6..."
+                className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-sky-400 font-mono"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
+                R2 Bucket Name
+              </label>
+              <input
+                type="text"
+                value={settings.cloudflare_r2_bucket_name || ""}
+                onChange={(e) => handleChange("cloudflare_r2_bucket_name", e.target.value)}
+                placeholder="procap-natural"
+                className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-sky-400 font-mono"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
+                R2 Access Key ID
+              </label>
+              <input
+                type="text"
+                value={settings.cloudflare_r2_access_key_id || ""}
+                onChange={(e) => handleChange("cloudflare_r2_access_key_id", e.target.value)}
+                placeholder="Access Key ID de Cloudflare"
+                className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-sky-400 font-mono"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
+                R2 Secret Access Key
+              </label>
+              <input
+                type="password"
+                value={settings.cloudflare_r2_secret_access_key || ""}
+                onChange={(e) => handleChange("cloudflare_r2_secret_access_key", e.target.value)}
+                placeholder="Secret Access Key"
+                className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-sky-400 font-mono"
+              />
+            </div>
+
+            <div className="sm:col-span-2">
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
+                Dominio Público R2 (R2.dev o Subdominio Personalizado)
+              </label>
+              <input
+                type="url"
+                value={settings.cloudflare_r2_public_url || ""}
+                onChange={(e) => handleChange("cloudflare_r2_public_url", e.target.value)}
+                placeholder="https://pub-xxxxxxxx.r2.dev o https://media.protesiscapilarcolombia.com"
+                className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-sky-400 font-mono"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* ======================================================== */}
+        {/* SECCIÓN 3: PASARELAS DE PAGO Y CRÉDITOS EN COLOMBIA       */}
         {/* ======================================================== */}
         <div className="p-6 rounded-2xl bg-slate-950 border border-amber-500/30 space-y-6">
           <div className="flex items-center justify-between border-b border-slate-800 pb-4">
@@ -250,26 +600,26 @@ export default function SettingsAdminPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
-                  ID de Comercio / Merchant ID Sistecrédito
+                  Merchant ID / Código Comercio Sistecrédito
                 </label>
                 <input
                   type="text"
                   value={settings.sistecredito_merchant_id || ""}
                   onChange={(e) => handleChange("sistecredito_merchant_id", e.target.value)}
-                  placeholder="Ej: SC-PROCAP-9664"
-                  className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-amber-400"
+                  placeholder="Ej: 901234567"
+                  className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-amber-400 font-mono"
                 />
               </div>
 
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
-                  URL / Enlace Directo de Cobro Sistecrédito
+                  URL Enlace General Sistecrédito
                 </label>
                 <input
                   type="url"
                   value={settings.sistecredito_url || ""}
                   onChange={(e) => handleChange("sistecredito_url", e.target.value)}
-                  placeholder="https://credito.sistecredito.com/tienda/procap"
+                  placeholder="https://credito.sistecredito.com/procap-natural"
                   className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-amber-400"
                 />
               </div>
@@ -280,16 +630,16 @@ export default function SettingsAdminPage() {
           <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800 space-y-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2 font-bold text-sm text-white">
-                <span className="w-2 h-2 rounded-full bg-pink-400"></span>
-                <span>Addi (Compra a Cuotas con Cédula y WhatsApp)</span>
+                <span className="w-2 h-2 rounded-full bg-amber-400"></span>
+                <span>Addi (Compra Ahora, Paga Después a Cuotas)</span>
               </div>
               <a
                 href="https://co.addi.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-[11px] text-pink-400 hover:underline flex items-center gap-1"
+                className="text-[11px] text-amber-400 hover:underline flex items-center gap-1"
               >
-                <span>Comercios Addi</span>
+                <span>Portal Aliados Addi</span>
                 <ExternalLink size={10} />
               </a>
             </div>
@@ -297,26 +647,26 @@ export default function SettingsAdminPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
-                  Client ID / ID de Comercio Addi
+                  Client ID / Aliado Addi
                 </label>
                 <input
                   type="text"
                   value={settings.addi_client_id || ""}
                   onChange={(e) => handleChange("addi_client_id", e.target.value)}
-                  placeholder="addi_procap_natural_bogota"
-                  className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-amber-400"
+                  placeholder="addi-procap-bogota"
+                  className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-amber-400 font-mono"
                 />
               </div>
 
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
-                  URL / Link Directo de Pago Addi
+                  URL Enlace General Addi
                 </label>
                 <input
                   type="url"
                   value={settings.addi_checkout_url || ""}
                   onChange={(e) => handleChange("addi_checkout_url", e.target.value)}
-                  placeholder="https://checkout.addi.com/procap-natural"
+                  placeholder="https://co.addi.com/solicitar/procap"
                   className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-amber-400"
                 />
               </div>
@@ -325,16 +675,16 @@ export default function SettingsAdminPage() {
         </div>
 
         {/* ======================================================== */}
-        {/* SECCIÓN 2: ASISTENTE DE INTELIGENCIA ARTIFICIAL (GROQ)    */}
+        {/* SECCIÓN 4: INTELIGENCIA ARTIFICIAL (GROQ CLOUD)          */}
         {/* ======================================================== */}
         <div className="p-6 rounded-2xl bg-slate-950 border border-slate-800 space-y-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-sky-500/10 text-sky-400 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-xl bg-purple-500/10 text-purple-400 flex items-center justify-center">
               <Bot size={20} />
             </div>
             <div>
-              <h3 className="text-base font-bold text-white">Asistente Virtual (Groq AI)</h3>
-              <p className="text-xs text-slate-400">Modelo ultra-rápido Llama 3.3 70B para atención al cliente</p>
+              <h3 className="text-base font-bold text-white">Inteligencia Artificial (CapilarBot)</h3>
+              <p className="text-xs text-slate-400">Motor de procesamiento de lenguaje natural y cotización</p>
             </div>
           </div>
 
@@ -356,7 +706,7 @@ export default function SettingsAdminPage() {
         </div>
 
         {/* ======================================================== */}
-        {/* SECCIÓN 3: CANALES COMERCIALES & CONTACTO                 */}
+        {/* SECCIÓN 5: CANALES COMERCIALES & CONTACTO                 */}
         {/* ======================================================== */}
         <div className="p-6 rounded-2xl bg-slate-950 border border-slate-800 space-y-4">
           <div className="flex items-center gap-3">
@@ -400,7 +750,7 @@ export default function SettingsAdminPage() {
         </div>
 
         {/* ======================================================== */}
-        {/* SECCIÓN 4: SEGURIDAD DEL PANEL ADMIN                      */}
+        {/* SECCIÓN 6: SEGURIDAD DEL PANEL ADMIN                      */}
         {/* ======================================================== */}
         <div className="p-6 rounded-2xl bg-slate-950 border border-slate-800 space-y-4">
           <div className="flex items-center gap-3">

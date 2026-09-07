@@ -17,6 +17,17 @@ export interface SiteSettingsData {
   addi_client_id?: string;
   addi_widget_enabled?: boolean;
   addi_checkout_url?: string;
+  // Video de Presentación Hero
+  hero_video_url?: string;
+  hero_video_poster?: string;
+  hero_video_title?: string;
+  hero_video_badge?: string;
+  // Cloudflare R2 Storage
+  cloudflare_r2_account_id?: string;
+  cloudflare_r2_access_key_id?: string;
+  cloudflare_r2_secret_access_key?: string;
+  cloudflare_r2_bucket_name?: string;
+  cloudflare_r2_public_url?: string;
 }
 
 export async function GET(req: NextRequest) {

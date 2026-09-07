@@ -117,45 +117,38 @@ export default function ProductsAdminPage() {
   };
 
   // Subir imagen a Supabase Storage (Bucket 'products')
+  // Subir imagen/video a Cloudflare R2 (vía /api/upload)
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (!isSupabaseConfigured()) {
-      showNotification("Supabase no configurado; usa una URL externa o configura .env.local", "error");
-      return;
-    }
-
     try {
       setUploadingImage(true);
-      const fileExt = file.name.split(".").pop();
-      const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
-      const filePath = `items/${fileName}`;
+      const formDataUpload = new FormData();
+      formDataUpload.append("file", file);
+      formDataUpload.append("folder", "products");
 
-      const { error: uploadError } = await supabase.storage
-        .from("products")
-        .upload(filePath, file, {
-          cacheControl: "3600",
-          upsert: true
-        });
+      const res = await fetch("/api/upload", {
+        method: "POST",
+        body: formDataUpload,
+      });
 
-      if (uploadError) {
-        throw uploadError;
+      const data = await res.json();
+
+      if (!res.ok || !data.url) {
+        throw new Error(data.error || "Error al subir archivo");
       }
-
-      const { data: publicUrlData } = supabase.storage
-        .from("products")
-        .getPublicUrl(filePath);
 
       setFormData((prev) => ({
         ...prev,
-        image_url: publicUrlData.publicUrl
+        image_url: data.url,
       }));
 
-      showNotification("¡Imagen subida exitosamente al Storage de Supabase!");
+      const providerName = data.provider === "cloudflare_r2" ? "Cloudflare R2" : data.provider;
+      showNotification(`¡Archivo subido exitosamente a ${providerName}!`);
     } catch (err: any) {
-      console.error("Error al subir imagen:", err);
-      showNotification(`Error al subir imagen: ${err.message || err}`, "error");
+      console.error("Error al subir archivo:", err);
+      showNotification(`Error al subir archivo: ${err.message || err}`, "error");
     } finally {
       setUploadingImage(false);
     }

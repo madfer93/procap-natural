@@ -7,6 +7,7 @@ import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { SedeVideoPlayer } from "@/components/SedeVideoPlayer";
 import { TransformacionesReels } from "@/components/TransformacionesReels";
+import { HeroVideoPlayer } from "@/components/HeroVideoPlayer";
 import { 
   Sparkles, 
   MapPin, 
@@ -156,81 +157,9 @@ export default function HomePage() {
 
               </div>
 
-              {/* Right Visual Card */}
-              <div className="lg:col-span-5 relative">
-                <div className="relative mx-auto max-w-md">
-                  
-                  <div className="absolute -inset-1 rounded-3xl bg-gradient-to-r from-sky-500 via-blue-600 to-sky-400 opacity-30 blur-xl"></div>
-
-                  <div className="relative glass-panel rounded-3xl p-6 border border-sky-400/30 overflow-hidden shadow-2xl">
-                    
-                    <div className="flex items-center justify-between mb-4">
-                      <span className="text-xs font-bold px-3 py-1 rounded-lg bg-sky-500/20 text-sky-300 border border-sky-400/30 flex items-center gap-1.5">
-                        <Sparkles size={14} /> Transformación Real
-                      </span>
-                      <span className="text-xs text-slate-400">Atención en Salón VIP</span>
-                    </div>
-
-                    <div className="aspect-[4/3] rounded-2xl bg-gradient-to-br from-slate-900 to-slate-950 border border-slate-800 p-4 flex flex-col justify-between relative overflow-hidden">
-                      <div className="flex justify-between items-start z-10">
-                        <div className="space-y-1">
-                          <span className="text-[10px] font-bold uppercase tracking-wider text-sky-400">Gama Profesional</span>
-                          <h3 className="text-lg font-bold text-white">Sistema Mixto Indetectable</h3>
-                        </div>
-                        <span className="px-2.5 py-1 rounded-md bg-emerald-500/20 text-emerald-300 text-xs font-bold">100% Invisible</span>
-                      </div>
-
-                      <div className="my-4 flex items-center justify-center">
-                        <div className="w-20 h-20 rounded-full bg-sky-500/10 border-2 border-sky-400 flex items-center justify-center text-sky-400 text-3xl shadow-lg shadow-sky-500/20">
-                          <Crown size={36} />
-                        </div>
-                      </div>
-
-                      <div className="flex items-center justify-between text-xs text-slate-300 bg-slate-900/80 p-3 rounded-xl border border-slate-800 z-10">
-                        <div className="flex items-center gap-2">
-                          <Waves size={14} className="text-cyan-400" />
-                          <span>Piscina y Deporte</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <Wind size={14} className="text-sky-400" />
-                          <span>Transpirable</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="mt-4 space-y-2.5">
-                      <div className="flex items-center gap-3 text-xs text-slate-300">
-                        <CheckCircle2 size={16} className="text-emerald-400 shrink-0" />
-                        <span>Adaptación anatómica a la medida exacta de tu cabeza</span>
-                      </div>
-                      <div className="flex items-center gap-3 text-xs text-slate-300">
-                        <CheckCircle2 size={16} className="text-emerald-400 shrink-0" />
-                        <span>Corte y desvanecido moderno según tu fisionomía</span>
-                      </div>
-                      <div className="flex items-center gap-3 text-xs text-slate-300">
-                        <CheckCircle2 size={16} className="text-emerald-400 shrink-0" />
-                        <span>Fijación segura de 2 a 4 semanas continuas</span>
-                      </div>
-                    </div>
-
-                    <div className="pt-4 flex gap-2">
-                      <Link
-                        href="/cotizador"
-                        className="flex-1 py-3 rounded-xl bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold text-xs flex items-center justify-center gap-2 transition-all"
-                      >
-                        <span>Cotizar Mi Prótesis</span>
-                        <ArrowRight size={14} />
-                      </Link>
-                      <Link
-                        href="/beneficios"
-                        className="px-4 py-3 rounded-xl glass-panel hover:bg-white/10 text-white font-bold text-xs border border-slate-700"
-                      >
-                        Beneficios
-                      </Link>
-                    </div>
-
-                  </div>
-                </div>
+              {/* Right Visual Card - Video de Presentación Cloudflare R2 */}
+              <div className="lg:col-span-5 relative flex justify-center">
+                <HeroVideoPlayer />
               </div>
 
             </div>
