@@ -25,7 +25,6 @@ import {
 } from "lucide-react";
 import { formatPriceCOP } from "@/lib/products-store";
 import { StoreExpense, SEDE_LABELS } from "@/lib/staff-store";
-import { AdminNav } from "@/components/admin/AdminNav";
 
 export default function AdminContabilidadPage() {
   const [selectedSede, setSelectedSede] = useState<string>("all");
@@ -127,13 +126,9 @@ export default function AdminContabilidadPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col lg:flex-row">
-      <AdminNav />
-
-      <main className="flex-1 p-4 lg:p-8 overflow-y-auto space-y-8">
-        
-        {/* Top Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-800">
+    <div className="space-y-8">
+      {/* Top Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-800">
           <div>
             <div className="flex items-center gap-2">
               <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 uppercase tracking-wider">
@@ -506,8 +501,6 @@ export default function AdminContabilidadPage() {
           </div>
 
         </div>
-
-      </main>
     </div>
   );
 }

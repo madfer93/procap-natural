@@ -31,7 +31,6 @@ import {
 } from "lucide-react";
 import { Product, formatPriceCOP } from "@/lib/products-store";
 import { StaffSeller, PosCashShift, PosSale, SEDE_LABELS } from "@/lib/staff-store";
-import { AdminNav } from "@/components/admin/AdminNav";
 
 export default function PosTerminalPage() {
   // Estado de Autenticación de la Terminal POS
@@ -341,11 +340,8 @@ export default function PosTerminalPage() {
   });
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col lg:flex-row font-sans select-none">
-      <AdminNav />
-
-      <main className="flex-1 flex flex-col h-screen overflow-hidden">
-        {/* Toast Notificación */}
+    <div className="flex flex-col h-[calc(100vh-4rem)] overflow-hidden font-sans select-none -m-4 sm:-m-8 lg:-m-10">
+      {/* Toast Notificación */}
         {toastMessage && (
           <div className="fixed top-5 right-5 z-50 bg-emerald-500 text-slate-950 px-5 py-3 rounded-2xl font-bold shadow-2xl flex items-center gap-2 animate-bounce">
             <CheckCircle2 size={18} />
@@ -1066,7 +1062,6 @@ export default function PosTerminalPage() {
           </div>
         )}
 
-      </main>
     </div>
   );
 }
