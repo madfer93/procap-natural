@@ -67,6 +67,7 @@ export default function SettingsAdminPage() {
 
   // Estado prueba de correo
   const [testingEmail, setTestingEmail] = useState(false);
+  const [testEmailRecipient, setTestEmailRecipient] = useState("admin@jymtechsolutions.online");
   const [testEmailResult, setTestEmailResult] = useState<{ success?: boolean; message?: string } | null>(null);
 
   const videoFileInputRef = useRef<HTMLInputElement | null>(null);
@@ -79,13 +80,13 @@ export default function SettingsAdminPage() {
       const res = await fetch("/api/admin/test-email", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ to: "admin@protesiscapilarcolombia.com" }),
+        body: JSON.stringify({ to: testEmailRecipient.trim() || "admin@jymtechsolutions.online" }),
       });
       const data = await res.json();
       if (data.success) {
         setTestEmailResult({
           success: true,
-          message: `¡Correo de prueba enviado con éxito a ${data.sentTo}! Revisa tu bandeja de entrada en Namecheap Private Email.`,
+          message: `¡Correo de prueba enviado con éxito a ${data.sentTo}! Revisa tu bandeja de entrada o spam.`,
         });
       } else {
         setTestEmailResult({
@@ -821,21 +822,30 @@ export default function SettingsAdminPage() {
               </div>
             </div>
 
-            <div className="pt-2 border-t border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-              <div className="text-[11px] text-slate-400">
-                Las credenciales se conectan mediante las variables de entorno <code className="text-sky-300">SMTP_USER</code> y <code className="text-sky-300">SMTP_PASS</code> en Vercel.
+            <div className="pt-3 border-t border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div className="flex-1 max-w-sm">
+                <label className="block text-[11px] font-bold text-slate-400 mb-1">
+                  Enviar Correo de Prueba a:
+                </label>
+                <input
+                  type="email"
+                  value={testEmailRecipient}
+                  onChange={(e) => setTestEmailRecipient(e.target.value)}
+                  placeholder="admin@jymtechsolutions.online"
+                  className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-sky-400 font-mono"
+                />
               </div>
 
               <button
                 type="button"
                 disabled={testingEmail}
                 onClick={handleTestEmail}
-                className="px-4 py-2 rounded-xl bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold text-xs flex items-center gap-2 transition-all shadow-md shadow-sky-500/20 disabled:opacity-50 shrink-0"
+                className="self-end sm:self-auto px-5 py-2.5 rounded-xl bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold text-xs flex items-center gap-2 transition-all shadow-md shadow-sky-500/20 disabled:opacity-50 shrink-0 mt-4 sm:mt-0"
               >
                 {testingEmail ? (
                   <>
                     <Loader2 size={14} className="animate-spin" />
-                    <span>Probando conexión...</span>
+                    <span>Enviando prueba...</span>
                   </>
                 ) : (
                   <>
