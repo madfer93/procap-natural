@@ -68,7 +68,7 @@ export default function CotizadorPage() {
       `⚪ *Canas:* ${hasCanas}\n` +
       `📍 *Ubicación / Ciudad:* ${city}\n` +
       `📝 *Detalles Adicionales:* ${notes || "Ninguno"}\n\n` +
-      `¿Podrían confirmarme precios finales y agenda para valoración en Chicó Norte o envío? Gracias.`;
+      `¿Podrían confirmarme precios finales y agenda para valoración en sede (Bogotá, Cali, Neiva, Barranquilla) o envío nacional? Gracias.`;
 
     window.open(`https://wa.me/${whatsappPhone}?text=${encodeURIComponent(message)}`, "_blank");
   };

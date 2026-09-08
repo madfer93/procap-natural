@@ -101,7 +101,7 @@ export default function HomePage() {
                 {/* Badge */}
                 <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full glass-panel border-sky-400/40 text-sky-300 text-xs sm:text-sm font-semibold shadow-inner">
                   <span className="w-2 h-2 rounded-full bg-sky-400 animate-ping"></span>
-                  <span>Especialistas en Prótesis Capilares Indetectables • Bogotá</span>
+                  <span>4 Sedes Oficiales • Bogotá • Cali • Neiva • Barranquilla</span>
                 </div>
 
                 {/* Main Title */}
@@ -111,7 +111,7 @@ export default function HomePage() {
 
                 {/* Description */}
                 <p className="text-slate-300 text-base sm:text-lg leading-relaxed max-w-2xl mx-auto lg:mx-0">
-                  Sistemas capilares de <strong>cabello 100% natural humano</strong> de última generación. Malla ultra fina transpirable, resistentes al agua, sudor, gimnasio y vida diaria en Bogotá.
+                  Sistemas capilares de <strong>cabello 100% natural humano</strong> de última generación. Malla ultra fina transpirable, resistentes al agua, sudor y gimnasio con atención en 4 sedes y envíos asegurados a toda Colombia.
                 </p>
 
                 {/* Action Buttons */}
@@ -550,13 +550,13 @@ export default function HomePage() {
             <div className="text-center max-w-3xl mx-auto mb-12">
               <span className="text-xs font-bold uppercase tracking-widest text-sky-400 inline-flex items-center gap-1.5 px-3 py-1 rounded-full glass-panel mb-3">
                 <MapPin size={13} />
-                <span>Sede Chicó Norte • Bogotá D.C.</span>
+                <span>4 Sedes en Colombia: Bogotá • Cali • Neiva • Barranquilla</span>
               </span>
               <h2 className="text-2xl sm:text-4xl font-black font-heading text-white">
-                Atención Privada & Discreta en <span className="text-cyan-gradient">Bogotá</span>
+                Atención Privada & Discreta en <span className="text-cyan-gradient">Nuestras 4 Sedes</span>
               </h2>
               <p className="text-slate-300 text-sm sm:text-base mt-3 leading-relaxed">
-                Carrera 16 #96-64, Barrio Chicó Norte. Cabinas individuales climatizadas para tu confort y privacidad total.
+                Bogotá (Chicó Norte), Cali (El Ingenio 3), Neiva (Canaima) y Barranquilla (Centro Histórico). Cabinas individuales climatizadas para tu confort y privacidad total.
               </p>
             </div>
 
@@ -571,18 +571,18 @@ export default function HomePage() {
               <div className="lg:col-span-5 glass-panel rounded-3xl p-6 sm:p-8 border border-white/10 space-y-5">
                 <h3 className="text-lg font-bold text-white">¿Listo para dar el paso?</h3>
                 <p className="text-slate-300 text-xs sm:text-sm leading-relaxed">
-                  Te atendemos en cabina privada e individual con cita previa para garantizarte privacidad absoluta.
+                  Te atendemos en cabina privada e individual con cita previa en cualquiera de nuestras 4 sedes o en nuestras giras nacionales.
                 </p>
 
                 <div className="space-y-3 pt-2">
                   <a
-                    href={`https://wa.me/${whatsappPhone}?text=¡Hola%20Procap%20Natural!%20👋%20Deseo%20agendar%20una%20cita%20o%20valoración%20en%20Chicó%20Norte.`}
+                    href={`https://wa.me/${whatsappPhone}?text=¡Hola%20Procap%20Natural!%20👋%20Deseo%20agendar%20una%20cita%20o%20valoración%20en%20sede.`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="w-full py-3.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 transition-all hover:scale-[1.02]"
                   >
                     <i className="fa-brands fa-whatsapp text-lg"></i>
-                    <span>Agendar Cita en Chicó Norte</span>
+                    <span>Agendar Cita en Cabina Privada</span>
                   </a>
 
                   <div className="flex gap-2">

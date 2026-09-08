@@ -19,17 +19,27 @@ export function Footer() {
               </span>
             </Link>
             <p className="text-slate-400 text-xs leading-relaxed max-w-sm">
-              Especialistas en la adaptación, instalación y mantenimiento de prótesis capilares masculinas indetectables de cabello humano en Bogotá y Cali. Sede en Barrio Chicó Norte.
+              Especialistas en la adaptación, instalación y mantenimiento de prótesis capilares masculinas indetectables de cabello 100% humano en <strong>Bogotá</strong>, <strong>Cali</strong>, <strong>Neiva</strong> y <strong>Barranquilla</strong>.
             </p>
             <div className="pt-2 flex flex-wrap gap-2 text-xs">
               <a
-                href="https://maps.google.com/?q=Calle+16+%2383a-15,+Bogot%C3%A1"
+                href="https://maps.google.com/?q=Cra.+16+%2396-64,+Bogot%C3%A1"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900/90 hover:bg-sky-500/20 text-slate-300 hover:text-sky-300 border border-slate-800 hover:border-sky-500/40 transition-all font-medium text-[11px] group"
               >
                 <i className="fa-solid fa-location-dot text-sky-400 group-hover:scale-110 transition-transform"></i>
-                <span>Carrera 16 #96-64, Chicó Norte (Bogotá)</span>
+                <span>Cra 16 #96-64 (Bogotá)</span>
+              </a>
+
+              <a
+                href="https://maps.google.com/?q=Calle+16+%2383A-15,+Cali"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900/90 hover:bg-amber-500/20 text-slate-300 hover:text-amber-300 border border-slate-800 hover:border-amber-500/40 transition-all font-medium text-[11px] group"
+              >
+                <i className="fa-solid fa-location-dot text-amber-400 group-hover:scale-110 transition-transform"></i>
+                <span>Cali • Neiva • Barranquilla</span>
               </a>
 
               <a
@@ -40,14 +50,6 @@ export function Footer() {
               >
                 <i className="fa-brands fa-whatsapp text-emerald-400 group-hover:scale-110 transition-transform"></i>
                 <span>+{whatsappPhone}</span>
-              </a>
-
-              <a
-                href="mailto:infprocap@gmail.com"
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900/90 hover:bg-amber-500/20 text-slate-300 hover:text-amber-300 border border-slate-800 hover:border-amber-500/40 transition-all font-medium text-[11px] group"
-              >
-                <i className="fa-solid fa-envelope text-amber-400 group-hover:scale-110 transition-transform"></i>
-                <span>infprocap@gmail.com</span>
               </a>
             </div>
           </div>
@@ -61,7 +63,7 @@ export function Footer() {
               <li><Link href="/catalogo" className="hover:text-sky-400 transition-colors">Catálogo de Productos</Link></li>
               <li><Link href="/cotizador" className="hover:text-sky-400 transition-colors">Cotizador Rápido</Link></li>
               <li><Link href="/eventos" className="hover:text-sky-400 transition-colors">Giras & Eventos</Link></li>
-              <li><Link href="/ubicacion" className="hover:text-sky-400 transition-colors">Sedes Bogotá & Cali</Link></li>
+              <li><Link href="/ubicacion" className="hover:text-sky-400 transition-colors">4 Sedes Colombia</Link></li>
               <li><Link href="/faqs" className="hover:text-sky-400 transition-colors">Preguntas Frecuentes</Link></li>
             </ul>
           </div>

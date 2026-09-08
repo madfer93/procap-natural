@@ -70,7 +70,7 @@ const TIME_SLOTS = [
 export default function AgendarPage() {
   const [step, setStep] = useState(1);
   const [events, setEvents] = useState<CapilarEvent[]>(INITIAL_EVENTS);
-  const [selectedLocationType, setSelectedLocationType] = useState<"bogota" | "gira">("bogota");
+  const [selectedLocationType, setSelectedLocationType] = useState<"bogota" | "cali" | "neiva" | "barranquilla" | "gira">("bogota");
   const [selectedEventId, setSelectedEventId] = useState<string>("");
   const [selectedService, setSelectedService] = useState<string>(SERVICES[0].id);
   const [selectedDate, setSelectedDate] = useState<string>("");
@@ -114,9 +114,16 @@ export default function AgendarPage() {
 
     setIsSubmitting(true);
     try {
-      const locationName = selectedLocationType === "bogota" 
-        ? "Sede Principal Bogotá (Calle 16 #83a-15)" 
-        : `Gira: ${events.find(ev => ev.id === selectedEventId)?.city || "Gira Nacional"}`;
+      let locationName = "Sede Principal Bogotá (Cra 16 #96-64, Chicó Norte)";
+      if (selectedLocationType === "cali") {
+        locationName = "Sede Cali (Calle 16 #83A-15, El Ingenio 3, Edif. María Mercedes Est. 402)";
+      } else if (selectedLocationType === "neiva") {
+        locationName = "Sede Neiva (Cra 22 #25C-12, Canaima)";
+      } else if (selectedLocationType === "barranquilla") {
+        locationName = "Sede Barranquilla (Calle 64 #46-69, Centro Histórico)";
+      } else if (selectedLocationType === "gira") {
+        locationName = `Gira: ${events.find(ev => ev.id === selectedEventId)?.city || "Gira Nacional"}`;
+      }
 
       const res = await fetch("/api/appointments", {
         method: "POST",
@@ -215,56 +222,140 @@ export default function AgendarPage() {
                     <p className="text-xs text-slate-400">Selecciona nuestra sede fija en Bogotá o una de nuestras fechas en gira nacional.</p>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                     {/* Sede Bogotá */}
                     <div 
                       onClick={() => {
                         setSelectedLocationType("bogota");
                         setSelectedEventId("");
                       }}
-                      className={`p-6 rounded-2xl cursor-pointer border transition-all ${
+                      className={`p-5 rounded-2xl cursor-pointer border transition-all ${
                         selectedLocationType === "bogota"
                           ? "border-sky-400 bg-sky-500/10 shadow-lg shadow-sky-500/10"
                           : "border-slate-800 bg-slate-900/60 hover:border-slate-700"
                       }`}
                     >
-                      <div className="flex items-start justify-between mb-4">
-                        <div className="w-10 h-10 rounded-xl bg-sky-500/20 text-sky-400 flex items-center justify-center">
-                          <MapPin size={22} />
+                      <div className="flex items-start justify-between mb-3">
+                        <div className="w-9 h-9 rounded-xl bg-sky-500/20 text-sky-400 flex items-center justify-center">
+                          <MapPin size={20} />
                         </div>
                         {selectedLocationType === "bogota" && (
-                          <CheckCircle2 size={20} className="text-sky-400" />
+                          <CheckCircle2 size={18} className="text-sky-400" />
                         )}
                       </div>
-                      <span className="text-[10px] uppercase font-bold tracking-wider text-sky-400 block mb-1">Sede Principal Fija</span>
-                      <h3 className="text-base font-bold text-white mb-2">Bogotá D.C.</h3>
+                      <span className="text-[10px] uppercase font-bold tracking-wider text-sky-400 block mb-1">Sede Principal</span>
+                      <h3 className="text-sm font-bold text-white mb-1">Bogotá D.C.</h3>
                       <p className="text-xs text-slate-300 leading-relaxed">
-                        📍 Calle 16 # 83a-15, Bogotá.<br />
-                        Atención permanente de Lunes a Sábado con cita previa.
+                        📍 Cra 16 #96-64, Chicó Norte.<br />
+                        <span className="text-slate-400 text-[11px]">CP: 110221 • Cabinas VIP</span>
                       </p>
                     </div>
 
-                    {/* Gira Nacional */}
+                    {/* Sede Cali */}
                     <div 
-                      onClick={() => setSelectedLocationType("gira")}
-                      className={`p-6 rounded-2xl cursor-pointer border transition-all ${
-                        selectedLocationType === "gira"
+                      onClick={() => {
+                        setSelectedLocationType("cali");
+                        setSelectedEventId("");
+                      }}
+                      className={`p-5 rounded-2xl cursor-pointer border transition-all ${
+                        selectedLocationType === "cali"
                           ? "border-amber-400 bg-amber-500/10 shadow-lg shadow-amber-500/10"
                           : "border-slate-800 bg-slate-900/60 hover:border-slate-700"
                       }`}
                     >
-                      <div className="flex items-start justify-between mb-4">
-                        <div className="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center">
-                          <Sparkles size={22} />
+                      <div className="flex items-start justify-between mb-3">
+                        <div className="w-9 h-9 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center">
+                          <MapPin size={20} />
                         </div>
-                        {selectedLocationType === "gira" && (
-                          <CheckCircle2 size={20} className="text-amber-400" />
+                        {selectedLocationType === "cali" && (
+                          <CheckCircle2 size={18} className="text-amber-400" />
                         )}
                       </div>
-                      <span className="text-[10px] uppercase font-bold tracking-wider text-amber-400 block mb-1">Eventos & Giras</span>
-                      <h3 className="text-base font-bold text-white mb-2">Gira Nacional por Colombia</h3>
+                      <span className="text-[10px] uppercase font-bold tracking-wider text-amber-400 block mb-1">Sede Valle</span>
+                      <h3 className="text-sm font-bold text-white mb-1">Cali (Valle)</h3>
                       <p className="text-xs text-slate-300 leading-relaxed">
-                        Medellín, Cali, Barranquilla, Bucaramanga, Pereira y más ciudades con cupos limitados.
+                        📍 Calle 16 #83A-15, El Ingenio 3.<br />
+                        <span className="text-slate-400 text-[11px]">Edif. María Mercedes Est. 402 • CP: 760032</span>
+                      </p>
+                    </div>
+
+                    {/* Sede Neiva */}
+                    <div 
+                      onClick={() => {
+                        setSelectedLocationType("neiva");
+                        setSelectedEventId("");
+                      }}
+                      className={`p-5 rounded-2xl cursor-pointer border transition-all ${
+                        selectedLocationType === "neiva"
+                          ? "border-cyan-400 bg-cyan-500/10 shadow-lg shadow-cyan-500/10"
+                          : "border-slate-800 bg-slate-900/60 hover:border-slate-700"
+                      }`}
+                    >
+                      <div className="flex items-start justify-between mb-3">
+                        <div className="w-9 h-9 rounded-xl bg-cyan-500/20 text-cyan-400 flex items-center justify-center">
+                          <MapPin size={20} />
+                        </div>
+                        {selectedLocationType === "neiva" && (
+                          <CheckCircle2 size={18} className="text-cyan-400" />
+                        )}
+                      </div>
+                      <span className="text-[10px] uppercase font-bold tracking-wider text-cyan-400 block mb-1">Sede Huila</span>
+                      <h3 className="text-sm font-bold text-white mb-1">Neiva (Huila)</h3>
+                      <p className="text-xs text-slate-300 leading-relaxed">
+                        📍 Cra 22 #25C-12, Canaima.<br />
+                        <span className="text-slate-400 text-[11px]">CP: 410008 • Cabina Privada</span>
+                      </p>
+                    </div>
+
+                    {/* Sede Barranquilla */}
+                    <div 
+                      onClick={() => {
+                        setSelectedLocationType("barranquilla");
+                        setSelectedEventId("");
+                      }}
+                      className={`p-5 rounded-2xl cursor-pointer border transition-all ${
+                        selectedLocationType === "barranquilla"
+                          ? "border-emerald-400 bg-emerald-500/10 shadow-lg shadow-emerald-500/10"
+                          : "border-slate-800 bg-slate-900/60 hover:border-slate-700"
+                      }`}
+                    >
+                      <div className="flex items-start justify-between mb-3">
+                        <div className="w-9 h-9 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center">
+                          <MapPin size={20} />
+                        </div>
+                        {selectedLocationType === "barranquilla" && (
+                          <CheckCircle2 size={18} className="text-emerald-400" />
+                        )}
+                      </div>
+                      <span className="text-[10px] uppercase font-bold tracking-wider text-emerald-400 block mb-1">Sede Costa Caribe</span>
+                      <h3 className="text-sm font-bold text-white mb-1">Barranquilla (Atlántico)</h3>
+                      <p className="text-xs text-slate-300 leading-relaxed">
+                        📍 Calle 64 #46-69, Centro Histórico.<br />
+                        <span className="text-slate-400 text-[11px]">CP: 080002 • Clima Cálido Especial</span>
+                      </p>
+                    </div>
+
+                    {/* Giras Nacionales */}
+                    <div 
+                      onClick={() => setSelectedLocationType("gira")}
+                      className={`p-5 rounded-2xl cursor-pointer border transition-all sm:col-span-2 lg:col-span-2 ${
+                        selectedLocationType === "gira"
+                          ? "border-purple-400 bg-purple-500/10 shadow-lg shadow-purple-500/10"
+                          : "border-slate-800 bg-slate-900/60 hover:border-slate-700"
+                      }`}
+                    >
+                      <div className="flex items-start justify-between mb-3">
+                        <div className="w-9 h-9 rounded-xl bg-purple-500/20 text-purple-400 flex items-center justify-center">
+                          <Sparkles size={20} />
+                        </div>
+                        {selectedLocationType === "gira" && (
+                          <CheckCircle2 size={18} className="text-purple-400" />
+                        )}
+                      </div>
+                      <span className="text-[10px] uppercase font-bold tracking-wider text-purple-400 block mb-1">Jornadas Especiales</span>
+                      <h3 className="text-sm font-bold text-white mb-1">Giras Nacionales por Colombia</h3>
+                      <p className="text-xs text-slate-300 leading-relaxed">
+                        Villavicencio, Manizales, Pereira, Medellín, Bucaramanga y más ciudades con cupos limitados.
                       </p>
                     </div>
                   </div>

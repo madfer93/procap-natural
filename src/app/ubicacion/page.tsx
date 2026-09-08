@@ -20,17 +20,17 @@ import {
 } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Sedes Bogotá y Cali & Giras Nacionales | Procap Natural Colombia",
-  description: "Visítanos en nuestras sedes oficiales en Bogotá (Chicó Norte: Cra 16 #96-64) y Cali (Calle 16 #83A-15 Estudio 402, Edificio María Mercedes). Conoce además nuestras jornadas y giras en Villavicencio, Manizales y Medellín.",
+  title: "Sedes Bogotá, Cali, Neiva & Barranquilla | Procap Natural Colombia",
+  description: "Conoce nuestras 4 sedes oficiales: Bogotá (Chicó Norte: Cra 16 #96-64), Cali (El Ingenio 3: Calle 16 #83A-15 Est. 402), Neiva (Canaima: Cra 22 #25C-12) y Barranquilla (Centro Histórico: Calle 64 #46-69).",
   keywords: [
     "prótesis capilar chicó norte bogota",
-    "prótesis capilar cali",
-    "procap natural cali direccion",
-    "protesis capilar edificio maria mercedes cali",
-    "procap natural ubicacion",
-    "protesis capilar villavicencio",
-    "giras protesis capilares colombia",
-    "salón prótesis capilar bogota cali"
+    "prótesis capilar cali ingenio",
+    "prótesis capilar neiva canaima",
+    "prótesis capilar barranquilla centro historico",
+    "procap natural sedes colombia",
+    "procap natural neiva",
+    "procap natural barranquilla",
+    "giras protesis capilares colombia"
   ],
 };
 
@@ -51,19 +51,19 @@ export default function UbicacionPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-10 text-center">
         <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass-panel border-sky-400/40 text-sky-300 text-xs sm:text-sm font-semibold mb-6 shadow-inner">
           <MapPin size={14} className="text-sky-400" />
-          <span>Sedes Oficiales Bogotá & Cali • Giras en Todo el País</span>
+          <span>4 Sedes Oficiales en Colombia • Bogotá • Cali • Neiva • Barranquilla</span>
         </div>
 
         <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black font-heading text-white tracking-tight leading-[1.15] max-w-4xl mx-auto">
-          Nuestras Sedes & <span className="text-cyan-gradient">Giras Nacionales</span>
+          Nuestras 4 Sedes & <span className="text-cyan-gradient">Giras Nacionales</span>
         </h1>
 
         <p className="mt-6 text-slate-300 text-base sm:text-lg max-w-3xl mx-auto leading-relaxed">
-          Espacios reservados, modernos y de máxima discreción con cabinas privadas e individuales para tu confort total en <strong>Bogotá</strong> y <strong>Cali</strong>, además de jornadas especiales de instalación en las principales ciudades de Colombia.
+          Espacios reservados, modernos y de máxima discreción con cabinas privadas e individuales para tu confort total en <strong>Bogotá</strong>, <strong>Cali</strong>, <strong>Neiva</strong> y <strong>Barranquilla</strong>, además de jornadas especiales en todo el país.
         </p>
       </div>
 
-      {/* SEDES PRINCIPALES GRID */}
+      {/* 4 SEDES PRINCIPALES GRID */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           
@@ -80,7 +80,7 @@ export default function UbicacionPage() {
                 </div>
                 <div>
                   <h2 className="text-2xl font-black font-heading text-white">Sede Bogotá</h2>
-                  <span className="text-xs text-sky-400 font-bold tracking-wider uppercase">Chicó Norte</span>
+                  <span className="text-xs text-sky-400 font-bold tracking-wider uppercase">Chicó Norte • Localidad Chapinero / Usaquén</span>
                 </div>
               </div>
 
@@ -88,6 +88,10 @@ export default function UbicacionPage() {
                 <p className="flex items-start gap-2.5">
                   <strong className="text-white shrink-0">Dirección:</strong>
                   <span>Carrera 16 #96-64, Barrio Chicó Norte, Bogotá D.C.</span>
+                </p>
+                <p className="flex items-start gap-2.5">
+                  <strong className="text-white shrink-0">Código Postal:</strong>
+                  <span>110221</span>
                 </p>
                 <p className="flex items-start gap-2.5">
                   <strong className="text-white shrink-0">Comodidades:</strong>
@@ -125,7 +129,7 @@ export default function UbicacionPage() {
           {/* SEDE 2: CALI */}
           <div className="glass-panel rounded-3xl p-6 sm:p-8 border border-amber-500/30 shadow-2xl relative overflow-hidden flex flex-col justify-between">
             <div className="absolute top-0 right-0 px-4 py-1.5 bg-amber-500/20 text-amber-300 font-bold text-xs rounded-bl-2xl border-l border-b border-amber-400/30">
-              ¡Nueva Sede! 🎉
+              Sede Valle del Cauca
             </div>
 
             <div>
@@ -135,29 +139,33 @@ export default function UbicacionPage() {
                 </div>
                 <div>
                   <h2 className="text-2xl font-black font-heading text-white">Sede Cali</h2>
-                  <span className="text-xs text-amber-400 font-bold tracking-wider uppercase">Edificio María Mercedes</span>
+                  <span className="text-xs text-amber-400 font-bold tracking-wider uppercase">Barrio El Ingenio 3 • Edificio María Mercedes</span>
                 </div>
               </div>
 
               <div className="space-y-3 text-slate-300 text-sm mt-4">
                 <p className="flex items-start gap-2.5">
                   <strong className="text-white shrink-0">Dirección:</strong>
-                  <span>Calle 16 #83A-15, Estudio 402, Edificio María Mercedes, Cali</span>
+                  <span>Calle 16 #83A-15, Barrio El Ingenio 3, Edificio María Mercedes, Estudio 402, Cali</span>
+                </p>
+                <p className="flex items-start gap-2.5">
+                  <strong className="text-white shrink-0">Código Postal:</strong>
+                  <span>760032</span>
                 </p>
                 <p className="flex items-start gap-2.5">
                   <strong className="text-white shrink-0">Servicios:</strong>
-                  <span>Venta, instalación personalizada de cabello 100% natural, mantenimiento y asesoría experta.</span>
+                  <span>Venta, instalación anatómica de cabello 100% natural, mantenimiento y cabina climatizada.</span>
                 </p>
                 <p className="flex items-start gap-2.5">
                   <strong className="text-white shrink-0">Atención:</strong>
-                  <span>Reserva exclusiva y privada para clientes del Valle del Cauca y suroccidente.</span>
+                  <span>Reserva exclusiva y privada para clientes del Valle y suroccidente colombiano.</span>
                 </p>
               </div>
             </div>
 
             <div className="pt-6 border-t border-slate-800 mt-6 flex flex-col sm:flex-row gap-3">
               <a
-                href={`https://wa.me/${whatsappPhone}?text=¡Hola%20Procap!%20Deseo%20agendar%20mi%20cita%20en%20la%20Sede%20Cali%20(Edificio%20María%20Mercedes).`}
+                href={`https://wa.me/${whatsappPhone}?text=¡Hola%20Procap!%20Deseo%20agendar%20mi%20cita%20en%20la%20Sede%20Cali%20(Edificio%20María%20Mercedes%20Estudio%20402).`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex-1 py-3 px-4 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs flex items-center justify-center gap-2 transition-all"
@@ -167,6 +175,124 @@ export default function UbicacionPage() {
               </a>
               <a
                 href="https://maps.google.com/?q=Calle+16+%2383A-15,+Cali"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="py-3 px-4 rounded-xl glass-panel hover:bg-white/10 text-white font-bold text-xs flex items-center justify-center gap-1.5 border border-slate-700"
+              >
+                <ExternalLink size={14} />
+                <span>Ver Mapa</span>
+              </a>
+            </div>
+          </div>
+
+          {/* SEDE 3: NEIVA */}
+          <div className="glass-panel rounded-3xl p-6 sm:p-8 border border-cyan-500/30 shadow-2xl relative overflow-hidden flex flex-col justify-between">
+            <div className="absolute top-0 right-0 px-4 py-1.5 bg-cyan-500/20 text-cyan-300 font-bold text-xs rounded-bl-2xl border-l border-b border-cyan-400/30">
+              Sede Huila
+            </div>
+
+            <div>
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-12 h-12 rounded-2xl bg-cyan-500/10 border border-cyan-400/30 flex items-center justify-center text-cyan-400">
+                  <MapPin size={24} />
+                </div>
+                <div>
+                  <h2 className="text-2xl font-black font-heading text-white">Sede Neiva</h2>
+                  <span className="text-xs text-cyan-400 font-bold tracking-wider uppercase">Barrio Canaima • Neiva, Huila</span>
+                </div>
+              </div>
+
+              <div className="space-y-3 text-slate-300 text-sm mt-4">
+                <p className="flex items-start gap-2.5">
+                  <strong className="text-white shrink-0">Dirección:</strong>
+                  <span>Carrera 22 #25C-12, Barrio Canaima, Neiva - Huila</span>
+                </p>
+                <p className="flex items-start gap-2.5">
+                  <strong className="text-white shrink-0">Código Postal:</strong>
+                  <span>410008</span>
+                </p>
+                <p className="flex items-start gap-2.5">
+                  <strong className="text-white shrink-0">Servicios:</strong>
+                  <span>Instalación, mantenimiento preventivo, cambio de adhesivos y venta de prótesis capilares.</span>
+                </p>
+                <p className="flex items-start gap-2.5">
+                  <strong className="text-white shrink-0">Atención:</strong>
+                  <span>Cita previa personalizada en cabina privada para la región sur y Huila.</span>
+                </p>
+              </div>
+            </div>
+
+            <div className="pt-6 border-t border-slate-800 mt-6 flex flex-col sm:flex-row gap-3">
+              <a
+                href={`https://wa.me/${whatsappPhone}?text=¡Hola%20Procap!%20Deseo%20agendar%20mi%20cita%20en%20la%20Sede%20Neiva%20(Barrio%20Canaima).`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex-1 py-3 px-4 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black text-xs flex items-center justify-center gap-2 transition-all"
+              >
+                <i className="fa-brands fa-whatsapp text-base"></i>
+                <span>Agendar en Neiva</span>
+              </a>
+              <a
+                href="https://maps.google.com/?q=Cra.+22+%2325C-12,+Neiva"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="py-3 px-4 rounded-xl glass-panel hover:bg-white/10 text-white font-bold text-xs flex items-center justify-center gap-1.5 border border-slate-700"
+              >
+                <ExternalLink size={14} />
+                <span>Ver Mapa</span>
+              </a>
+            </div>
+          </div>
+
+          {/* SEDE 4: BARRANQUILLA */}
+          <div className="glass-panel rounded-3xl p-6 sm:p-8 border border-emerald-500/30 shadow-2xl relative overflow-hidden flex flex-col justify-between">
+            <div className="absolute top-0 right-0 px-4 py-1.5 bg-emerald-500/20 text-emerald-300 font-bold text-xs rounded-bl-2xl border-l border-b border-emerald-400/30">
+              Sede Costa Caribe
+            </div>
+
+            <div>
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-400/30 flex items-center justify-center text-emerald-400">
+                  <MapPin size={24} />
+                </div>
+                <div>
+                  <h2 className="text-2xl font-black font-heading text-white">Sede Barranquilla</h2>
+                  <span className="text-xs text-emerald-400 font-bold tracking-wider uppercase">Centro Histórico • Barranquilla, Atlántico</span>
+                </div>
+              </div>
+
+              <div className="space-y-3 text-slate-300 text-sm mt-4">
+                <p className="flex items-start gap-2.5">
+                  <strong className="text-white shrink-0">Dirección:</strong>
+                  <span>Calle 64 #46-69, Centro Histórico de Barranquilla, Atlántico</span>
+                </p>
+                <p className="flex items-start gap-2.5">
+                  <strong className="text-white shrink-0">Código Postal:</strong>
+                  <span>080002</span>
+                </p>
+                <p className="flex items-start gap-2.5">
+                  <strong className="text-white shrink-0">Servicios:</strong>
+                  <span>Adaptación anatómica, adhesivos ultra-resistentes al clima cálido y humedad, mantenimiento.</span>
+                </p>
+                <p className="flex items-start gap-2.5">
+                  <strong className="text-white shrink-0">Atención:</strong>
+                  <span>Espacio privado con reserva previa para Barranquilla, Cartagena, Santa Marta y la Costa.</span>
+                </p>
+              </div>
+            </div>
+
+            <div className="pt-6 border-t border-slate-800 mt-6 flex flex-col sm:flex-row gap-3">
+              <a
+                href={`https://wa.me/${whatsappPhone}?text=¡Hola%20Procap!%20Deseo%20agendar%20mi%20cita%20en%20la%20Sede%20Barranquilla%20(Centro%20Histórico).`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex-1 py-3 px-4 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs flex items-center justify-center gap-2 transition-all"
+              >
+                <i className="fa-brands fa-whatsapp text-base"></i>
+                <span>Agendar en Barranquilla</span>
+              </a>
+              <a
+                href="https://maps.google.com/?q=Calle+64+%2346-69,+Barranquilla"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="py-3 px-4 rounded-xl glass-panel hover:bg-white/10 text-white font-bold text-xs flex items-center justify-center gap-1.5 border border-slate-700"
