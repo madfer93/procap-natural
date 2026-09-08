@@ -3,6 +3,9 @@ import type { Metadata } from "next";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { SedeVideoPlayer } from "@/components/SedeVideoPlayer";
+import Link from "next/link";
+import Image from "next/image";
+import { SEDES_DATA } from "@/lib/sedes-data";
 import { 
   MapPin, 
   Phone, 
@@ -16,7 +19,10 @@ import {
   Sparkles,
   Calendar,
   Users,
-  Compass
+  Compass,
+  Camera,
+  Eye,
+  ArrowRight
 } from "lucide-react";
 
 export const metadata: Metadata = {
@@ -63,245 +69,84 @@ export default function UbicacionPage() {
         </p>
       </div>
 
-      {/* 4 SEDES PRINCIPALES GRID */}
+      {/* 4 SEDES PRINCIPALES GRID - CON FOTO DE FACHADA Y BOTÓN VER INSTALACIONES */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           
-          {/* SEDE 1: BOGOTÁ */}
-          <div className="glass-panel rounded-3xl p-6 sm:p-8 border border-sky-500/30 shadow-2xl relative overflow-hidden flex flex-col justify-between">
-            <div className="absolute top-0 right-0 px-4 py-1.5 bg-sky-500/20 text-sky-300 font-bold text-xs rounded-bl-2xl border-l border-b border-sky-400/30">
-              Sede Principal
-            </div>
+          {SEDES_DATA.map((sede) => (
+            <div 
+              key={sede.slug}
+              className="glass-panel rounded-3xl p-6 sm:p-7 border border-white/10 hover:border-sky-500/40 shadow-2xl relative overflow-hidden flex flex-col justify-between group transition-all"
+            >
+              <div>
+                {/* Foto de Fachada / Portada de la Sede con Badge */}
+                <div className="relative aspect-video rounded-2xl overflow-hidden bg-slate-900 mb-5 border border-slate-800">
+                  <Image
+                    src={sede.coverImage}
+                    alt={`Fachada de ${sede.name}`}
+                    fill
+                    className="object-cover group-hover:scale-105 transition-transform duration-500"
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent"></div>
+                  
+                  {/* Badge */}
+                  <div className="absolute top-3 right-3 px-3 py-1 bg-slate-950/80 backdrop-blur-md text-amber-400 font-bold text-xs rounded-full border border-amber-500/30">
+                    {sede.badge}
+                  </div>
 
-            <div>
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-12 h-12 rounded-2xl bg-sky-500/10 border border-sky-400/30 flex items-center justify-center text-sky-400">
-                  <MapPin size={24} />
+                  {/* Ciudad Tag */}
+                  <div className="absolute bottom-3 left-3 flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-950/80 backdrop-blur-md text-white text-xs font-bold border border-white/10">
+                    <MapPin size={13} className="text-sky-400" />
+                    <span>{sede.city}</span>
+                  </div>
                 </div>
-                <div>
-                  <h2 className="text-2xl font-black font-heading text-white">Sede Bogotá</h2>
-                  <span className="text-xs text-sky-400 font-bold tracking-wider uppercase">Chicó Norte • Localidad Chapinero / Usaquén</span>
+
+                {/* Título & Dirección */}
+                <div className="mb-4">
+                  <h2 className="text-2xl font-black font-heading text-white">{sede.name}</h2>
+                  <span className="text-xs text-sky-400 font-bold tracking-wider uppercase">{sede.neighborhood}</span>
                 </div>
-              </div>
 
-              <div className="space-y-3 text-slate-300 text-sm mt-4">
-                <p className="flex items-start gap-2.5">
-                  <strong className="text-white shrink-0">Dirección:</strong>
-                  <span>Carrera 16 #96-64, Barrio Chicó Norte, Bogotá D.C.</span>
-                </p>
-                <p className="flex items-start gap-2.5">
-                  <strong className="text-white shrink-0">Código Postal:</strong>
-                  <span>110221</span>
-                </p>
-                <p className="flex items-start gap-2.5">
-                  <strong className="text-white shrink-0">Comodidades:</strong>
-                  <span>Cabinas VIP individuales, acceso vehicular por Cra 15 y Cra 11, parqueadero a 50m.</span>
-                </p>
-                <p className="flex items-start gap-2.5">
-                  <strong className="text-white shrink-0">Horarios:</strong>
-                  <span>Lunes a Sábado: 8:00 AM – 7:00 PM (Previa Cita)</span>
-                </p>
-              </div>
-            </div>
-
-            <div className="pt-6 border-t border-slate-800 mt-6 flex flex-col sm:flex-row gap-3">
-              <a
-                href={`https://wa.me/${whatsappPhone}?text=¡Hola%20Procap!%20Deseo%20agendar%20mi%20valoración%20en%20la%20Sede%20Bogotá%20(Chicó%20Norte).`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex-1 py-3 px-4 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs flex items-center justify-center gap-2 transition-all"
-              >
-                <i className="fa-brands fa-whatsapp text-base"></i>
-                <span>Agendar en Bogotá</span>
-              </a>
-              <a
-                href="https://maps.google.com/?q=Cra.+16+%2396-64,+Bogot%C3%A1"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="py-3 px-4 rounded-xl glass-panel hover:bg-white/10 text-white font-bold text-xs flex items-center justify-center gap-1.5 border border-slate-700"
-              >
-                <ExternalLink size={14} />
-                <span>Ver Mapa</span>
-              </a>
-            </div>
-          </div>
-
-          {/* SEDE 2: CALI */}
-          <div className="glass-panel rounded-3xl p-6 sm:p-8 border border-amber-500/30 shadow-2xl relative overflow-hidden flex flex-col justify-between">
-            <div className="absolute top-0 right-0 px-4 py-1.5 bg-amber-500/20 text-amber-300 font-bold text-xs rounded-bl-2xl border-l border-b border-amber-400/30">
-              Sede Valle del Cauca
-            </div>
-
-            <div>
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-12 h-12 rounded-2xl bg-amber-500/10 border border-amber-400/30 flex items-center justify-center text-amber-400">
-                  <MapPin size={24} />
-                </div>
-                <div>
-                  <h2 className="text-2xl font-black font-heading text-white">Sede Cali</h2>
-                  <span className="text-xs text-amber-400 font-bold tracking-wider uppercase">Barrio El Ingenio 3 • Edificio María Mercedes</span>
+                <div className="space-y-2.5 text-slate-300 text-xs sm:text-sm">
+                  <p className="flex items-start gap-2.5">
+                    <strong className="text-white shrink-0">Dirección:</strong>
+                    <span>{sede.address}</span>
+                  </p>
+                  <p className="flex items-start gap-2.5">
+                    <strong className="text-white shrink-0">Código Postal:</strong>
+                    <span>{sede.postalCode}</span>
+                  </p>
+                  <p className="flex items-start gap-2.5 text-slate-400">
+                    <strong className="text-slate-300 shrink-0">Horarios:</strong>
+                    <span>{sede.schedule.weekdays}</span>
+                  </p>
                 </div>
               </div>
 
-              <div className="space-y-3 text-slate-300 text-sm mt-4">
-                <p className="flex items-start gap-2.5">
-                  <strong className="text-white shrink-0">Dirección:</strong>
-                  <span>Calle 16 #83A-15, Barrio El Ingenio 3, Edificio María Mercedes, Estudio 402, Cali</span>
-                </p>
-                <p className="flex items-start gap-2.5">
-                  <strong className="text-white shrink-0">Código Postal:</strong>
-                  <span>760032</span>
-                </p>
-                <p className="flex items-start gap-2.5">
-                  <strong className="text-white shrink-0">Servicios:</strong>
-                  <span>Venta, instalación anatómica de cabello 100% natural, mantenimiento y cabina climatizada.</span>
-                </p>
-                <p className="flex items-start gap-2.5">
-                  <strong className="text-white shrink-0">Atención:</strong>
-                  <span>Reserva exclusiva y privada para clientes del Valle y suroccidente colombiano.</span>
-                </p>
+              {/* Botones: Agendar por WhatsApp & Ver Instalaciones Dedicada */}
+              <div className="pt-6 border-t border-slate-800/80 mt-6 flex flex-col sm:flex-row gap-3">
+                <a
+                  href={`https://wa.me/${whatsappPhone}?text=${encodeURIComponent(sede.whatsappMessage)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex-1 py-3 px-4 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs flex items-center justify-center gap-2 transition-all shadow-lg shadow-emerald-500/20"
+                >
+                  <i className="fa-brands fa-whatsapp text-base"></i>
+                  <span>Agendar en {sede.city}</span>
+                </a>
+
+                <Link
+                  href={`/ubicacion/${sede.slug}`}
+                  className="py-3 px-4 rounded-xl bg-slate-900 hover:bg-sky-500 hover:text-slate-950 text-white font-bold text-xs flex items-center justify-center gap-1.5 border border-slate-700 hover:border-sky-400 transition-all group/btn"
+                >
+                  <Camera size={14} className="text-sky-400 group-hover/btn:text-slate-950 transition-colors" />
+                  <span>Ver Instalaciones</span>
+                  <ArrowRight size={13} className="group-hover/btn:translate-x-0.5 transition-transform" />
+                </Link>
               </div>
             </div>
-
-            <div className="pt-6 border-t border-slate-800 mt-6 flex flex-col sm:flex-row gap-3">
-              <a
-                href={`https://wa.me/${whatsappPhone}?text=¡Hola%20Procap!%20Deseo%20agendar%20mi%20cita%20en%20la%20Sede%20Cali%20(Edificio%20María%20Mercedes%20Estudio%20402).`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex-1 py-3 px-4 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs flex items-center justify-center gap-2 transition-all"
-              >
-                <i className="fa-brands fa-whatsapp text-base"></i>
-                <span>Agendar en Cali</span>
-              </a>
-              <a
-                href="https://maps.google.com/?q=Calle+16+%2383A-15,+Cali"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="py-3 px-4 rounded-xl glass-panel hover:bg-white/10 text-white font-bold text-xs flex items-center justify-center gap-1.5 border border-slate-700"
-              >
-                <ExternalLink size={14} />
-                <span>Ver Mapa</span>
-              </a>
-            </div>
-          </div>
-
-          {/* SEDE 3: NEIVA */}
-          <div className="glass-panel rounded-3xl p-6 sm:p-8 border border-cyan-500/30 shadow-2xl relative overflow-hidden flex flex-col justify-between">
-            <div className="absolute top-0 right-0 px-4 py-1.5 bg-cyan-500/20 text-cyan-300 font-bold text-xs rounded-bl-2xl border-l border-b border-cyan-400/30">
-              Sede Huila
-            </div>
-
-            <div>
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-12 h-12 rounded-2xl bg-cyan-500/10 border border-cyan-400/30 flex items-center justify-center text-cyan-400">
-                  <MapPin size={24} />
-                </div>
-                <div>
-                  <h2 className="text-2xl font-black font-heading text-white">Sede Neiva</h2>
-                  <span className="text-xs text-cyan-400 font-bold tracking-wider uppercase">Barrio Canaima • Neiva, Huila</span>
-                </div>
-              </div>
-
-              <div className="space-y-3 text-slate-300 text-sm mt-4">
-                <p className="flex items-start gap-2.5">
-                  <strong className="text-white shrink-0">Dirección:</strong>
-                  <span>Carrera 22 #25C-12, Barrio Canaima, Neiva - Huila</span>
-                </p>
-                <p className="flex items-start gap-2.5">
-                  <strong className="text-white shrink-0">Código Postal:</strong>
-                  <span>410008</span>
-                </p>
-                <p className="flex items-start gap-2.5">
-                  <strong className="text-white shrink-0">Servicios:</strong>
-                  <span>Instalación, mantenimiento preventivo, cambio de adhesivos y venta de prótesis capilares.</span>
-                </p>
-                <p className="flex items-start gap-2.5">
-                  <strong className="text-white shrink-0">Atención:</strong>
-                  <span>Cita previa personalizada en cabina privada para la región sur y Huila.</span>
-                </p>
-              </div>
-            </div>
-
-            <div className="pt-6 border-t border-slate-800 mt-6 flex flex-col sm:flex-row gap-3">
-              <a
-                href={`https://wa.me/${whatsappPhone}?text=¡Hola%20Procap!%20Deseo%20agendar%20mi%20cita%20en%20la%20Sede%20Neiva%20(Barrio%20Canaima).`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex-1 py-3 px-4 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black text-xs flex items-center justify-center gap-2 transition-all"
-              >
-                <i className="fa-brands fa-whatsapp text-base"></i>
-                <span>Agendar en Neiva</span>
-              </a>
-              <a
-                href="https://maps.google.com/?q=Cra.+22+%2325C-12,+Neiva"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="py-3 px-4 rounded-xl glass-panel hover:bg-white/10 text-white font-bold text-xs flex items-center justify-center gap-1.5 border border-slate-700"
-              >
-                <ExternalLink size={14} />
-                <span>Ver Mapa</span>
-              </a>
-            </div>
-          </div>
-
-          {/* SEDE 4: BARRANQUILLA */}
-          <div className="glass-panel rounded-3xl p-6 sm:p-8 border border-emerald-500/30 shadow-2xl relative overflow-hidden flex flex-col justify-between">
-            <div className="absolute top-0 right-0 px-4 py-1.5 bg-emerald-500/20 text-emerald-300 font-bold text-xs rounded-bl-2xl border-l border-b border-emerald-400/30">
-              Sede Costa Caribe
-            </div>
-
-            <div>
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-400/30 flex items-center justify-center text-emerald-400">
-                  <MapPin size={24} />
-                </div>
-                <div>
-                  <h2 className="text-2xl font-black font-heading text-white">Sede Barranquilla</h2>
-                  <span className="text-xs text-emerald-400 font-bold tracking-wider uppercase">Centro Histórico • Barranquilla, Atlántico</span>
-                </div>
-              </div>
-
-              <div className="space-y-3 text-slate-300 text-sm mt-4">
-                <p className="flex items-start gap-2.5">
-                  <strong className="text-white shrink-0">Dirección:</strong>
-                  <span>Calle 64 #46-69, Centro Histórico de Barranquilla, Atlántico</span>
-                </p>
-                <p className="flex items-start gap-2.5">
-                  <strong className="text-white shrink-0">Código Postal:</strong>
-                  <span>080002</span>
-                </p>
-                <p className="flex items-start gap-2.5">
-                  <strong className="text-white shrink-0">Servicios:</strong>
-                  <span>Adaptación anatómica, adhesivos ultra-resistentes al clima cálido y humedad, mantenimiento.</span>
-                </p>
-                <p className="flex items-start gap-2.5">
-                  <strong className="text-white shrink-0">Atención:</strong>
-                  <span>Espacio privado con reserva previa para Barranquilla, Cartagena, Santa Marta y la Costa.</span>
-                </p>
-              </div>
-            </div>
-
-            <div className="pt-6 border-t border-slate-800 mt-6 flex flex-col sm:flex-row gap-3">
-              <a
-                href={`https://wa.me/${whatsappPhone}?text=¡Hola%20Procap!%20Deseo%20agendar%20mi%20cita%20en%20la%20Sede%20Barranquilla%20(Centro%20Histórico).`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex-1 py-3 px-4 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs flex items-center justify-center gap-2 transition-all"
-              >
-                <i className="fa-brands fa-whatsapp text-base"></i>
-                <span>Agendar en Barranquilla</span>
-              </a>
-              <a
-                href="https://maps.google.com/?q=Calle+64+%2346-69,+Barranquilla"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="py-3 px-4 rounded-xl glass-panel hover:bg-white/10 text-white font-bold text-xs flex items-center justify-center gap-1.5 border border-slate-700"
-              >
-                <ExternalLink size={14} />
-                <span>Ver Mapa</span>
-              </a>
-            </div>
-          </div>
+          ))}
 
         </div>
       </div>

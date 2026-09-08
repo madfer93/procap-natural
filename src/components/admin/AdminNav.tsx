@@ -15,7 +15,8 @@ import {
   Calendar,
   MapPin,
   Truck,
-  Scale
+  Scale,
+  Building2
 } from "lucide-react";
 
 interface AdminNavProps {
@@ -27,6 +28,7 @@ export function AdminNav({ onLogout }: AdminNavProps) {
 
   const navItems = [
     { href: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
+    { href: "/admin/sedes", label: "Sedes & Instalaciones", icon: Building2 },
     { href: "/admin/orders", label: "Envíos & Transportadora", icon: Truck },
     { href: "/admin/appointments", label: "Agenda & Citas", icon: Calendar },
     { href: "/admin/events", label: "Giras & Eventos", icon: MapPin },
