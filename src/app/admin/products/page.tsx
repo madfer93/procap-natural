@@ -43,6 +43,9 @@ export default function ProductsAdminPage() {
     description: "",
     price_offer: 0,
     price_regular: 0,
+    cost_price_cop: 0,
+    stock_quantity: 10,
+    min_stock_alert: 2,
     badge: "",
     image_url: "",
     payment_link: "",
@@ -88,6 +91,9 @@ export default function ProductsAdminPage() {
       description: "",
       price_offer: 100000,
       price_regular: 120000,
+      cost_price_cop: 45000,
+      stock_quantity: 10,
+      min_stock_alert: 2,
       badge: "Nuevo",
       image_url: "",
       payment_link: "",
@@ -104,6 +110,9 @@ export default function ProductsAdminPage() {
     setEditingProduct(product);
     setFormData({
       ...product,
+      cost_price_cop: product.cost_price_cop || 0,
+      stock_quantity: product.stock_quantity ?? 10,
+      min_stock_alert: product.min_stock_alert ?? 2,
       payment_link: product.payment_link || "",
       payment_link_credit: product.payment_link_credit || ""
     });
@@ -388,10 +397,10 @@ export default function ProductsAdminPage() {
                 />
               </div>
 
-              {/* Precio Oferta */}
-              <div className="sm:col-span-6">
+              {/* Precio Oferta / Venta */}
+              <div className="sm:col-span-4">
                 <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-2">
-                  Precio Promoción (COP) *
+                  Precio Venta / Oferta (COP) *
                 </label>
                 <input
                   type="number"
@@ -404,7 +413,7 @@ export default function ProductsAdminPage() {
               </div>
 
               {/* Precio Regular */}
-              <div className="sm:col-span-6">
+              <div className="sm:col-span-4">
                 <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-2">
                   Precio Regular / Antes (COP)
                 </label>
@@ -414,6 +423,78 @@ export default function ProductsAdminPage() {
                   onChange={(e) => setFormData({ ...formData, price_regular: Number(e.target.value) })}
                   placeholder="Ej: 1950000"
                   className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-400 focus:outline-none focus:border-amber-400"
+                />
+              </div>
+
+              {/* Costo de Adquisición / Compra */}
+              <div className="sm:col-span-4">
+                <label className="block text-xs font-bold uppercase tracking-wider text-emerald-400 mb-2 flex items-center justify-between">
+                  <span>Costo Compra / Importación (COP)</span>
+                  <span className="text-[10px] text-slate-500 font-normal">Confidencial</span>
+                </label>
+                <input
+                  type="number"
+                  value={formData.cost_price_cop || ""}
+                  onChange={(e) => setFormData({ ...formData, cost_price_cop: Number(e.target.value) })}
+                  placeholder="Ej: 650000"
+                  className="w-full bg-slate-900 border border-emerald-500/40 rounded-xl px-4 py-3 text-sm text-emerald-400 font-bold focus:outline-none focus:border-emerald-400"
+                />
+              </div>
+
+              {/* Simulador de Margen y Rentabilidad */}
+              <div className="sm:col-span-12 p-4 rounded-2xl bg-gradient-to-r from-emerald-950/40 via-slate-900/60 to-amber-950/30 border border-emerald-500/30 flex flex-wrap items-center justify-between gap-4">
+                <div>
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-400 block">
+                    📊 Análisis Financiero por Unidad
+                  </span>
+                  <p className="text-xs text-slate-400 mt-0.5">
+                    Cálculo automático de utilidad bruta y margen sobre el precio de venta.
+                  </p>
+                </div>
+                <div className="flex items-center gap-6">
+                  <div>
+                    <span className="text-[10px] text-slate-500 uppercase block font-semibold">Ganancia Bruta ($)</span>
+                    <span className="text-base font-heading font-black text-emerald-400">
+                      {formatPriceCOP(Math.max(0, (formData.price_offer || 0) - (formData.cost_price_cop || 0)))}
+                    </span>
+                  </div>
+                  <div className="h-8 w-[1px] bg-slate-800" />
+                  <div>
+                    <span className="text-[10px] text-slate-500 uppercase block font-semibold">Margen Rentabilidad (%)</span>
+                    <span className="text-base font-heading font-black text-amber-400">
+                      {formData.price_offer && formData.price_offer > 0
+                        ? `${Math.round((((formData.price_offer - (formData.cost_price_cop || 0)) / formData.price_offer) * 100))}%`
+                        : "0%"}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Control de Stock */}
+              <div className="sm:col-span-6">
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-2">
+                  Stock / Inventario Disponible (Unidades)
+                </label>
+                <input
+                  type="number"
+                  min="0"
+                  value={formData.stock_quantity ?? 10}
+                  onChange={(e) => setFormData({ ...formData, stock_quantity: parseInt(e.target.value) || 0 })}
+                  className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white font-bold focus:outline-none focus:border-amber-400"
+                />
+              </div>
+
+              {/* Alerta de Stock Mínimo */}
+              <div className="sm:col-span-6">
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-2">
+                  Alerta de Stock Mínimo (Aviso de Reorden)
+                </label>
+                <input
+                  type="number"
+                  min="1"
+                  value={formData.min_stock_alert ?? 2}
+                  onChange={(e) => setFormData({ ...formData, min_stock_alert: parseInt(e.target.value) || 1 })}
+                  className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-300 focus:outline-none focus:border-amber-400"
                 />
               </div>
 
@@ -621,105 +702,151 @@ export default function ProductsAdminPage() {
                 <tr>
                   <th className="p-4">Producto</th>
                   <th className="p-4">Categoría</th>
-                  <th className="p-4">Precio Oferta</th>
-                  <th className="p-4">Precio Regular</th>
+                  <th className="p-4">Precio Venta</th>
+                  <th className="p-4 text-emerald-400">Costo Compra</th>
+                  <th className="p-4 text-amber-400">Margen / Utilidad</th>
+                  <th className="p-4">Stock</th>
                   <th className="p-4">Visibilidad</th>
                   <th className="p-4 text-right">Acciones</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-800/60">
-                {filteredProducts.map((product) => (
-                  <tr
-                    key={product.id}
-                    className={`hover:bg-slate-900/40 transition-colors ${product.is_available === false ? "opacity-60 bg-slate-950/40" : ""
+                {filteredProducts.map((product) => {
+                  const cost = product.cost_price_cop || 0;
+                  const profit = Math.max(0, product.price_offer - cost);
+                  const marginPercent = product.price_offer > 0 ? Math.round((profit / product.price_offer) * 100) : 0;
+                  const stock = product.stock_quantity ?? 10;
+                  const minAlert = product.min_stock_alert ?? 2;
+                  const isLowStock = stock <= minAlert;
+
+                  return (
+                    <tr
+                      key={product.id}
+                      className={`hover:bg-slate-900/40 transition-colors ${
+                        product.is_available === false ? "opacity-60 bg-slate-950/40" : ""
                       }`}
-                  >
-
-                    {/* Nombre & Badge */}
-                    <td className="p-4">
-                      <div className="flex items-start gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-center text-amber-400 shrink-0 mt-0.5">
-                          <Package size={18} />
-                        </div>
-                        <div>
-                          <div className="flex items-center gap-2 flex-wrap">
-                            <span className="font-bold text-white text-sm">{product.name}</span>
-                            {product.badge && (
-                              <span className="text-[10px] px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20 font-semibold">
-                                {product.badge}
-                              </span>
-                            )}
+                    >
+                      {/* Nombre & Badge */}
+                      <td className="p-4">
+                        <div className="flex items-start gap-3">
+                          <div className="w-10 h-10 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-center text-amber-400 shrink-0 mt-0.5">
+                            <Package size={18} />
                           </div>
-                          <p className="text-slate-500 text-[11px] line-clamp-1 max-w-sm mt-0.5">
-                            {product.description}
-                          </p>
+                          <div>
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <span className="font-bold text-white text-sm">{product.name}</span>
+                              {product.badge && (
+                                <span className="text-[10px] px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20 font-semibold">
+                                  {product.badge}
+                                </span>
+                              )}
+                            </div>
+                            <p className="text-slate-500 text-[11px] line-clamp-1 max-w-sm mt-0.5">
+                              {product.description}
+                            </p>
+                          </div>
                         </div>
-                      </div>
-                    </td>
+                      </td>
 
-                    {/* Categoría */}
-                    <td className="p-4 capitalize text-slate-400">
-                      <span className="px-2.5 py-1 rounded-md bg-slate-900 text-[11px] font-medium border border-slate-800">
-                        {product.category}
-                      </span>
-                    </td>
+                      {/* Categoría */}
+                      <td className="p-4 capitalize text-slate-400">
+                        <span className="px-2.5 py-1 rounded-md bg-slate-900 text-[11px] font-medium border border-slate-800">
+                          {product.category}
+                        </span>
+                      </td>
 
-                    {/* Precio Promo */}
-                    <td className="p-4 font-black text-amber-400 text-sm font-heading">
-                      {formatPriceCOP(product.price_offer)}
-                    </td>
-
-                    {/* Precio Regular */}
-                    <td className="p-4 text-slate-500 line-through">
-                      {formatPriceCOP(product.price_regular)}
-                    </td>
-
-                    {/* Visibilidad Switch */}
-                    <td className="p-4">
-                      <button
-                        onClick={() => handleToggleVisibility(product)}
-                        className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-bold transition-all ${product.is_available !== false
-                          ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500/20"
-                          : "bg-slate-900 text-slate-500 border border-slate-800 hover:text-slate-300"
-                          }`}
-                        title="Click para cambiar visibilidad"
-                      >
-                        {product.is_available !== false ? (
-                          <>
-                            <Eye size={13} />
-                            <span>Visible</span>
-                          </>
-                        ) : (
-                          <>
-                            <EyeOff size={13} />
-                            <span>Oculto</span>
-                          </>
+                      {/* Precio Venta */}
+                      <td className="p-4 font-black text-amber-400 text-sm font-heading">
+                        {formatPriceCOP(product.price_offer)}
+                        {product.price_regular > product.price_offer && (
+                          <span className="block text-[10px] text-slate-500 line-through font-normal">
+                            {formatPriceCOP(product.price_regular)}
+                          </span>
                         )}
-                      </button>
-                    </td>
+                      </td>
 
-                    {/* Acciones */}
-                    <td className="p-4 text-right">
-                      <div className="flex items-center justify-end gap-1.5">
-                        <button
-                          onClick={() => handleOpenEdit(product)}
-                          className="p-2 rounded-lg bg-slate-900 hover:bg-amber-500 hover:text-slate-950 text-slate-300 transition-colors"
-                          title="Editar producto"
-                        >
-                          <Edit size={14} />
-                        </button>
-                        <button
-                          onClick={() => handleDeleteProduct(product)}
-                          className="p-2 rounded-lg bg-slate-900 hover:bg-red-500 hover:text-white text-slate-400 transition-colors"
-                          title="Eliminar producto"
-                        >
-                          <Trash2 size={14} />
-                        </button>
-                      </div>
-                    </td>
+                      {/* Costo Compra */}
+                      <td className="p-4 font-bold text-emerald-400 text-xs font-mono">
+                        {cost > 0 ? formatPriceCOP(cost) : <span className="text-slate-600 font-normal">Sin asignar</span>}
+                      </td>
 
-                  </tr>
-                ))}
+                      {/* Margen / Utilidad */}
+                      <td className="p-4">
+                        {cost > 0 ? (
+                          <div className="space-y-0.5">
+                            <span className="text-xs font-bold text-white block font-mono">
+                              +{formatPriceCOP(profit)}
+                            </span>
+                            <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20 inline-block">
+                              {marginPercent}% Margen
+                            </span>
+                          </div>
+                        ) : (
+                          <span className="text-xs text-slate-500">N/D</span>
+                        )}
+                      </td>
+
+                      {/* Stock */}
+                      <td className="p-4">
+                        <span
+                          className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold ${
+                            isLowStock
+                              ? "bg-red-500/10 text-red-400 border border-red-500/30"
+                              : "bg-slate-900 text-slate-200 border border-slate-800"
+                          }`}
+                        >
+                          {stock} uds
+                          {isLowStock && <span className="text-[9px] uppercase tracking-wider text-red-400">⚠️ Bajo</span>}
+                        </span>
+                      </td>
+
+                      {/* Visibilidad Switch */}
+                      <td className="p-4">
+                        <button
+                          onClick={() => handleToggleVisibility(product)}
+                          className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-bold transition-all ${
+                            product.is_available !== false
+                              ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500/20"
+                              : "bg-slate-900 text-slate-500 border border-slate-800 hover:text-slate-300"
+                          }`}
+                          title="Click para cambiar visibilidad"
+                        >
+                          {product.is_available !== false ? (
+                            <>
+                              <Eye size={13} />
+                              <span>Visible</span>
+                            </>
+                          ) : (
+                            <>
+                              <EyeOff size={13} />
+                              <span>Oculto</span>
+                            </>
+                          )}
+                        </button>
+                      </td>
+
+                      {/* Acciones */}
+                      <td className="p-4 text-right">
+                        <div className="flex items-center justify-end gap-1.5">
+                          <button
+                            onClick={() => handleOpenEdit(product)}
+                            className="p-2 rounded-lg bg-slate-900 hover:bg-amber-500 hover:text-slate-950 text-slate-300 transition-colors"
+                            title="Editar producto"
+                          >
+                            <Edit size={14} />
+                          </button>
+                          <button
+                            onClick={() => handleDeleteProduct(product)}
+                            className="p-2 rounded-lg bg-slate-900 hover:bg-red-500 hover:text-white text-slate-400 transition-colors"
+                            title="Eliminar producto"
+                          >
+                            <Trash2 size={14} />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>

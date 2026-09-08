@@ -72,6 +72,7 @@ export function Footer() {
             <span className="text-xs font-bold uppercase tracking-wider text-sky-400 block mb-2">Políticas & Legal</span>
             <ul className="space-y-1.5 text-[11px]">
               <li><Link href="/legal/habeas-data" className="hover:text-sky-400 transition-colors">Habeas Data (Ley 1581)</Link></li>
+              <li><Link href="/unsubscribe" className="hover:text-amber-400 text-slate-300 font-medium transition-colors">🔕 Desuscribirse de Promociones</Link></li>
               <li><Link href="/legal/devoluciones-garantias" className="hover:text-sky-400 transition-colors">Garantías & Devoluciones</Link></li>
               <li><Link href="/legal/terminos-condiciones" className="hover:text-sky-400 transition-colors">Términos y Condiciones</Link></li>
               <li><Link href="/legal/uso-ia-iso42001" className="hover:text-sky-400 transition-colors text-amber-400/90 font-medium">Uso Ético IA (ISO 42001)</Link></li>
