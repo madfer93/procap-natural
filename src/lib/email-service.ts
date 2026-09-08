@@ -114,10 +114,31 @@ export function generateOrderConfirmationHtml(order: OrderShipment): string {
       box-shadow: 0 20px 40px rgba(0,0,0,0.6);
     }
     .header {
-      background: linear-gradient(135deg, #031C45 0%, #083372 100%);
-      padding: 32px 24px;
+      background: linear-gradient(135deg, #02122c 0%, #06285a 100%);
+      padding: 36px 24px;
       text-align: center;
       border-bottom: 1px solid rgba(56, 189, 248, 0.2);
+    }
+    .logo-container {
+      margin-bottom: 16px;
+    }
+    .brand-logo {
+      width: 64px;
+      height: 64px;
+      border-radius: 16px;
+      border: 1.5px solid rgba(56, 189, 248, 0.4);
+      background-color: #031C45;
+      padding: 4px;
+      display: inline-block;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+    }
+    .brand-name {
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: 2px;
+      color: #38bdf8;
+      text-transform: uppercase;
+      margin: 8px 0 14px 0;
     }
     .badge {
       display: inline-block;
@@ -184,7 +205,7 @@ export function generateOrderConfirmationHtml(order: OrderShipment): string {
     }
     .footer {
       background-color: #020c1e;
-      padding: 24px;
+      padding: 26px 20px;
       text-align: center;
       border-top: 1px solid #1e293b;
       font-size: 11px;
@@ -201,8 +222,14 @@ export function generateOrderConfirmationHtml(order: OrderShipment): string {
   <div class="wrapper">
     <div class="container">
       
-      <!-- Encabezado -->
+      <!-- Encabezado con Logo Oficial -->
       <div class="header">
+        <div class="logo-container">
+          <a href="${siteUrl}" target="_blank" style="text-decoration: none;">
+            <img src="${siteUrl}/favicons/android-chrome-192x192.png" alt="Procap Natural Logo" class="brand-logo" width="64" height="64">
+          </a>
+          <div class="brand-name">PROCAP <span style="color: #ffffff;">NATURAL</span></div>
+        </div>
         <div class="badge">${headerBadgeText}</div>
         <h1 class="title">${headerTitle}</h1>
         <p class="subtitle">${headerSubtitle}</p>
@@ -349,13 +376,14 @@ export function generateOrderConfirmationHtml(order: OrderShipment): string {
 
       </div>
 
-      <!-- Pie de Página -->
+      <!-- Pie de Página Oficial con Sedes -->
       <div class="footer">
-        <strong style="color: #ffffff;">Procap Natural • Solución Capilar Indetectable</strong><br>
-        📍 Calle 16 # 83a-15, Bogotá D.C., Colombia • Tel: +${whatsappNumber}<br>
-        Web: <a href="${siteUrl}">${siteUrl.replace('https://', '')}</a><br>
-        <p style="margin-top: 10px; font-size: 10px; color: #475569;">
-          Este correo es una confirmación automática generada por el sistema tras una transacción en Wompi.
+        <strong style="color: #ffffff; font-size: 12px;">PROCAP NATURAL • SOLUCIÓN CAPILAR INDETECTABLE</strong><br>
+        📍 <strong>4 Sedes Oficiales:</strong> Bogotá (Chicó Norte) • Cali (El Ingenio 3) • Neiva (Canaima) • Barranquilla (Centro Histórico)<br>
+        Web: <a href="${siteUrl}">${siteUrl.replace('https://', '')}</a> • WhatsApp: +${whatsappNumber}<br>
+        Instagram: <a href="https://instagram.com/protesiscapilarnatural" target="_blank">@protesiscapilarnatural</a> • TikTok: <a href="https://www.tiktok.com/@procapnatural" target="_blank">@procapnatural</a><br>
+        <p style="margin-top: 12px; font-size: 10px; color: #475569;">
+          © ${new Date().getFullYear()} Procap Natural Colombia. Todos los derechos reservados. Desarrollado por J&amp;M Tech Solutions.
         </p>
       </div>
 
@@ -409,7 +437,7 @@ export async function sendOrderConfirmationEmail(order: OrderShipment): Promise<
 }
 
 /**
- * Genera la plantilla HTML para confirmación de cita / agendamiento
+ * Genera la plantilla HTML para confirmación de cita / agendamiento con Logo y Sedes
  */
 export function generateAppointmentConfirmationHtml(appointment: {
   id: string;
@@ -465,10 +493,31 @@ export function generateAppointmentConfirmationHtml(appointment: {
       box-shadow: 0 20px 40px rgba(0,0,0,0.6);
     }
     .header {
-      background: linear-gradient(135deg, #031C45 0%, #0c3875 100%);
-      padding: 32px 24px;
+      background: linear-gradient(135deg, #02122c 0%, #06285a 100%);
+      padding: 36px 24px;
       text-align: center;
       border-bottom: 1px solid rgba(56, 189, 248, 0.2);
+    }
+    .logo-container {
+      margin-bottom: 16px;
+    }
+    .brand-logo {
+      width: 64px;
+      height: 64px;
+      border-radius: 16px;
+      border: 1.5px solid rgba(56, 189, 248, 0.4);
+      background-color: #031C45;
+      padding: 4px;
+      display: inline-block;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+    }
+    .brand-name {
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: 2px;
+      color: #38bdf8;
+      text-transform: uppercase;
+      margin: 8px 0 14px 0;
     }
     .badge {
       display: inline-block;
@@ -535,7 +584,7 @@ export function generateAppointmentConfirmationHtml(appointment: {
     }
     .footer {
       background-color: #020c1e;
-      padding: 24px;
+      padding: 26px 20px;
       text-align: center;
       border-top: 1px solid #1e293b;
       font-size: 11px;
@@ -548,8 +597,14 @@ export function generateAppointmentConfirmationHtml(appointment: {
   <div class="wrapper">
     <div class="container">
       
-      <!-- Encabezado -->
+      <!-- Encabezado con Logo Oficial -->
       <div class="header">
+        <div class="logo-container">
+          <a href="${siteUrl}" target="_blank" style="text-decoration: none;">
+            <img src="${siteUrl}/favicons/android-chrome-192x192.png" alt="Procap Natural Logo" class="brand-logo" width="64" height="64">
+          </a>
+          <div class="brand-name">PROCAP <span style="color: #ffffff;">NATURAL</span></div>
+        </div>
         <div class="badge">📅 Reserva Confirmada</div>
         <h1 class="title">¡Tu Cita está Programada!</h1>
         <p class="subtitle">Hemos reservado tu espacio exclusivo en nuestra cabina VIP individual.</p>
@@ -585,7 +640,7 @@ export function generateAppointmentConfirmationHtml(appointment: {
               <td style="padding: 8px 0; color: #34d399; font-weight: 800; text-align: right;">${safeTime}</td>
             </tr>
             <tr style="border-bottom: 1px solid #1e293b;">
-              <td style="padding: 8px 0; color: #94a3b8;">Sede / Ubicación:</td>
+              <td style="padding: 8px 0; color: #94a3b8;">Sede Asignada:</td>
               <td style="padding: 8px 0; color: #ffffff; font-weight: 700; text-align: right;">${safeLocation}</td>
             </tr>
             <tr>
@@ -600,8 +655,8 @@ export function generateAppointmentConfirmationHtml(appointment: {
           <div class="card-title" style="color: #38bdf8;">✨ Recomendaciones para tu Visita</div>
           <ul style="margin: 0; padding-left: 18px; font-size: 12px; color: #cbd5e1; line-height: 1.8;">
             <li><strong>Puntualidad:</strong> Te sugerimos llegar 10 minutos antes para recibirte con comodidad.</li>
-            <li><strong>Privacidad Total:</strong> Serás atendido en una cabina individual privada con aire acondicionado.</li>
-            <li><strong>Atención Personalizada:</strong> Evaluaremos tu densidad capilar, color exacto y diseño de línea frontal natural.</li>
+            <li><strong>Privacidad Total:</strong> Serás atendido en una cabina individual privada climatizada con total discreción.</li>
+            <li><strong>Atención Personalizada:</strong> Evaluaremos tu densidad capilar, tono exacto y diseño de línea frontal natural.</li>
             <li><strong>Reprogramación:</strong> Si requieres cambiar tu horario, puedes notificarnos con 2 horas de anticipación por WhatsApp.</li>
           </ul>
         </div>
@@ -615,13 +670,14 @@ export function generateAppointmentConfirmationHtml(appointment: {
 
       </div>
 
-      <!-- Pie de Página -->
+      <!-- Pie de Página Oficial con Sedes -->
       <div class="footer">
-        <strong style="color: #ffffff;">Procap Natural • Solución Capilar Indetectable</strong><br>
-        📍 Sedes en Bogotá, Cali, Neiva, Barranquilla y Giras Nacionales<br>
-        Web: <a href="${siteUrl}" style="color: #38bdf8; text-decoration: none;">${siteUrl.replace('https://', '')}</a> • Tel: +${whatsappNumber}<br>
-        <p style="margin-top: 10px; font-size: 10px; color: #475569;">
-          Mensaje generado automáticamente desde el portal oficial de Procap Natural.
+        <strong style="color: #ffffff; font-size: 12px;">PROCAP NATURAL • SOLUCIÓN CAPILAR INDETECTABLE</strong><br>
+        📍 <strong>4 Sedes Oficiales:</strong> Bogotá (Chicó Norte) • Cali (El Ingenio 3) • Neiva (Canaima) • Barranquilla (Centro Histórico)<br>
+        Web: <a href="${siteUrl}">${siteUrl.replace('https://', '')}</a> • WhatsApp: +${whatsappNumber}<br>
+        Instagram: <a href="https://instagram.com/protesiscapilarnatural" target="_blank">@protesiscapilarnatural</a> • TikTok: <a href="https://www.tiktok.com/@procapnatural" target="_blank">@procapnatural</a><br>
+        <p style="margin-top: 12px; font-size: 10px; color: #475569;">
+          © ${new Date().getFullYear()} Procap Natural Colombia. Todos los derechos reservados. Desarrollado por J&amp;M Tech Solutions.
         </p>
       </div>
 
