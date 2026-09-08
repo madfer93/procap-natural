@@ -40,3 +40,7 @@ Thumbs.db
 *.tar.gz
 *.rar
 
+# Scratch & Temporary test files
+/scratch/
+
+
