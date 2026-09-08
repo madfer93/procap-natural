@@ -1,19 +1,19 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { 
-  Package, 
-  Search, 
-  Plus, 
-  Edit, 
-  Trash2, 
-  Eye, 
-  EyeOff, 
-  UploadCloud, 
-  Check, 
-  X, 
-  Sparkles, 
-  Save, 
+import {
+  Package,
+  Search,
+  Plus,
+  Edit,
+  Trash2,
+  Eye,
+  EyeOff,
+  UploadCloud,
+  Check,
+  X,
+  Sparkles,
+  Save,
   ArrowLeft,
   DollarSign,
   Tag,
@@ -30,11 +30,11 @@ export default function ProductsAdminPage() {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("todos");
-  
+
   // Panel de edición / creación (Inline Panel, cero modales)
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
-  
+
   // Form state
   const [formData, setFormData] = useState<Partial<Product>>({
     name: "",
@@ -102,7 +102,7 @@ export default function ProductsAdminPage() {
 
   const handleOpenEdit = (product: Product) => {
     setEditingProduct(product);
-    setFormData({ 
+    setFormData({
       ...product,
       payment_link: product.payment_link || "",
       payment_link_credit: product.payment_link_credit || ""
@@ -259,7 +259,7 @@ export default function ProductsAdminPage() {
 
   return (
     <div className="space-y-8">
-      
+
       {/* Top Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-800">
         <div>
@@ -285,11 +285,10 @@ export default function ProductsAdminPage() {
       {/* Notificaciones */}
       {statusMessage && (
         <div
-          className={`p-4 rounded-xl text-xs font-bold flex items-center justify-between animate-in fade-in duration-300 ${
-            statusMessage.type === "success"
-              ? "bg-emerald-500/10 border border-emerald-500/40 text-emerald-300"
-              : "bg-red-500/10 border border-red-500/40 text-red-300"
-          }`}
+          className={`p-4 rounded-xl text-xs font-bold flex items-center justify-between animate-in fade-in duration-300 ${statusMessage.type === "success"
+            ? "bg-emerald-500/10 border border-emerald-500/40 text-emerald-300"
+            : "bg-red-500/10 border border-red-500/40 text-red-300"
+            }`}
         >
           <span>{statusMessage.text}</span>
           <button onClick={() => setStatusMessage(null)}>
@@ -301,7 +300,7 @@ export default function ProductsAdminPage() {
       {/* FORMULARIO EXPANDIBLE INLINE (Cero modales molestos) */}
       {isFormOpen && (
         <div className="p-6 sm:p-8 rounded-3xl bg-slate-950 border border-amber-500/40 shadow-2xl relative animate-in fade-in duration-300">
-          
+
           <div className="flex items-center justify-between pb-6 mb-6 border-b border-slate-800">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-400 flex items-center justify-center">
@@ -325,9 +324,9 @@ export default function ProductsAdminPage() {
           </div>
 
           <form onSubmit={handleSaveProduct} className="space-y-6">
-            
+
             <div className="grid grid-cols-1 sm:grid-cols-12 gap-6">
-              
+
               {/* Nombre del Producto */}
               <div className="sm:col-span-8">
                 <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-2">
@@ -571,7 +570,7 @@ export default function ProductsAdminPage() {
 
       {/* BARRA DE BÚSQUEDA Y FILTROS */}
       <div className="p-4 rounded-2xl bg-slate-950 border border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">
-        
+
         {/* Search */}
         <div className="relative w-full sm:max-w-xs">
           <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
@@ -590,11 +589,10 @@ export default function ProductsAdminPage() {
             <button
               key={cat}
               onClick={() => setSelectedCategory(cat)}
-              className={`px-3 py-1.5 rounded-lg text-xs font-semibold capitalize transition-all ${
-                selectedCategory === cat
-                  ? "bg-amber-500 text-slate-950 font-bold"
-                  : "bg-slate-900 text-slate-400 hover:text-white"
-              }`}
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold capitalize transition-all ${selectedCategory === cat
+                ? "bg-amber-500 text-slate-950 font-bold"
+                : "bg-slate-900 text-slate-400 hover:text-white"
+                }`}
             >
               {cat}
             </button>
@@ -633,11 +631,10 @@ export default function ProductsAdminPage() {
                 {filteredProducts.map((product) => (
                   <tr
                     key={product.id}
-                    className={`hover:bg-slate-900/40 transition-colors ${
-                      product.is_available === false ? "opacity-60 bg-slate-950/40" : ""
-                    }`}
+                    className={`hover:bg-slate-900/40 transition-colors ${product.is_available === false ? "opacity-60 bg-slate-950/40" : ""
+                      }`}
                   >
-                    
+
                     {/* Nombre & Badge */}
                     <td className="p-4">
                       <div className="flex items-start gap-3">
@@ -681,11 +678,10 @@ export default function ProductsAdminPage() {
                     <td className="p-4">
                       <button
                         onClick={() => handleToggleVisibility(product)}
-                        className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-bold transition-all ${
-                          product.is_available !== false
-                            ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500/20"
-                            : "bg-slate-900 text-slate-500 border border-slate-800 hover:text-slate-300"
-                        }`}
+                        className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-bold transition-all ${product.is_available !== false
+                          ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500/20"
+                          : "bg-slate-900 text-slate-500 border border-slate-800 hover:text-slate-300"
+                          }`}
                         title="Click para cambiar visibilidad"
                       >
                         {product.is_available !== false ? (
