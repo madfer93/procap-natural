@@ -23,7 +23,9 @@ import {
   Cloud,
   Play,
   Image as ImageIcon,
-  CheckCircle2
+  CheckCircle2,
+  Mail,
+  Send
 } from "lucide-react";
 import { SiteSettingsData } from "@/app/api/settings/route";
 import { isSupabaseConfigured } from "@/lib/supabase";
@@ -63,8 +65,43 @@ export default function SettingsAdminPage() {
   const [uploadingPoster, setUploadingPoster] = useState(false);
   const [uploadSuccessMessage, setUploadSuccessMessage] = useState("");
 
+  // Estado prueba de correo
+  const [testingEmail, setTestingEmail] = useState(false);
+  const [testEmailResult, setTestEmailResult] = useState<{ success?: boolean; message?: string } | null>(null);
+
   const videoFileInputRef = useRef<HTMLInputElement | null>(null);
   const posterFileInputRef = useRef<HTMLInputElement | null>(null);
+
+  const handleTestEmail = async () => {
+    try {
+      setTestingEmail(true);
+      setTestEmailResult(null);
+      const res = await fetch("/api/admin/test-email", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ to: "admin@protesiscapilarcolombia.com" }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setTestEmailResult({
+          success: true,
+          message: `¡Correo de prueba enviado con éxito a ${data.sentTo}! Revisa tu bandeja de entrada en Namecheap Private Email.`,
+        });
+      } else {
+        setTestEmailResult({
+          success: false,
+          message: data.error || "Error al enviar correo de prueba. Verifica la variable SMTP_PASS en Vercel.",
+        });
+      }
+    } catch (err: any) {
+      setTestEmailResult({
+        success: false,
+        message: err.message || "Error al conectar con el endpoint de prueba.",
+      });
+    } finally {
+      setTestingEmail(false);
+    }
+  };
 
   useEffect(() => {
     fetchSettings();
@@ -750,7 +787,80 @@ export default function SettingsAdminPage() {
         </div>
 
         {/* ======================================================== */}
-        {/* SECCIÓN 6: SEGURIDAD DEL PANEL ADMIN                      */}
+        {/* SECCIÓN 6: SERVIDOR DE CORREOS (NAMECHEAP PRIVATE EMAIL)   */}
+        {/* ======================================================== */}
+        <div className="p-6 rounded-2xl bg-slate-950 border border-sky-500/30 space-y-5">
+          <div className="flex items-center justify-between border-b border-slate-800 pb-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-sky-500/10 text-sky-400 flex items-center justify-center">
+                <Mail size={20} />
+              </div>
+              <div>
+                <h3 className="text-base font-bold text-white">Servidor de Correos Corporativos (SMTP)</h3>
+                <p className="text-xs text-slate-400">Envío automático de confirmaciones de citas, compras y alertas de leads</p>
+              </div>
+            </div>
+            <span className="text-[10px] px-2.5 py-1 rounded bg-sky-500/10 text-sky-300 border border-sky-500/30 font-bold flex items-center gap-1">
+              <Sparkles size={12} /> Namecheap Private Email
+            </span>
+          </div>
+
+          <div className="p-4 rounded-xl bg-slate-900/80 border border-slate-800 space-y-3">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
+              <div className="space-y-1">
+                <span className="text-slate-400 block font-bold">Buzón Oficial:</span>
+                <span className="font-mono text-sky-400 font-bold">admin@protesiscapilarcolombia.com</span>
+              </div>
+              <div className="space-y-1">
+                <span className="text-slate-400 block font-bold">Servidor Saliente SMTP:</span>
+                <span className="font-mono text-slate-200">mail.privateemail.com</span>
+              </div>
+              <div className="space-y-1">
+                <span className="text-slate-400 block font-bold">Puerto & Seguridad:</span>
+                <span className="font-mono text-emerald-400 font-bold">Puerto 465 (SSL / TLS)</span>
+              </div>
+            </div>
+
+            <div className="pt-2 border-t border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div className="text-[11px] text-slate-400">
+                Las credenciales se conectan mediante las variables de entorno <code className="text-sky-300">SMTP_USER</code> y <code className="text-sky-300">SMTP_PASS</code> en Vercel.
+              </div>
+
+              <button
+                type="button"
+                disabled={testingEmail}
+                onClick={handleTestEmail}
+                className="px-4 py-2 rounded-xl bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold text-xs flex items-center gap-2 transition-all shadow-md shadow-sky-500/20 disabled:opacity-50 shrink-0"
+              >
+                {testingEmail ? (
+                  <>
+                    <Loader2 size={14} className="animate-spin" />
+                    <span>Probando conexión...</span>
+                  </>
+                ) : (
+                  <>
+                    <Send size={14} />
+                    <span>Enviar Correo de Prueba</span>
+                  </>
+                )}
+              </button>
+            </div>
+
+            {testEmailResult && (
+              <div className={`p-3.5 rounded-xl text-xs flex items-center gap-2.5 mt-3 animate-fade-in ${
+                testEmailResult.success 
+                  ? "bg-emerald-500/10 border border-emerald-500/30 text-emerald-400" 
+                  : "bg-rose-500/10 border border-rose-500/30 text-rose-400"
+              }`}>
+                {testEmailResult.success ? <CheckCircle2 size={16} className="shrink-0" /> : <ShieldCheck size={16} className="shrink-0" />}
+                <span>{testEmailResult.message}</span>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* ======================================================== */}
+        {/* SECCIÓN 7: SEGURIDAD DEL PANEL ADMIN                      */}
         {/* ======================================================== */}
         <div className="p-6 rounded-2xl bg-slate-950 border border-slate-800 space-y-4">
           <div className="flex items-center gap-3">

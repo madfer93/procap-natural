@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabase, isSupabaseConfigured } from "@/lib/supabase";
 import { INITIAL_APPOINTMENTS, Appointment } from "@/lib/appointments-store";
+import { sendAppointmentConfirmationEmail } from "@/lib/email-service";
 
 export const dynamic = "force-dynamic";
 
@@ -27,19 +28,39 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
-    const body: Appointment = await req.json();
+    const rawBody = await req.json();
 
-    if (!body.client_name || !body.client_phone || !body.appointment_date) {
+    const clientName = rawBody.client_name || rawBody.name;
+    const clientPhone = rawBody.client_phone || rawBody.phone;
+    const clientEmail = rawBody.client_email || rawBody.email;
+    const appointmentDate = rawBody.appointment_date || rawBody.date;
+    const appointmentTime = rawBody.appointment_time || rawBody.time_slot || rawBody.time || "10:00 AM";
+    const serviceName = rawBody.service_name || rawBody.service_type || "Valoración y Diagnóstico Capilar";
+    const locationName = rawBody.location_name || rawBody.location || "Sede Principal Bogotá (Chicó Norte)";
+
+    if (!clientName || !clientPhone || !appointmentDate) {
       return NextResponse.json({ error: "Nombre, teléfono y fecha son obligatorios." }, { status: 400 });
     }
 
     const newAppointment: Appointment = {
-      ...body,
-      id: body.id || `apt-${Date.now()}`,
-      status: body.status || 'pending',
-      created_by: body.created_by || 'client_web',
+      id: rawBody.id || `apt-${Date.now()}`,
+      client_name: clientName,
+      client_phone: clientPhone,
+      client_email: clientEmail || undefined,
+      location_name: locationName,
+      service_name: serviceName,
+      appointment_date: appointmentDate,
+      appointment_time: appointmentTime,
+      status: rawBody.status || 'pending',
+      notes: rawBody.notes || "",
+      created_by: rawBody.created_by || 'client_web',
       created_at: new Date().toISOString()
     };
+
+    // Disparar correo de confirmación de forma asíncrona / segura
+    sendAppointmentConfirmationEmail(newAppointment).catch((err) => {
+      console.error("[Appointments Route] Error al enviar email de confirmación:", err);
+    });
 
     if (isSupabaseConfigured()) {
       const { data, error } = await supabase

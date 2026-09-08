@@ -367,7 +367,7 @@ export function generateOrderConfirmationHtml(order: OrderShipment): string {
 }
 
 /**
- * Función principal para enviar el correo al cliente y copia al admin
+ * Función principal para enviar el correo al cliente y copia al admin por compras/Wompi
  */
 export async function sendOrderConfirmationEmail(order: OrderShipment): Promise<{ success: boolean; error?: string }> {
   if (!order.customer_email) {
@@ -389,21 +389,338 @@ export async function sendOrderConfirmationEmail(order: OrderShipment): Promise<
       subject = `¡Tu pedido ha sido Despachado! 🚚 Guía #${order.tracking_number} - Procap Natural`;
     }
 
-    const senderEmail = process.env.SMTP_USER || "notificaciones@protesiscapilarcolombia.com";
+    const senderEmail = process.env.SMTP_USER || "admin@protesiscapilarcolombia.com";
 
     const mailOptions = {
       from: `"Procap Natural" <${senderEmail}>`,
       to: order.customer_email,
-      bcc: process.env.SMTP_USER || undefined,
+      bcc: senderEmail,
       subject: subject,
       html: htmlContent,
     };
 
     const info = await transporter.sendMail(mailOptions);
-    console.log(`[Email Service] Correo enviado exitosamente a ${order.customer_email}. MessageId: ${info.messageId}`);
+    console.log(`[Email Service] Correo de orden enviado exitosamente a ${order.customer_email}. MessageId: ${info.messageId}`);
     return { success: true };
   } catch (err: any) {
-    console.error(`[Email Service Error] No se pudo enviar el correo:`, err);
+    console.error(`[Email Service Error] No se pudo enviar el correo de orden:`, err);
     return { success: false, error: err.message };
   }
 }
+
+/**
+ * Genera la plantilla HTML para confirmación de cita / agendamiento
+ */
+export function generateAppointmentConfirmationHtml(appointment: {
+  id: string;
+  client_name: string;
+  client_phone: string;
+  client_email?: string;
+  location_name: string;
+  service_name: string;
+  appointment_date: string;
+  appointment_time: string;
+  notes?: string;
+}): string {
+  const whatsappNumber = escapeHtml(process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "573151189795");
+  const siteUrl = escapeHtml(process.env.NEXT_PUBLIC_SITE_URL || "https://protesiscapilarcolombia.com");
+
+  const safeClientName = escapeHtml(appointment.client_name);
+  const safeServiceName = escapeHtml(appointment.service_name);
+  const safeLocation = escapeHtml(appointment.location_name);
+  const safeDate = escapeHtml(appointment.appointment_date);
+  const safeTime = escapeHtml(appointment.appointment_time);
+  const safePhone = escapeHtml(appointment.client_phone);
+  const safeNotes = escapeHtml(appointment.notes || "Ninguna especificada");
+  const safeId = escapeHtml(appointment.id);
+
+  return `
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Confirmación de Reserva - Procap Natural</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background-color: #03122c;
+      color: #f1f5f9;
+      margin: 0;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+    }
+    .wrapper {
+      width: 100%;
+      background-color: #03122c;
+      padding: 30px 15px;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      background-color: #031C45;
+      border-radius: 24px;
+      border: 1px solid #1e3a68;
+      overflow: hidden;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+    }
+    .header {
+      background: linear-gradient(135deg, #031C45 0%, #0c3875 100%);
+      padding: 32px 24px;
+      text-align: center;
+      border-bottom: 1px solid rgba(56, 189, 248, 0.2);
+    }
+    .badge {
+      display: inline-block;
+      background-color: rgba(56, 189, 248, 0.15);
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      color: #38bdf8;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding: 6px 14px;
+      border-radius: 9999px;
+      margin-bottom: 12px;
+    }
+    .title {
+      font-size: 24px;
+      font-weight: 900;
+      color: #ffffff;
+      margin: 0 0 8px 0;
+      letter-spacing: -0.5px;
+    }
+    .subtitle {
+      font-size: 13px;
+      color: #94a3b8;
+      margin: 0;
+      line-height: 1.5;
+    }
+    .content {
+      padding: 28px 24px;
+    }
+    .card {
+      background-color: #02112b;
+      border: 1px solid #1e293b;
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 24px;
+    }
+    .card-title {
+      font-size: 12px;
+      font-weight: 800;
+      color: #38bdf8;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-top: 0;
+      margin-bottom: 14px;
+      border-bottom: 1px solid #1e293b;
+      padding-bottom: 8px;
+    }
+    .btn-container {
+      text-align: center;
+      margin: 28px 0 10px 0;
+    }
+    .btn {
+      display: inline-block;
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: #022c22 !important;
+      font-size: 13px;
+      font-weight: 900;
+      text-decoration: none;
+      padding: 14px 28px;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);
+      letter-spacing: 0.2px;
+    }
+    .footer {
+      background-color: #020c1e;
+      padding: 24px;
+      text-align: center;
+      border-top: 1px solid #1e293b;
+      font-size: 11px;
+      color: #64748b;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="container">
+      
+      <!-- Encabezado -->
+      <div class="header">
+        <div class="badge">📅 Reserva Confirmada</div>
+        <h1 class="title">¡Tu Cita está Programada!</h1>
+        <p class="subtitle">Hemos reservado tu espacio exclusivo en nuestra cabina VIP individual.</p>
+      </div>
+
+      <!-- Contenido Principal -->
+      <div class="content">
+        
+        <p style="font-size: 14px; margin-top: 0; margin-bottom: 20px; line-height: 1.6;">
+          Hola, <strong style="color: #ffffff;">${safeClientName}</strong> 👋<br>
+          Queremos confirmarte que tu cita con nuestros especialistas capilares ha sido agendada con éxito. A continuación te presentamos el resumen de tu sesión:
+        </p>
+
+        <!-- Tarjeta de Detalles de Cita -->
+        <div class="card">
+          <div class="card-title">💈 Detalles de la Reserva</div>
+          
+          <table style="width: 100%; font-size: 13px; border-collapse: collapse;">
+            <tr style="border-bottom: 1px solid #1e293b;">
+              <td style="padding: 8px 0; color: #94a3b8;">Código de Cita:</td>
+              <td style="padding: 8px 0; color: #38bdf8; font-weight: 800; text-align: right; font-family: monospace;">${safeId}</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #1e293b;">
+              <td style="padding: 8px 0; color: #94a3b8;">Servicio:</td>
+              <td style="padding: 8px 0; color: #ffffff; font-weight: 700; text-align: right;">${safeServiceName}</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #1e293b;">
+              <td style="padding: 8px 0; color: #94a3b8;">Fecha:</td>
+              <td style="padding: 8px 0; color: #34d399; font-weight: 800; text-align: right;">${safeDate}</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #1e293b;">
+              <td style="padding: 8px 0; color: #94a3b8;">Hora:</td>
+              <td style="padding: 8px 0; color: #34d399; font-weight: 800; text-align: right;">${safeTime}</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #1e293b;">
+              <td style="padding: 8px 0; color: #94a3b8;">Sede / Ubicación:</td>
+              <td style="padding: 8px 0; color: #ffffff; font-weight: 700; text-align: right;">${safeLocation}</td>
+            </tr>
+            <tr>
+              <td style="padding: 8px 0; color: #94a3b8;">Teléfono Registrado:</td>
+              <td style="padding: 8px 0; color: #cbd5e1; font-weight: 600; text-align: right;">${safePhone}</td>
+            </tr>
+          </table>
+        </div>
+
+        <!-- Recomendaciones para la cita -->
+        <div class="card" style="border: 1px solid rgba(56, 189, 248, 0.3); background: linear-gradient(135deg, #021636 0%, #032357 100%);">
+          <div class="card-title" style="color: #38bdf8;">✨ Recomendaciones para tu Visita</div>
+          <ul style="margin: 0; padding-left: 18px; font-size: 12px; color: #cbd5e1; line-height: 1.8;">
+            <li><strong>Puntualidad:</strong> Te sugerimos llegar 10 minutos antes para recibirte con comodidad.</li>
+            <li><strong>Privacidad Total:</strong> Serás atendido en una cabina individual privada con aire acondicionado.</li>
+            <li><strong>Atención Personalizada:</strong> Evaluaremos tu densidad capilar, color exacto y diseño de línea frontal natural.</li>
+            <li><strong>Reprogramación:</strong> Si requieres cambiar tu horario, puedes notificarnos con 2 horas de anticipación por WhatsApp.</li>
+          </ul>
+        </div>
+
+        <!-- Botón WhatsApp -->
+        <div class="btn-container">
+          <a href="https://wa.me/${whatsappNumber}?text=${encodeURIComponent(`¡Hola Procap Natural! Acabo de agendar mi cita *${safeId}* para *${safeServiceName}* el *${safeDate}* a las *${safeTime}*. ¿Me pueden confirmar?`)}" target="_blank" class="btn">
+            💬 Confirmar por WhatsApp
+          </a>
+        </div>
+
+      </div>
+
+      <!-- Pie de Página -->
+      <div class="footer">
+        <strong style="color: #ffffff;">Procap Natural • Solución Capilar Indetectable</strong><br>
+        📍 Sedes en Bogotá, Cali, Neiva, Barranquilla y Giras Nacionales<br>
+        Web: <a href="${siteUrl}" style="color: #38bdf8; text-decoration: none;">${siteUrl.replace('https://', '')}</a> • Tel: +${whatsappNumber}<br>
+        <p style="margin-top: 10px; font-size: 10px; color: #475569;">
+          Mensaje generado automáticamente desde el portal oficial de Procap Natural.
+        </p>
+      </div>
+
+    </div>
+  </div>
+</body>
+</html>
+  `;
+}
+
+/**
+ * Envía correo automático de confirmación de cita al cliente y copia al admin
+ */
+export async function sendAppointmentConfirmationEmail(appointment: {
+  id: string;
+  client_name: string;
+  client_phone: string;
+  client_email?: string;
+  location_name: string;
+  service_name: string;
+  appointment_date: string;
+  appointment_time: string;
+  notes?: string;
+}): Promise<{ success: boolean; error?: string }> {
+  try {
+    const transporter = getEmailTransporter();
+    const htmlContent = generateAppointmentConfirmationHtml(appointment);
+    const senderEmail = process.env.SMTP_USER || "admin@protesiscapilarcolombia.com";
+
+    const recipients: string[] = [];
+    if (appointment.client_email) {
+      recipients.push(appointment.client_email);
+    }
+
+    const mailOptions = {
+      from: `"Procap Natural" <${senderEmail}>`,
+      to: recipients.length > 0 ? recipients : senderEmail,
+      bcc: senderEmail,
+      subject: `Confirmación de Reserva 📅 ${appointment.service_name} - ${appointment.appointment_date} ${appointment.appointment_time}`,
+      html: htmlContent,
+    };
+
+    const info = await transporter.sendMail(mailOptions);
+    console.log(`[Email Service] Correo de cita enviado exitosamente. MessageId: ${info.messageId}`);
+    return { success: true };
+  } catch (err: any) {
+    console.error(`[Email Service Error] No se pudo enviar el correo de cita:`, err);
+    return { success: false, error: err.message };
+  }
+}
+
+/**
+ * Envía alerta por correo al administrador sobre nuevo lead / cotización
+ */
+export async function sendNewLeadAlertEmail(lead: {
+  user_name?: string;
+  user_phone?: string;
+  interest_product?: string;
+  summary?: string;
+}): Promise<{ success: boolean; error?: string }> {
+  try {
+    const transporter = getEmailTransporter();
+    const senderEmail = process.env.SMTP_USER || "admin@protesiscapilarcolombia.com";
+    const safeName = escapeHtml(lead.user_name || "Prospecto Web");
+    const safePhone = escapeHtml(lead.user_phone || "Sin teléfono");
+    const safeProduct = escapeHtml(lead.interest_product || "Consulta general");
+    const safeSummary = escapeHtml(lead.summary || "Nuevo contacto desde el sitio web");
+
+    const htmlContent = `
+      <div style="font-family: sans-serif; background: #03122c; color: #fff; padding: 24px; border-radius: 16px;">
+        <h2 style="color: #38bdf8; margin-top: 0;">🔥 Nuevo Prospecto / Lead Capturado</h2>
+        <p>Se ha registrado un nuevo usuario interesado en Procap Natural:</p>
+        <div style="background: #031C45; padding: 16px; border-radius: 12px; border: 1px solid #1e3a68;">
+          <p><strong>Nombre:</strong> ${safeName}</p>
+          <p><strong>WhatsApp / Tel:</strong> ${safePhone}</p>
+          <p><strong>Interés:</strong> ${safeProduct}</p>
+          <p><strong>Resumen de Consulta:</strong> ${safeSummary}</p>
+        </div>
+        <p style="margin-top: 16px;">
+          <a href="https://wa.me/${safePhone.replace(/\D/g, '')}" style="background: #10b981; color: #000; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: bold;">
+            Contactar por WhatsApp
+          </a>
+        </p>
+      </div>
+    `;
+
+    const mailOptions = {
+      from: `"Procap Natural Bot" <${senderEmail}>`,
+      to: senderEmail,
+      subject: `🔥 Nuevo Lead Capilar: ${safeName} (${safeProduct})`,
+      html: htmlContent,
+    };
+
+    const info = await transporter.sendMail(mailOptions);
+    console.log(`[Email Service] Alerta de lead enviada al admin. MessageId: ${info.messageId}`);
+    return { success: true };
+  } catch (err: any) {
+    console.error(`[Email Service Error] No se pudo enviar alerta de lead:`, err);
+    return { success: false, error: err.message };
+  }
+}
+

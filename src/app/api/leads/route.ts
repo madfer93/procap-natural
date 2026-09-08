@@ -70,7 +70,20 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: error.message }, { status: 500 });
       }
 
+      // Enviar alerta de lead por correo al administrador si cuenta con teléfono o nombre
+      if (leadRecord.user_phone) {
+        import("@/lib/email-service").then(({ sendNewLeadAlertEmail }) => {
+          sendNewLeadAlertEmail(leadRecord).catch(() => {});
+        });
+      }
+
       return NextResponse.json({ success: true, lead: data });
+    }
+
+    if (leadRecord.user_phone) {
+      import("@/lib/email-service").then(({ sendNewLeadAlertEmail }) => {
+        sendNewLeadAlertEmail(leadRecord).catch(() => {});
+      });
     }
 
     return NextResponse.json({ success: true, lead: leadRecord, warning: "Supabase no conectado" });
