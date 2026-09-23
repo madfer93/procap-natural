@@ -9,6 +9,7 @@ export interface Product {
   badge: string;
   icon?: string;
   image_url?: string;
+  secondary_image_url?: string; // Foto 2: Base / Malla interna o cómo se ve puesta
   payment_link?: string; // Pasarela 1: Enlace directo Wompi (Bancolombia / PSE / Tarjeta)
   payment_link_credit?: string; // Pasarela 2: Enlace directo Sistecrédito / Addi (Financiamiento a Cuotas)
   cost_price_cop?: number; // Costo de compra o importación unitario

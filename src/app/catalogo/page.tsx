@@ -24,6 +24,7 @@ export default function CatalogoPage() {
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState<string>("todos");
   const [searchQuery, setSearchQuery] = useState("");
+  const [activeViews, setActiveViews] = useState<Record<string, "primary" | "secondary">>({});
 
   const whatsappPhone = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "573151189795";
 
@@ -172,27 +173,83 @@ export default function CatalogoPage() {
 
                     {/* Body Content */}
                     <div>
-                      {/* Product Image or Icon */}
-                      {product.image_url ? (
-                        <div className="relative w-full h-52 rounded-xl overflow-hidden mb-4 bg-slate-900 border border-slate-800 shadow-inner group-hover:border-sky-400/40 transition-all">
-                          <Image
-                            src={product.image_url}
-                            alt={product.name}
-                            fill
-                            className="object-cover group-hover:scale-105 transition-transform duration-500"
-                          />
-                        </div>
-                      ) : (
-                        <div className="w-12 h-12 rounded-xl bg-sky-500/10 border border-sky-400/30 flex items-center justify-center text-sky-400 text-xl mb-4 group-hover:scale-110 transition-transform">
-                          {product.category === "sistemas" ? (
-                            <Crown size={22} />
-                          ) : product.category === "servicios" ? (
-                            <Scissors size={22} />
-                          ) : (
-                            <Package size={22} />
-                          )}
-                        </div>
-                      )}
+                      {/* Dual-View Product Image or Icon */}
+                      {(() => {
+                        const isValidUrl = (url?: string) =>
+                          url ? url.startsWith("http://") || url.startsWith("https://") || url.startsWith("/") : false;
+
+                        const hasPrimary = isValidUrl(product.image_url);
+                        const hasSecondary = isValidUrl(product.secondary_image_url);
+                        const currentView = activeViews[product.id] || "primary";
+                        const displayImage = currentView === "secondary" && hasSecondary
+                          ? product.secondary_image_url!
+                          : (hasPrimary ? product.image_url! : (hasSecondary ? product.secondary_image_url! : null));
+
+                        if (!displayImage) {
+                          return (
+                            <div className="w-12 h-12 rounded-xl bg-sky-500/10 border border-sky-400/30 flex items-center justify-center text-sky-400 text-xl mb-4 group-hover:scale-110 transition-transform">
+                              {product.category === "sistemas" ? (
+                                <Crown size={22} />
+                              ) : product.category === "servicios" ? (
+                                <Scissors size={22} />
+                              ) : (
+                                <Package size={22} />
+                              )}
+                            </div>
+                          );
+                        }
+
+                        return (
+                          <div className="relative w-full h-56 rounded-2xl overflow-hidden mb-4 bg-slate-950 border border-slate-800 shadow-inner group-hover:border-sky-400/40 transition-all">
+                            <Image
+                              key={displayImage}
+                              src={displayImage}
+                              alt={`${product.name} - ${currentView === "secondary" ? "Base o Malla" : "Look Cabello"}`}
+                              fill
+                              className="object-cover group-hover:scale-105 transition-transform duration-500"
+                            />
+
+                            {/* Selector de vistas si tiene ambas fotos */}
+                            {hasPrimary && hasSecondary && (
+                              <div className="absolute bottom-2.5 left-2.5 right-2.5 flex items-center justify-center gap-1.5 p-1 rounded-xl bg-slate-950/85 backdrop-blur-md border border-white/15 z-10 shadow-lg">
+                                <button
+                                  type="button"
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    setActiveViews((prev) => ({ ...prev, [product.id]: "primary" }));
+                                  }}
+                                  className={`flex-1 py-1 px-2 rounded-lg text-[10.5px] font-bold transition-all flex items-center justify-center gap-1 ${
+                                    currentView === "primary"
+                                      ? "bg-amber-400 text-slate-950 shadow-md"
+                                      : "text-slate-300 hover:text-white hover:bg-white/10"
+                                  }`}
+                                >
+                                  <Sparkles size={11} />
+                                  <span>Cabello</span>
+                                </button>
+
+                                <button
+                                  type="button"
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    setActiveViews((prev) => ({ ...prev, [product.id]: "secondary" }));
+                                  }}
+                                  className={`flex-1 py-1 px-2 rounded-lg text-[10.5px] font-bold transition-all flex items-center justify-center gap-1 ${
+                                    currentView === "secondary"
+                                      ? "bg-sky-400 text-slate-950 shadow-md"
+                                      : "text-slate-300 hover:text-white hover:bg-white/10"
+                                  }`}
+                                >
+                                  <Layers size={11} />
+                                  <span>Base / Malla</span>
+                                </button>
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })()}
 
                       <span className="text-xs font-medium text-slate-400 uppercase tracking-wider">
                         {product.type}

@@ -48,6 +48,7 @@ export default function ProductsAdminPage() {
     min_stock_alert: 2,
     badge: "",
     image_url: "",
+    secondary_image_url: "",
     payment_link: "",
     payment_link_credit: "",
     is_available: true,
@@ -56,7 +57,7 @@ export default function ProductsAdminPage() {
   });
 
   const [saving, setSaving] = useState(false);
-  const [uploadingImage, setUploadingImage] = useState(false);
+  const [uploadingField, setUploadingField] = useState<"image_url" | "secondary_image_url" | null>(null);
   const [statusMessage, setStatusMessage] = useState<{ text: string; type: "success" | "error" } | null>(null);
 
   useEffect(() => {
@@ -96,6 +97,7 @@ export default function ProductsAdminPage() {
       min_stock_alert: 2,
       badge: "Nuevo",
       image_url: "",
+      secondary_image_url: "",
       payment_link: "",
       payment_link_credit: "",
       is_available: true,
@@ -113,6 +115,8 @@ export default function ProductsAdminPage() {
       cost_price_cop: product.cost_price_cop || 0,
       stock_quantity: product.stock_quantity ?? 10,
       min_stock_alert: product.min_stock_alert ?? 2,
+      image_url: product.image_url || "",
+      secondary_image_url: product.secondary_image_url || "",
       payment_link: product.payment_link || "",
       payment_link_credit: product.payment_link_credit || ""
     });
@@ -125,14 +129,16 @@ export default function ProductsAdminPage() {
     setEditingProduct(null);
   };
 
-  // Subir imagen a Supabase Storage (Bucket 'products')
-  // Subir imagen/video a Cloudflare R2 (vía /api/upload)
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  // Subir imagen a Cloudflare R2 / Supabase Storage (soporta foto 1 o foto 2)
+  const handleImageUpload = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    field: "image_url" | "secondary_image_url" = "image_url"
+  ) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
     try {
-      setUploadingImage(true);
+      setUploadingField(field);
       const formDataUpload = new FormData();
       formDataUpload.append("file", file);
       formDataUpload.append("folder", "products");
@@ -150,16 +156,16 @@ export default function ProductsAdminPage() {
 
       setFormData((prev) => ({
         ...prev,
-        image_url: data.url,
+        [field]: data.url,
       }));
 
       const providerName = data.provider === "cloudflare_r2" ? "Cloudflare R2" : data.provider;
-      showNotification(`¡Archivo subido exitosamente a ${providerName}!`);
+      showNotification(`¡Foto subida exitosamente a ${providerName}!`);
     } catch (err: any) {
       console.error("Error al subir archivo:", err);
       showNotification(`Error al subir archivo: ${err.message || err}`, "error");
     } finally {
-      setUploadingImage(false);
+      setUploadingField(null);
     }
   };
 
@@ -168,6 +174,16 @@ export default function ProductsAdminPage() {
     e.preventDefault();
     if (!formData.name || !formData.price_offer) {
       showNotification("Por favor completa el nombre y precio del producto.", "error");
+      return;
+    }
+
+    if (formData.image_url && !formData.image_url.startsWith("http://") && !formData.image_url.startsWith("https://") && !formData.image_url.startsWith("/")) {
+      showNotification("La Foto 1 (Cabello/Look) debe ser un enlace válido (https://...) o debes presionar 'Subir Imagen'.", "error");
+      return;
+    }
+
+    if (formData.secondary_image_url && !formData.secondary_image_url.startsWith("http://") && !formData.secondary_image_url.startsWith("https://") && !formData.secondary_image_url.startsWith("/")) {
+      showNotification("La Foto 2 (Base/Malla) debe ser un enlace válido (https://...) o debes presionar 'Subir Imagen'.", "error");
       return;
     }
 
@@ -512,40 +528,164 @@ export default function ProductsAdminPage() {
                 />
               </div>
 
-              {/* Imagen / Subida a Storage */}
-              <div className="sm:col-span-12 p-5 rounded-2xl bg-slate-900/60 border border-slate-800 space-y-4">
-                <div className="flex items-center justify-between">
-                  <label className="text-xs font-bold uppercase tracking-wider text-slate-300 flex items-center gap-2">
-                    <ImageIcon size={16} className="text-amber-400" />
-                    <span>Foto del Producto (Storage Supabase)</span>
-                  </label>
-                  {uploadingImage && (
-                    <span className="text-xs text-amber-400 flex items-center gap-1.5">
-                      <Loader2 size={14} className="animate-spin" /> Subiendo archivo...
-                    </span>
-                  )}
+              {/* Imágenes del Producto (2 Fotos: Cabello y Base/Malla) */}
+              <div className="sm:col-span-12 space-y-4">
+                <div className="flex items-center gap-2 mb-1">
+                  <ImageIcon size={18} className="text-amber-400" />
+                  <h4 className="text-sm font-bold text-white uppercase tracking-wider">
+                    Fotografías del Sistema Capilar (2 Vistas Recomendadas)
+                  </h4>
                 </div>
+                <p className="text-xs text-slate-400">
+                  Para máxima conversión, sube una foto de cómo luce el cabello/resultado puesto y otra de la base o malla interna indetectable.
+                </p>
 
-                <div className="flex flex-col sm:flex-row gap-4 items-center">
-                  <input
-                    type="text"
-                    value={formData.image_url || ""}
-                    onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
-                    placeholder="https://... o sube una imagen directa"
-                    className="flex-1 w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 text-xs text-white"
-                  />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* Foto 1: Cabello / Resultado */}
+                  <div className="p-4 rounded-2xl bg-slate-900/70 border border-slate-800 space-y-3">
+                    <div className="flex items-center justify-between">
+                      <label className="text-xs font-bold uppercase tracking-wider text-amber-300 flex items-center gap-1.5">
+                        <span>1. Foto Look / Cabello Puesto</span>
+                        <span className="text-[10px] text-slate-400 font-normal">(Principal)</span>
+                      </label>
+                      {uploadingField === "image_url" && (
+                        <span className="text-[11px] text-amber-400 flex items-center gap-1">
+                          <Loader2 size={12} className="animate-spin" /> Subiendo...
+                        </span>
+                      )}
+                    </div>
 
-                  <label className="cursor-pointer px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-amber-500 hover:text-slate-950 text-slate-200 text-xs font-bold border border-slate-700 flex items-center gap-2 transition-all shrink-0">
-                    <UploadCloud size={16} />
-                    <span>Subir Imagen</span>
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={handleImageUpload}
-                      className="hidden"
-                      disabled={uploadingImage}
-                    />
-                  </label>
+                    <div className="flex gap-2 items-center">
+                      <input
+                        type="text"
+                        value={formData.image_url || ""}
+                        onChange={(e) => setFormData({ ...formData, image_url: e.target.value.trim() })}
+                        placeholder="https://... o clic en Subir"
+                        className={`flex-1 w-full bg-slate-950 border rounded-xl px-3 py-2 text-xs text-white ${
+                          formData.image_url && !formData.image_url.startsWith("http://") && !formData.image_url.startsWith("https://") && !formData.image_url.startsWith("/")
+                            ? "border-red-500 focus:border-red-400"
+                            : "border-slate-700 focus:border-amber-400"
+                        }`}
+                      />
+
+                      <label className="cursor-pointer px-3 py-2 rounded-xl bg-slate-800 hover:bg-amber-500 hover:text-slate-950 text-slate-200 text-xs font-bold border border-slate-700 flex items-center gap-1.5 transition-all shrink-0">
+                        <UploadCloud size={14} />
+                        <span>Subir</span>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) => handleImageUpload(e, "image_url")}
+                          className="hidden"
+                          disabled={uploadingField !== null}
+                        />
+                      </label>
+                    </div>
+
+                    {formData.image_url && !formData.image_url.startsWith("http://") && !formData.image_url.startsWith("https://") && !formData.image_url.startsWith("/") && (
+                      <p className="text-[11px] text-rose-400 bg-rose-500/10 border border-rose-500/20 px-2.5 py-1.5 rounded-lg">
+                        ⚠️ Debe ser una URL completa o haz clic en <strong>Subir</strong>.
+                      </p>
+                    )}
+
+                    {formData.image_url && (formData.image_url.startsWith("http://") || formData.image_url.startsWith("https://") || formData.image_url.startsWith("/")) && (
+                      <div className="flex items-center gap-3 pt-1">
+                        <div className="relative w-14 h-14 rounded-xl overflow-hidden border border-slate-700 bg-slate-950 shrink-0">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img
+                            src={formData.image_url}
+                            alt="Vista previa cabello"
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                              (e.target as HTMLElement).style.display = 'none';
+                            }}
+                          />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-[11px] font-medium text-emerald-400">✓ Foto principal lista</p>
+                          <button
+                            type="button"
+                            onClick={() => setFormData({ ...formData, image_url: "" })}
+                            className="text-[11px] text-slate-400 hover:text-rose-400 transition-colors underline"
+                          >
+                            Quitar foto
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Foto 2: Base / Malla */}
+                  <div className="p-4 rounded-2xl bg-slate-900/70 border border-slate-800 space-y-3">
+                    <div className="flex items-center justify-between">
+                      <label className="text-xs font-bold uppercase tracking-wider text-sky-300 flex items-center gap-1.5">
+                        <span>2. Foto Base / Malla Interna</span>
+                        <span className="text-[10px] text-slate-400 font-normal">(Estructura)</span>
+                      </label>
+                      {uploadingField === "secondary_image_url" && (
+                        <span className="text-[11px] text-sky-400 flex items-center gap-1">
+                          <Loader2 size={12} className="animate-spin" /> Subiendo...
+                        </span>
+                      )}
+                    </div>
+
+                    <div className="flex gap-2 items-center">
+                      <input
+                        type="text"
+                        value={formData.secondary_image_url || ""}
+                        onChange={(e) => setFormData({ ...formData, secondary_image_url: e.target.value.trim() })}
+                        placeholder="https://... o clic en Subir"
+                        className={`flex-1 w-full bg-slate-950 border rounded-xl px-3 py-2 text-xs text-white ${
+                          formData.secondary_image_url && !formData.secondary_image_url.startsWith("http://") && !formData.secondary_image_url.startsWith("https://") && !formData.secondary_image_url.startsWith("/")
+                            ? "border-red-500 focus:border-red-400"
+                            : "border-slate-700 focus:border-sky-400"
+                        }`}
+                      />
+
+                      <label className="cursor-pointer px-3 py-2 rounded-xl bg-slate-800 hover:bg-sky-500 hover:text-slate-950 text-slate-200 text-xs font-bold border border-slate-700 flex items-center gap-1.5 transition-all shrink-0">
+                        <UploadCloud size={14} />
+                        <span>Subir</span>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) => handleImageUpload(e, "secondary_image_url")}
+                          className="hidden"
+                          disabled={uploadingField !== null}
+                        />
+                      </label>
+                    </div>
+
+                    {formData.secondary_image_url && !formData.secondary_image_url.startsWith("http://") && !formData.secondary_image_url.startsWith("https://") && !formData.secondary_image_url.startsWith("/") && (
+                      <p className="text-[11px] text-rose-400 bg-rose-500/10 border border-rose-500/20 px-2.5 py-1.5 rounded-lg">
+                        ⚠️ Debe ser una URL completa o haz clic en <strong>Subir</strong>.
+                      </p>
+                    )}
+
+                    {formData.secondary_image_url && (formData.secondary_image_url.startsWith("http://") || formData.secondary_image_url.startsWith("https://") || formData.secondary_image_url.startsWith("/")) && (
+                      <div className="flex items-center gap-3 pt-1">
+                        <div className="relative w-14 h-14 rounded-xl overflow-hidden border border-slate-700 bg-slate-950 shrink-0">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img
+                            src={formData.secondary_image_url}
+                            alt="Vista previa base"
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                              (e.target as HTMLElement).style.display = 'none';
+                            }}
+                          />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-[11px] font-medium text-emerald-400">✓ Foto de base lista</p>
+                          <button
+                            type="button"
+                            onClick={() => setFormData({ ...formData, secondary_image_url: "" })}
+                            className="text-[11px] text-slate-400 hover:text-rose-400 transition-colors underline"
+                          >
+                            Quitar foto
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
 
