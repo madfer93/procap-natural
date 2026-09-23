@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { 
@@ -19,6 +19,8 @@ import {
   ShoppingBag,
   Users,
   TrendingUp,
+  Menu,
+  X,
   LucideIcon
 } from "lucide-react";
 
@@ -39,6 +41,11 @@ interface NavGroup {
 
 export function AdminNav({ onLogout }: AdminNavProps) {
   const pathname = usePathname();
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  useEffect(() => {
+    setMobileOpen(false);
+  }, [pathname]);
 
   const navGroups: NavGroup[] = [
     {
@@ -71,7 +78,108 @@ export function AdminNav({ onLogout }: AdminNavProps) {
   ];
 
   return (
-    <aside className="w-full lg:w-64 bg-slate-950 border-r border-slate-800/80 flex flex-col justify-between p-3.5 shrink-0 min-h-screen select-none">
+    <>
+      {/* ============================================================ */}
+      {/* 1. HEADER MÓVIL COMPACTO (Pantallas < 1024px) */}
+      {/* ============================================================ */}
+      <div className="lg:hidden sticky top-0 z-40 bg-slate-950/95 backdrop-blur-xl border-b border-slate-800 px-4 py-3 flex items-center justify-between select-none">
+        <Link href="/admin" className="flex items-center gap-2">
+          <div className="w-7 h-7 rounded-lg bg-gradient-to-tr from-amber-500 to-amber-300 flex items-center justify-center text-slate-950 font-black shadow-md text-xs">
+            P
+          </div>
+          <div>
+            <span className="font-heading font-black text-xs text-white tracking-wide block">
+              PROCAP <span className="text-amber-400 font-extrabold">ADMIN</span>
+            </span>
+          </div>
+        </Link>
+
+        <div className="flex items-center gap-2">
+          {onLogout && (
+            <button
+              onClick={onLogout}
+              className="p-2 rounded-lg text-slate-400 hover:text-red-400 hover:bg-slate-900 transition-colors"
+              title="Cerrar Sesión"
+            >
+              <LogOut size={16} />
+            </button>
+          )}
+
+          <button
+            onClick={() => setMobileOpen(!mobileOpen)}
+            className="p-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-200 hover:text-amber-400 transition-colors"
+            aria-label="Abrir menú de administración"
+          >
+            {mobileOpen ? <X size={20} /> : <Menu size={20} />}
+          </button>
+        </div>
+      </div>
+
+      {/* Menú Desplegable Móvil */}
+      {mobileOpen && (
+        <div className="lg:hidden fixed inset-x-0 top-[53px] bottom-0 z-50 bg-slate-950/95 backdrop-blur-2xl p-4 overflow-y-auto space-y-4 animate-in fade-in slide-in-from-top-3 duration-200 border-b border-slate-800">
+          <nav className="space-y-4 pb-12">
+            {navGroups.map((group, gIdx) => (
+              <div key={gIdx} className="space-y-1">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 px-2 block mb-1">
+                  {group.group}
+                </span>
+
+                <div className="space-y-1">
+                  {group.items.map((item) => {
+                    const Icon = item.icon;
+                    const isActive = item.exact 
+                      ? pathname === item.href 
+                      : pathname.startsWith(item.href);
+
+                    return (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        onClick={() => setMobileOpen(false)}
+                        className={`flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition-all ${
+                          isActive
+                            ? "bg-amber-500/15 text-amber-300 font-bold border border-amber-500/30"
+                            : "text-slate-300 hover:text-white hover:bg-slate-900"
+                        }`}
+                      >
+                        <div className="flex items-center gap-2.5">
+                          <Icon size={16} className={isActive ? "text-amber-400" : "text-slate-400"} />
+                          <span>{item.label}</span>
+                        </div>
+                        {item.badge && (
+                          <span className="text-[9px] px-2 py-0.5 rounded font-bold bg-amber-400/20 text-amber-300">
+                            {item.badge}
+                          </span>
+                        )}
+                      </Link>
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
+
+            <div className="pt-4 border-t border-slate-800 space-y-2">
+              <Link
+                href="/"
+                target="_blank"
+                className="flex items-center justify-between px-3 py-2.5 rounded-xl text-xs text-slate-400 hover:text-white bg-slate-900/60"
+              >
+                <span className="flex items-center gap-2">
+                  <ExternalLink size={14} className="text-emerald-400" />
+                  <span>Ver Tienda Pública</span>
+                </span>
+                <span>↗</span>
+              </Link>
+            </div>
+          </nav>
+        </div>
+      )}
+
+      {/* ============================================================ */}
+      {/* 2. SIDEBAR ESCRITORIO (Pantallas >= 1024px) */}
+      {/* ============================================================ */}
+      <aside className="hidden lg:flex w-64 bg-slate-950 border-r border-slate-800/80 flex-col justify-between p-3.5 shrink-0 min-h-screen select-none">
       <div className="space-y-4">
         
         {/* Brand Header */}
@@ -173,7 +281,7 @@ export function AdminNav({ onLogout }: AdminNavProps) {
           </a>
         </div>
 
-      </div>
+      </div>{/* ← cierra div.space-y-4 */}
 
       {/* Footer / Logout */}
       <div className="pt-3 border-t border-slate-900">
@@ -191,5 +299,6 @@ export function AdminNav({ onLogout }: AdminNavProps) {
         </div>
       </div>
     </aside>
-  );
+  </>
+);
 }

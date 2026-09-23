@@ -93,7 +93,7 @@ export default function CatalogoPage() {
               />
             </div>
 
-            <div className="flex items-center justify-center flex-wrap gap-2 pt-2">
+            <div className="flex items-center justify-start sm:justify-center overflow-x-auto pb-2 sm:pb-0 gap-2 pt-2 scrollbar-none">
               {[
                 { id: "todos", label: "Todos los Productos" },
                 { id: "sistemas", label: "Sistemas Capilares", icon: Crown },
@@ -105,7 +105,7 @@ export default function CatalogoPage() {
                 <button
                   key={tab.id}
                   onClick={() => setSelectedCategory(tab.id)}
-                  className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all ${
+                  className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all shrink-0 whitespace-nowrap ${
                     selectedCategory === tab.id
                       ? "bg-sky-400 text-slate-950 font-bold shadow-md shadow-sky-500/20"
                       : "bg-slate-900/90 text-slate-300 hover:border-sky-400 border border-slate-700"

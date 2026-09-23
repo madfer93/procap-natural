@@ -144,7 +144,7 @@ export default function AdminContabilidadPage() {
             </p>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto">
             <select
               value={selectedSede}
               onChange={(e) => setSelectedSede(e.target.value)}
@@ -159,7 +159,7 @@ export default function AdminContabilidadPage() {
 
             <button
               onClick={() => setIsExpenseFormOpen(!isExpenseFormOpen)}
-              className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white font-bold text-sm shadow-lg shadow-red-600/20 transition-all cursor-pointer"
+              className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white font-bold text-sm shadow-lg shadow-red-600/20 transition-all cursor-pointer"
             >
               <Plus size={16} />
               <span>Registrar Gasto de Sede</span>

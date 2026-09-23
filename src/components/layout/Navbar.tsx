@@ -102,11 +102,11 @@ export function Navbar() {
             <div className="flex items-center gap-2 shrink-0">
               <Link
                 href="/agendar"
-                className="px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-400 hover:from-emerald-400 hover:to-emerald-300 text-slate-950 font-black text-xs flex items-center gap-1.5 shadow-md shadow-emerald-500/20 transition-all hover:scale-[1.02] whitespace-nowrap"
+                className="px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-400 hover:from-emerald-400 hover:to-emerald-300 text-slate-950 font-black text-xs flex items-center gap-1.5 shadow-md shadow-emerald-500/20 transition-all hover:scale-[1.02] whitespace-nowrap"
               >
                 <i className="fa-regular fa-calendar-check text-slate-950"></i>
-                <span className="hidden xs:inline">Agendar Cita</span>
-                <span className="xs:hidden">Cita</span>
+                <span className="hidden sm:inline">Agendar Cita</span>
+                <span className="sm:hidden">Cita</span>
               </Link>
 
               {/* Mobile Menu Button */}
@@ -122,9 +122,9 @@ export function Navbar() {
           </div>
         </div>
 
-        {/* Mobile Dropdown */}
+        {/* Mobile Dropdown con scroll seguro en pantallas compactas */}
         {mobileMenuOpen && (
-          <div className="lg:hidden border-b border-slate-800 bg-[#031C45]/98 backdrop-blur-2xl px-4 pt-3 pb-6 space-y-2">
+          <div className="lg:hidden border-b border-slate-800 bg-[#031C45]/98 backdrop-blur-2xl px-4 pt-3 pb-6 space-y-2 max-h-[calc(100vh-4.5rem)] overflow-y-auto">
             {navLinks.map((item) => (
               <Link
                 key={item.href}

@@ -152,15 +152,15 @@ export function AiChatBubble() {
   return (
     <>
       {/* Botón Flotante del Asistente IA (Lado Izquierdo Inferior) */}
-      <div className="fixed bottom-6 left-6 z-50">
+      <div className="fixed bottom-5 left-4 sm:bottom-6 sm:left-6 z-50">
         {!isOpen && (
           <button
             onClick={() => setIsOpen(true)}
-            className="group flex items-center gap-3 bg-[#031C45]/95 hover:bg-[#073374] text-slate-100 border border-sky-400/40 hover:border-sky-300 p-3 sm:px-4 sm:py-3 rounded-full shadow-2xl backdrop-blur-xl transition-all hover:scale-105"
+            className="group flex items-center gap-3 bg-[#031C45]/95 hover:bg-[#073374] text-slate-100 border border-sky-400/40 hover:border-sky-300 p-2.5 sm:px-4 sm:py-3 rounded-full shadow-2xl backdrop-blur-xl transition-all hover:scale-105"
             aria-label="Abrir asistente de IA CapilarBot"
           >
-            <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-sky-500 to-blue-600 flex items-center justify-center text-white font-bold shadow-md shadow-sky-500/30">
-              <Bot size={22} />
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gradient-to-tr from-sky-500 to-blue-600 flex items-center justify-center text-white font-bold shadow-md shadow-sky-500/30">
+              <Bot size={20} className="sm:w-[22px] sm:h-[22px]" />
             </div>
             <div className="hidden sm:flex flex-col text-left">
               <span className="text-xs font-bold text-sky-400 flex items-center gap-1">
@@ -175,7 +175,7 @@ export function AiChatBubble() {
 
       {/* Ventana / Panel del Chat de IA */}
       {isOpen && (
-        <div className="fixed bottom-6 left-4 sm:left-6 z-50 w-[calc(100vw-2rem)] sm:w-[420px] h-[580px] max-h-[85vh] flex flex-col rounded-3xl bg-[#031C45]/98 border border-sky-400/40 shadow-2xl backdrop-blur-2xl overflow-hidden animate-in fade-in slide-in-from-bottom-5 duration-300">
+        <div className="fixed bottom-3 sm:bottom-6 left-3 sm:left-6 z-50 w-[calc(100vw-1.5rem)] sm:w-[420px] h-[580px] max-h-[82vh] sm:max-h-[85vh] flex flex-col rounded-3xl bg-[#031C45]/98 border border-sky-400/40 shadow-2xl backdrop-blur-2xl overflow-hidden animate-in fade-in slide-in-from-bottom-5 duration-300">
           
           {/* Header */}
           <div className="p-4 bg-gradient-to-r from-slate-950 via-[#073374]/60 to-[#031C45] border-b border-sky-400/20 flex items-center justify-between">

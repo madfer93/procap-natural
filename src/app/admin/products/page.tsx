@@ -467,7 +467,7 @@ export default function ProductsAdminPage() {
                     Cálculo automático de utilidad bruta y margen sobre el precio de venta.
                   </p>
                 </div>
-                <div className="flex items-center gap-6">
+                <div className="flex flex-wrap items-center gap-4 sm:gap-6">
                   <div>
                     <span className="text-[10px] text-slate-500 uppercase block font-semibold">Ganancia Bruta ($)</span>
                     <span className="text-base font-heading font-black text-emerald-400">
