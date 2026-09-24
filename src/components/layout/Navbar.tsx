@@ -37,11 +37,23 @@ export function Navbar() {
             </span>
           </div>
           <div className="flex items-center gap-3 shrink-0">
-            <a href="https://www.tiktok.com/@procapnatural" target="_blank" rel="noopener noreferrer" className="hover:text-cyan-300 transition-colors flex items-center gap-1">
+            <a 
+              href="https://www.tiktok.com/@procapnatural" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              aria-label="Perfil oficial de TikTok de Procap Natural"
+              className="hover:text-cyan-300 transition-colors flex items-center gap-1 min-h-[32px] py-1"
+            >
               <TikTokIcon className="w-3.5 h-3.5 text-cyan-400" />
               <span className="hidden md:inline">TikTok</span>
             </a>
-            <a href="https://instagram.com/protesiscapilarnatural" target="_blank" rel="noopener noreferrer" className="hover:text-pink-300 transition-colors flex items-center gap-1">
+            <a 
+              href="https://instagram.com/protesiscapilarnatural" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              aria-label="Perfil oficial de Instagram de Procap Natural"
+              className="hover:text-pink-300 transition-colors flex items-center gap-1 min-h-[32px] py-1"
+            >
               <InstagramIcon className="w-3.5 h-3.5 text-pink-400" />
               <span className="hidden md:inline">@protesiscapilarnatural</span>
             </a>
@@ -55,7 +67,7 @@ export function Navbar() {
           <div className="flex items-center justify-between h-16 sm:h-18 gap-2">
 
             {/* Brand Logo */}
-            <Link href="/" className="flex items-center gap-2.5 group shrink-0">
+            <Link href="/" aria-label="Página de inicio Procap Natural" className="flex items-center gap-2.5 group shrink-0 min-h-[44px]">
               <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-sky-400/30 via-slate-800 to-blue-900/50 p-0.5 shadow-lg shadow-sky-500/10 group-hover:scale-105 transition-transform border border-sky-400/30">
                 <div className="w-full h-full bg-[#031C45] rounded-[14px] flex items-center justify-center p-1 overflow-hidden">
                   <Image
@@ -88,7 +100,7 @@ export function Navbar() {
                   <Link
                     key={item.href}
                     href={item.href}
-                    className={`px-2.5 py-1.5 rounded-xl transition-all whitespace-nowrap ${isActive
+                    className={`px-2.5 py-1.5 rounded-xl transition-all whitespace-nowrap min-h-[40px] flex items-center ${isActive
                       ? "bg-sky-500/20 text-sky-300 font-bold border border-sky-400/30 shadow-sm"
                       : "hover:text-white hover:bg-white/5 text-slate-300"
                       }`}
@@ -103,18 +115,20 @@ export function Navbar() {
             <div className="flex items-center gap-2 shrink-0">
               <Link
                 href="/agendar"
-                className="px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-400 hover:from-emerald-400 hover:to-emerald-300 text-slate-950 font-black text-xs flex items-center gap-1.5 shadow-md shadow-emerald-500/20 transition-all hover:scale-[1.02] whitespace-nowrap"
+                aria-label="Agendar cita de prótesis capilar"
+                className="px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-400 hover:from-emerald-400 hover:to-emerald-300 text-slate-950 font-black text-xs flex items-center gap-1.5 shadow-md shadow-emerald-500/20 transition-all hover:scale-[1.02] whitespace-nowrap min-h-[44px]"
               >
                 <CalendarCheck size={16} className="text-slate-950" />
                 <span className="hidden sm:inline">Agendar Cita</span>
                 <span className="sm:hidden">Cita</span>
               </Link>
 
-              {/* Mobile Menu Button */}
+              {/* Mobile Menu Button con touch target >= 44px */}
               <button
+                type="button"
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="lg:hidden p-2 rounded-xl text-slate-300 hover:text-white hover:bg-slate-800 transition-colors shrink-0"
-                aria-label="Toggle menu"
+                className="lg:hidden p-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-slate-800 transition-colors shrink-0 min-w-[44px] min-h-[44px] flex items-center justify-center"
+                aria-label={mobileMenuOpen ? "Cerrar menú de navegación móvil" : "Abrir menú de navegación móvil"}
               >
                 {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
               </button>

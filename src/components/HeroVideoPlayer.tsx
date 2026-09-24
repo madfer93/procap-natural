@@ -34,7 +34,7 @@ export function HeroVideoPlayer({
     initialVideoUrl || "/images/procap-hero-video.mp4"
   );
   const [posterUrl, setPosterUrl] = useState<string>(
-    initialPosterUrl || "/og-image.jpg"
+    initialPosterUrl || "/hero-poster.webp"
   );
   const [title, setTitle] = useState<string>(
     initialTitle || "Sistema Mixto Indetectable"
@@ -43,11 +43,12 @@ export function HeroVideoPlayer({
     initialBadge || "Transformación Real"
   );
 
-  const [isPlaying, setIsPlaying] = useState(true);
+  const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
   const [isLoaded, setIsLoaded] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [hasError, setHasError] = useState(false);
+  const [videoActive, setVideoActive] = useState(false);
 
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -82,6 +83,9 @@ export function HeroVideoPlayer({
   }, []);
 
   const togglePlay = () => {
+    if (!videoActive) {
+      setVideoActive(true);
+    }
     if (videoRef.current) {
       if (isPlaying) {
         videoRef.current.pause();
@@ -92,6 +96,8 @@ export function HeroVideoPlayer({
           .then(() => setIsPlaying(true))
           .catch((err) => console.log("Play error:", err));
       }
+    } else {
+      setIsPlaying(true);
     }
   };
 
@@ -140,13 +146,12 @@ export function HeroVideoPlayer({
           className="aspect-[4/3] rounded-2xl bg-slate-950 border border-slate-800 relative overflow-hidden group cursor-pointer shadow-inner"
           onClick={togglePlay}
         >
-          {/* Video Element */}
+          {/* Video Element con carga bajo demanda para optimizar LCP */}
           <video
             ref={videoRef}
-            src={videoUrl}
+            src={videoActive ? videoUrl : undefined}
             poster={posterUrl}
-            preload="metadata"
-            autoPlay
+            preload="none"
             loop
             muted={isMuted}
             playsInline
@@ -155,34 +160,41 @@ export function HeroVideoPlayer({
               setHasError(false);
             }}
             onError={() => {
-              // Si falla la carga del video local, se muestra el póster con opción de fallback
               setHasError(true);
             }}
             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-          />
+          >
+            <track 
+              kind="captions" 
+              src="/captions/empty.vtt" 
+              srcLang="es" 
+              label="Español" 
+              default 
+            />
+          </video>
 
           {/* Gradiente de superposición elegante */}
           <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/20 to-transparent pointer-events-none" />
 
-          {/* Badge de Gama Profesional sobre el video */}
+          {/* Badge de Gama Profesional sobre el video (span para no saltar jerarquía h1 -> h3) */}
           <div className="absolute top-3 left-3 right-3 flex justify-between items-start pointer-events-none z-10">
             <div className="space-y-0.5">
               <span className="text-[10px] font-extrabold uppercase tracking-wider text-sky-400 bg-slate-950/80 px-2 py-0.5 rounded-md border border-sky-500/30">
                 Gama Profesional
               </span>
-              <h3 className="text-sm sm:text-base font-bold text-white drop-shadow-md">
+              <span className="block text-sm sm:text-base font-bold text-white drop-shadow-md">
                 {title}
-              </h3>
+              </span>
             </div>
             <span className="px-2.5 py-1 rounded-md bg-emerald-500/30 text-emerald-300 text-[11px] font-bold border border-emerald-400/40 backdrop-blur-md">
               100% Invisible
             </span>
           </div>
 
-          {/* Botón Central de Play/Pause (aparece si está pausado o en hover) */}
+          {/* Botón Central de Play/Pause */}
           <div
             className={`absolute inset-0 flex items-center justify-center transition-opacity duration-300 pointer-events-none ${
-              !isPlaying ? "opacity-100 bg-slate-950/50 backdrop-blur-xs" : "opacity-0 group-hover:opacity-100"
+              !isPlaying ? "opacity-100 bg-slate-950/40 backdrop-blur-xs" : "opacity-0 group-hover:opacity-100"
             }`}
           >
             <div className="w-14 h-14 rounded-full bg-sky-500/90 text-slate-950 flex items-center justify-center shadow-lg shadow-sky-500/40 transform transition-transform group-hover:scale-110">
@@ -194,23 +206,23 @@ export function HeroVideoPlayer({
             </div>
           </div>
 
-          {/* Controles Flotantes en la parte inferior del video */}
+          {/* Controles Flotantes en la parte inferior del video con touch targets accesibles >= 44px */}
           <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between z-20">
             <div className="flex items-center gap-2">
               <button
                 type="button"
                 onClick={toggleMute}
                 aria-label={isMuted ? "Activar Sonido" : "Silenciar"}
-                className="px-2.5 py-1.5 rounded-lg bg-slate-900/90 hover:bg-slate-800 text-white text-xs font-semibold flex items-center gap-1.5 border border-slate-700/80 backdrop-blur-md shadow-md transition-all hover:scale-105"
+                className="min-h-[44px] px-3 py-2 rounded-lg bg-slate-900/90 hover:bg-slate-800 text-white text-xs font-semibold flex items-center gap-1.5 border border-slate-700/80 backdrop-blur-md shadow-md transition-all hover:scale-105"
               >
                 {isMuted ? (
                   <>
-                    <VolumeX size={14} className="text-amber-400" />
+                    <VolumeX size={15} className="text-amber-400" />
                     <span className="text-[11px]">Activar Audio</span>
                   </>
                 ) : (
                   <>
-                    <Volume2 size={14} className="text-emerald-400" />
+                    <Volume2 size={15} className="text-emerald-400" />
                     <span className="text-[11px]">Sonido ON</span>
                   </>
                 )}
@@ -222,9 +234,9 @@ export function HeroVideoPlayer({
                 type="button"
                 onClick={toggleFullscreen}
                 aria-label="Pantalla completa"
-                className="p-1.5 rounded-lg bg-slate-900/90 hover:bg-slate-800 text-slate-300 hover:text-white border border-slate-700/80 backdrop-blur-md shadow-md transition-all"
+                className="min-w-[44px] min-h-[44px] p-2.5 rounded-lg bg-slate-900/90 hover:bg-slate-800 text-slate-300 hover:text-white border border-slate-700/80 backdrop-blur-md shadow-md transition-all flex items-center justify-center"
               >
-                <Maximize2 size={14} />
+                <Maximize2 size={16} />
               </button>
             </div>
           </div>

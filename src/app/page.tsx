@@ -284,7 +284,8 @@ export default function HomePage() {
                   </a>
                   <Link
                     href="/servicios"
-                    className="py-3 px-4 rounded-xl glass-panel text-white hover:bg-white/10 text-xs font-semibold border border-slate-700"
+                    aria-label="Ver detalles del servicio de instalación y adaptación capilar"
+                    className="py-3 px-4 rounded-xl glass-panel text-white hover:bg-white/10 text-xs font-semibold border border-slate-700 min-h-[44px] flex items-center justify-center"
                   >
                     Detalles
                   </Link>
@@ -318,7 +319,8 @@ export default function HomePage() {
                   </a>
                   <Link
                     href="/servicios"
-                    className="py-3 px-4 rounded-xl glass-panel text-white hover:bg-white/10 text-xs font-semibold border border-slate-700"
+                    aria-label="Ver detalles del servicio de mantenimiento periódico integral"
+                    className="py-3 px-4 rounded-xl glass-panel text-white hover:bg-white/10 text-xs font-semibold border border-slate-700 min-h-[44px] flex items-center justify-center"
                   >
                     Detalles
                   </Link>
@@ -412,7 +414,8 @@ export default function HomePage() {
                             href={product.payment_link}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-gradient-to-r from-amber-500 to-amber-400 hover:from-amber-400 hover:to-amber-300 text-slate-950 font-black text-xs shadow-md shadow-amber-500/20 transition-all hover:scale-[1.02]"
+                            aria-label={`Pagar ${product.name} con Wompi PSE o Tarjeta`}
+                            className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-gradient-to-r from-amber-500 to-amber-400 hover:from-amber-400 hover:to-amber-300 text-slate-950 font-black text-xs shadow-md shadow-amber-500/20 transition-all hover:scale-[1.02] min-h-[44px]"
                           >
                             <span>💳 Pagar con Wompi (PSE / Tarjeta)</span>
                           </a>
@@ -424,7 +427,8 @@ export default function HomePage() {
                             href={product.payment_link_credit}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white font-black text-xs shadow-md shadow-sky-500/20 transition-all hover:scale-[1.02]"
+                            aria-label={`Financiar ${product.name} a cuotas con Sistecrédito o Addi`}
+                            className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white font-black text-xs shadow-md shadow-sky-500/20 transition-all hover:scale-[1.02] min-h-[44px]"
                           >
                             <span>⚡ Financiar a Cuotas (Sistecrédito / Addi)</span>
                           </a>
@@ -601,14 +605,16 @@ export default function HomePage() {
                   <div className="flex gap-2">
                     <Link
                       href="/ubicacion"
-                      className="flex-1 py-3 px-4 rounded-xl bg-slate-900 hover:bg-sky-500 text-slate-200 hover:text-slate-950 font-bold text-xs flex items-center justify-center gap-2 border border-slate-700 transition-colors"
+                      aria-label="Ver cómo llegar a nuestras 4 sedes oficiales"
+                      className="flex-1 py-3 px-4 rounded-xl bg-slate-900 hover:bg-sky-500 text-slate-200 hover:text-slate-950 font-bold text-xs flex items-center justify-center gap-2 border border-slate-700 transition-colors min-h-[44px]"
                     >
                       <MapPin size={14} />
                       <span>Cómo Llegar</span>
                     </Link>
                     <Link
                       href="/catalogo"
-                      className="flex-1 py-3 px-4 rounded-xl glass-panel hover:bg-white/10 text-white font-bold text-xs flex items-center justify-center gap-2 border border-slate-700 transition-colors"
+                      aria-label="Ver catálogo completo de prótesis capilares e insumos"
+                      className="flex-1 py-3 px-4 rounded-xl glass-panel hover:bg-white/10 text-white font-bold text-xs flex items-center justify-center gap-2 border border-slate-700 transition-colors min-h-[44px]"
                     >
                       <span>Ver Catálogo</span>
                       <ArrowRight size={14} />

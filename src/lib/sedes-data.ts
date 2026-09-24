@@ -57,7 +57,7 @@ export const SEDES_DATA: SedeInfo[] = [
     gallery: [
       { url: "/images/sedes/bogota.jpg", caption: "Fachada Torre Chicó Norte y Suite de Estilismo" },
       { url: "/images/sedes/cabina-vip.jpg", caption: "Cabina VIP Individual Climatizada" },
-      { url: "/og-image.jpg", caption: "Área de Valoración Capilar y Colorimetría" }
+      { url: "/og-image.webp", caption: "Área de Valoración Capilar y Colorimetría" }
     ],
     description: "Nuestra sede principal en el corazón empresarial y médico de Chicó Norte. Equipada con cabinas privadas ultra-discretas y la más alta tecnología en fijación capilar.",
     fullStory: "Ubicada estratégicamente sobre el corredor de la Carrera 16 entre Calles 96 y 98, la Sede Bogotá de Procap Natural fue diseñada para brindar una experiencia de total confidencialidad, confort y lujo. Cada cliente es atendido en una cabina individual con climatización independiente, sillón ergonómico de barbero de alta gama y equipo de iluminación especializada para el diseño milimétrico de la línea frontal.",
@@ -114,7 +114,7 @@ export const SEDES_DATA: SedeInfo[] = [
     gallery: [
       { url: "/images/sedes/cali.jpg", caption: "Fachada Boutique y Estudio de Adaptación en Cali" },
       { url: "/images/sedes/cabina-vip.jpg", caption: "Cabina de Aplicación de Adhesivos Médicos" },
-      { url: "/og-image.jpg", caption: "Muestra de Mallas French Lace y Skin Ultra Fino" }
+      { url: "/og-image.webp", caption: "Muestra de Mallas French Lace y Skin Ultra Fino" }
     ],
     videoUrl: "https://pub-426a082ba0a64de0bcf1da7c816f7c38.r2.dev/PROCAPS-OFICINA.mp4",
     videoTitle: "Estudio de Adaptación Capilar Edificio María Mercedes Cali",
@@ -171,7 +171,7 @@ export const SEDES_DATA: SedeInfo[] = [
     gallery: [
       { url: "/images/sedes/neiva.jpg", caption: "Fachada Clínica Capilar Estética en Neiva" },
       { url: "/images/sedes/cabina-vip.jpg", caption: "Cabina Privada de Instalación y Mantenimiento" },
-      { url: "/og-image.jpg", caption: "Cabello 100% Humano Virgen Importado" }
+      { url: "/og-image.webp", caption: "Cabello 100% Humano Virgen Importado" }
     ],
     videoUrl: "https://pub-426a082ba0a64de0bcf1da7c816f7c38.r2.dev/PROCAPS-OFICINA.mp4",
     videoTitle: "Instalaciones Sede Canaima Neiva",
@@ -228,7 +228,7 @@ export const SEDES_DATA: SedeInfo[] = [
     gallery: [
       { url: "/images/sedes/barranquilla.jpg", caption: "Fachada Boutique en Centro Histórico de Barranquilla" },
       { url: "/images/sedes/cabina-vip.jpg", caption: "Cabina de Integración Capilar con Aire Acondicionado" },
-      { url: "/og-image.jpg", caption: "Sistemas Capilares Resistentes a Piscina, Playa y Calor" }
+      { url: "/og-image.webp", caption: "Sistemas Capilares Resistentes a Piscina, Playa y Calor" }
     ],
     videoUrl: "https://pub-426a082ba0a64de0bcf1da7c816f7c38.r2.dev/PROCAPS-OFICINA.mp4",
     videoTitle: "Instalaciones Sede Centro Histórico Barranquilla",

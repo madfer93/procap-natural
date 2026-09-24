@@ -93,20 +93,31 @@ body {
   color: #FCFDFE;
 }
 
-/* Pulse whatsapp */
-@keyframes pulseGlow {
-  0%, 100% {
-    transform: scale(1);
-    box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.6);
+/* Pulse whatsapp - Optimizado para GPU y 100% composited (sin reflows de box-shadow) */
+@keyframes pulseRing {
+  0% {
+    transform: scale(0.96);
+    opacity: 0.75;
   }
-  50% {
-    transform: scale(1.05);
-    box-shadow: 0 0 0 15px rgba(37, 211, 102, 0);
+  60%, 100% {
+    transform: scale(1.32);
+    opacity: 0;
   }
 }
 
 .pulse-whatsapp {
-  animation: pulseGlow 2.5s infinite;
+  position: relative;
+}
+
+.pulse-whatsapp::after {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  border-radius: inherit;
+  background-color: rgba(37, 211, 102, 0.45);
+  z-index: -1;
+  animation: pulseRing 2.4s cubic-bezier(0.24, 0, 0.38, 1) infinite;
+  pointer-events: none;
 }
 
 .no-scrollbar::-webkit-scrollbar {

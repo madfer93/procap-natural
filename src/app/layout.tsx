@@ -139,14 +139,10 @@ export default function RootLayout({
         <meta name="twitter:image" content="https://protesiscapilarcolombia.com/og-image.jpg" />
         <meta name="twitter:card" content="summary_large_image" />
 
-        {/* Preconnects para optimización de fuentes de Google */}
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-
-        
-        {/* Google Tag Manager (Optimizado no bloqueante) */}
+        {/* Google Tag Manager (Carga diferida lazyOnload para 0% bloqueo de hilo principal y LCP rápido) */}
         <Script
           id="google-tag-manager"
-          strategy="afterInteractive"
+          strategy="lazyOnload"
           dangerouslySetInnerHTML={{
             __html: `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],

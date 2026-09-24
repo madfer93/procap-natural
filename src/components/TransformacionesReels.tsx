@@ -186,14 +186,23 @@ export function TransformacionesReels() {
                   
                   <video
                     ref={(el) => { videoRefs.current[reel.id] = el; }}
-                    src={reel.videoUrl}
+                    src={isThisPlaying ? reel.videoUrl : undefined}
+                    poster={reel.posterUrl || "/hero-poster.webp"}
                     loop
                     muted={isMuted}
                     playsInline
                     preload="none"
                     onClick={() => handlePlayToggle(reel.id)}
                     className="w-full h-full object-cover cursor-pointer transition-transform duration-500 group-hover:scale-[1.02]"
-                  />
+                  >
+                    <track 
+                      kind="captions" 
+                      src="/captions/empty.vtt" 
+                      srcLang="es" 
+                      label="Español" 
+                      default 
+                    />
+                  </video>
 
                   {/* Top Overlay Badge */}
                   <div className="absolute top-3 left-3 right-3 flex items-center justify-between pointer-events-none z-20">
@@ -217,21 +226,22 @@ export function TransformacionesReels() {
                   >
                     {!isThisPlaying && (
                       <div className="w-14 h-14 rounded-full bg-sky-500/90 hover:bg-sky-400 text-slate-950 flex items-center justify-center shadow-xl shadow-sky-500/30 transition-transform hover:scale-110">
-                        <Play size={24} className="translate-x-0.5" />
+                        <Play size={24} className="translate-x-0.5 fill-current" />
                       </div>
                     )}
                   </div>
 
-                  {/* Sound Toggle (Top Right inside video) */}
+                  {/* Sound Toggle (Top Right inside video) con touch target >= 44px */}
                   <button
+                    type="button"
                     onClick={(e) => {
                       e.stopPropagation();
                       setIsMuted(!isMuted);
                     }}
                     aria-label={isMuted ? "Activar audio del reel" : "Silenciar audio del reel"}
-                    className="absolute bottom-24 right-3 w-8 h-8 rounded-full bg-slate-950/80 backdrop-blur-md text-white flex items-center justify-center border border-white/10 shadow z-20 hover:scale-105"
+                    className="absolute bottom-24 right-3 w-11 h-11 rounded-full bg-slate-950/80 backdrop-blur-md text-white flex items-center justify-center border border-white/10 shadow z-20 hover:scale-105"
                   >
-                    {isMuted ? <VolumeX size={14} className="text-slate-400" /> : <Volume2 size={14} className="text-emerald-400" />}
+                    {isMuted ? <VolumeX size={16} className="text-slate-400" /> : <Volume2 size={16} className="text-emerald-400" />}
                   </button>
 
                   {/* Bottom Video Card Info */}
@@ -245,7 +255,8 @@ export function TransformacionesReels() {
                         href={`https://wa.me/${whatsappPhone}?text=¡Hola!%20Vi%20el%20video%20"${encodeURIComponent(reel.title)}"%20y%20quiero%20cotizar.`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-[11px] font-black text-emerald-400 hover:text-emerald-300 flex items-center gap-1"
+                        aria-label={`Quiero cotizar este cambio: ${reel.title}`}
+                        className="text-[11px] font-black text-emerald-400 hover:text-emerald-300 flex items-center gap-1 min-h-[44px]"
                       >
                         <span>Quiero este cambio</span>
                         <span>→</span>
@@ -255,7 +266,8 @@ export function TransformacionesReels() {
                         href={reel.socialUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-[10px] text-slate-400 hover:text-white flex items-center gap-0.5"
+                        aria-label={`Ver video en redes sociales: ${reel.title}`}
+                        className="text-[10px] text-slate-400 hover:text-white flex items-center gap-0.5 min-h-[44px] px-1"
                       >
                         <span>Ver en Redes</span>
                         <ExternalLink size={10} />

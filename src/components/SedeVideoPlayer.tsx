@@ -37,47 +37,18 @@ export function SedeVideoPlayer({
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
   const [isLoaded, setIsLoaded] = useState(false);
-
-  // Solo reproducir cuando el usuario realmente hace scroll y llega a la sección del video
-  useEffect(() => {
-    const videoEl = videoRef.current;
-    const containerEl = containerRef.current;
-    if (!videoEl || !containerEl) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            // El usuario llegó a la sección del video
-            videoEl.play().then(() => {
-              setIsPlaying(true);
-            }).catch(() => {
-              setIsPlaying(false);
-            });
-          } else {
-            // El usuario hizo scroll hacia otra parte, pausar video para no consumir datos
-            if (!videoEl.paused) {
-              videoEl.pause();
-              setIsPlaying(false);
-            }
-          }
-        });
-      },
-      { threshold: 0.4 } // Requiere que al menos el 40% del video esté visible
-    );
-
-    observer.observe(containerEl);
-    return () => observer.disconnect();
-  }, []);
+  const [hasStarted, setHasStarted] = useState(false);
 
   const togglePlay = () => {
+    if (!hasStarted) {
+      setHasStarted(true);
+    }
     if (!videoRef.current) return;
     if (isPlaying) {
       videoRef.current.pause();
       setIsPlaying(false);
     } else {
-      videoRef.current.play();
-      setIsPlaying(true);
+      videoRef.current.play().then(() => setIsPlaying(true)).catch(() => setIsPlaying(false));
     }
   };
 
@@ -107,7 +78,8 @@ export function SedeVideoPlayer({
           
           <video
             ref={videoRef}
-            src={videoUrl}
+            src={hasStarted ? videoUrl : undefined}
+            poster="/hero-poster.webp"
             muted={isMuted}
             loop
             playsInline
@@ -115,7 +87,15 @@ export function SedeVideoPlayer({
             onLoadedData={() => setIsLoaded(true)}
             onClick={togglePlay}
             className="w-full h-full object-cover cursor-pointer transition-transform duration-700 group-hover:scale-[1.01]"
-          />
+          >
+            <track 
+              kind="captions" 
+              src="/captions/empty.vtt" 
+              srcLang="es" 
+              label="Español" 
+              default 
+            />
+          </video>
 
           {/* Top Floating Badges */}
           <div className="absolute top-3 sm:top-4 left-3 sm:left-4 right-3 sm:right-4 flex items-center justify-between gap-2 pointer-events-none z-20">
@@ -131,6 +111,18 @@ export function SedeVideoPlayer({
             </div>
           </div>
 
+          {/* Center Play Overlay when not playing */}
+          {!isPlaying && (
+            <div
+              onClick={togglePlay}
+              className="absolute inset-0 flex items-center justify-center bg-slate-950/30 backdrop-blur-[2px] cursor-pointer transition-opacity z-10"
+            >
+              <div className="w-16 h-16 rounded-full bg-sky-500/90 text-slate-950 flex items-center justify-center shadow-xl shadow-sky-500/40 transform transition-transform hover:scale-110">
+                <Play size={28} className="translate-x-0.5 fill-current" />
+              </div>
+            </div>
+          )}
+
           {/* Bottom Gradient Overlay & Controls Bar */}
           <div className="absolute inset-x-0 bottom-0 p-3 sm:p-5 bg-gradient-to-t from-slate-950/95 via-slate-950/60 to-transparent flex items-center justify-between gap-3 z-20">
             
@@ -140,17 +132,17 @@ export function SedeVideoPlayer({
                 type="button"
                 onClick={togglePlay}
                 aria-label={isPlaying ? "Pausar video de la sede" : "Reproducir video de la sede"}
-                className="w-10 h-10 rounded-xl bg-sky-500 hover:bg-sky-400 text-slate-950 flex items-center justify-center shadow-lg shadow-sky-500/30 transition-all hover:scale-105 active:scale-95"
+                className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-sky-500 hover:bg-sky-400 text-slate-950 flex items-center justify-center shadow-lg shadow-sky-500/30 transition-all hover:scale-105 active:scale-95"
                 title={isPlaying ? "Pausar video" : "Reproducir video"}
               >
-                {isPlaying ? <Pause size={18} /> : <Play size={18} className="translate-x-0.5" />}
+                {isPlaying ? <Pause size={20} /> : <Play size={20} className="translate-x-0.5" />}
               </button>
 
               <button
                 type="button"
                 onClick={toggleMute}
                 aria-label={isMuted ? "Activar audio del video" : "Silenciar audio del video"}
-                className="w-10 h-10 rounded-xl bg-slate-900/80 hover:bg-slate-800 text-white border border-white/10 flex items-center justify-center transition-all hover:scale-105 active:scale-95"
+                className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-slate-900/80 hover:bg-slate-800 text-white border border-white/10 flex items-center justify-center transition-all hover:scale-105 active:scale-95"
                 title={isMuted ? "Activar audio" : "Silenciar audio"}
               >
                 {isMuted ? <VolumeX size={18} className="text-slate-400" /> : <Volume2 size={18} className="text-emerald-400" />}
@@ -168,10 +160,10 @@ export function SedeVideoPlayer({
                 type="button"
                 onClick={handleFullscreen}
                 aria-label="Ver video en pantalla completa"
-                className="w-10 h-10 rounded-xl bg-slate-900/80 hover:bg-slate-800 text-slate-300 hover:text-white border border-white/10 flex items-center justify-center transition-all hover:scale-105"
+                className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-slate-900/80 hover:bg-slate-800 text-slate-300 hover:text-white border border-white/10 flex items-center justify-center transition-all hover:scale-105"
                 title="Pantalla Completa"
               >
-                <Maximize size={16} />
+                <Maximize size={18} />
               </button>
             </div>
 
