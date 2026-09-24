@@ -3,6 +3,8 @@
 import React from "react";
 import { usePathname } from "next/navigation";
 
+import { WhatsAppIcon } from "@/components/BrandIcons";
+
 export function WhatsAppFloatingButton() {
   const pathname = usePathname();
   const whatsappPhone = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "573151189795";
@@ -25,9 +27,9 @@ export function WhatsAppFloatingButton() {
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Contactar por WhatsApp a Procap Natural"
-        className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-[#25D366] hover:bg-[#20bd5a] text-slate-950 flex items-center justify-center shadow-2xl shadow-emerald-500/40 transition-transform hover:scale-110 active:scale-95 pulse-whatsapp"
+        className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-[#25D366] hover:bg-[#20bd5a] text-white flex items-center justify-center shadow-2xl shadow-emerald-500/40 transition-transform hover:scale-110 active:scale-95 pulse-whatsapp"
       >
-        <i className="fa-brands fa-whatsapp text-xl sm:text-2xl text-white"></i>
+        <WhatsAppIcon className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
       </a>
 
     </div>

@@ -139,17 +139,9 @@ export default function RootLayout({
         <meta name="twitter:image" content="https://protesiscapilarcolombia.com/og-image.jpg" />
         <meta name="twitter:card" content="summary_large_image" />
 
-        {/* Preconnects para optimización de latencia */}
+        {/* Preconnects para optimización de fuentes de Google */}
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossOrigin="anonymous" />
 
-        {/* FontAwesome Icons */}
-        <link 
-          rel="stylesheet" 
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" 
-          crossOrigin="anonymous" 
-          referrerPolicy="no-referrer"
-        />
         
         {/* Google Tag Manager (Optimizado no bloqueante) */}
         <Script
@@ -248,6 +240,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                     "postalCode": "110221",
                     "addressCountry": "CO"
                   },
+                  "hasMap": "https://maps.google.com/?q=Carrera+16+%2396-64+Chico+Norte+Bogota",
                   "geo": {
                     "@type": "GeoCoordinates",
                     "latitude": 4.682855,
@@ -273,6 +266,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                     "itemListElement": [
                       {
                         "@type": "Offer",
+                        "availability": "https://schema.org/InStock",
                         "itemOffered": {
                           "@type": "Service",
                           "name": "Instalación y Adaptación de Prótesis Capilar",
@@ -283,6 +277,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                       },
                       {
                         "@type": "Offer",
+                        "availability": "https://schema.org/InStock",
                         "itemOffered": {
                           "@type": "Service",
                           "name": "Mantenimiento Preventivo de Prótesis Capilar",
@@ -293,6 +288,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                       },
                       {
                         "@type": "Offer",
+                        "availability": "https://schema.org/InStock",
+                        "itemCondition": "https://schema.org/NewCondition",
                         "itemOffered": {
                           "@type": "Product",
                           "name": "Sistema Capilar París Gama Premium",
@@ -303,6 +300,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                       },
                       {
                         "@type": "Offer",
+                        "availability": "https://schema.org/InStock",
+                        "itemCondition": "https://schema.org/NewCondition",
                         "itemOffered": {
                           "@type": "Product",
                           "name": "Sistema Capilar Mixto Indetectable (Más Vendido)",
@@ -313,6 +312,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                       },
                       {
                         "@type": "Offer",
+                        "availability": "https://schema.org/InStock",
+                        "itemCondition": "https://schema.org/NewCondition",
                         "itemOffered": {
                           "@type": "Product",
                           "name": "Sistema Capilar Pompadour en Oferta",
@@ -351,6 +352,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                     "addressRegion": "Valle del Cauca",
                     "addressCountry": "CO"
                   },
+                  "hasMap": "https://maps.google.com/?q=Calle+16+%2383A-15+Cali+Valle",
                   "geo": {
                     "@type": "GeoCoordinates",
                     "latitude": 3.385500,

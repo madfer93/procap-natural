@@ -14,6 +14,7 @@ import {
   ArrowRight,
   Sparkle
 } from "lucide-react";
+import { WhatsAppIcon } from "@/components/BrandIcons";
 
 export default function ServiciosPage() {
   const whatsappPhone = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "573151189795";
@@ -89,9 +90,10 @@ export default function ServiciosPage() {
                 href={`https://wa.me/${whatsappPhone}?text=¡Hola%20Procap!%20Deseo%20agendar%20mi%20Servicio%20de%20Instalación%20de%20Prótesis%20Capilar%20($300.000%20COP).`}
                 target="_blank"
                 rel="noopener noreferrer"
+                aria-label="Agendar Instalación por WhatsApp"
                 className="w-full py-4 rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-slate-950 font-black text-center flex items-center justify-center gap-2 transition-all shadow-lg shadow-emerald-500/20"
               >
-                <i className="fa-brands fa-whatsapp text-lg"></i>
+                <WhatsAppIcon className="w-5 h-5 text-slate-950" />
                 <span>Agendar Instalación por WhatsApp</span>
               </a>
             </div>
@@ -144,9 +146,10 @@ export default function ServiciosPage() {
                 href={`https://wa.me/${whatsappPhone}?text=¡Hola%20Procap!%20Deseo%20agendar%20mi%20Servicio%20de%20Mantenimiento%20Capilar%20($75.000%20COP).`}
                 target="_blank"
                 rel="noopener noreferrer"
+                aria-label="Agendar Mantenimiento por WhatsApp"
                 className="w-full py-4 rounded-xl bg-slate-900/90 hover:bg-emerald-500 text-white hover:text-slate-950 font-bold text-center flex items-center justify-center gap-2 border border-slate-700 hover:border-emerald-400 transition-all shadow-sm"
               >
-                <i className="fa-brands fa-whatsapp text-lg text-emerald-400 group-hover:text-slate-950"></i>
+                <WhatsAppIcon className="w-5 h-5 text-emerald-400 group-hover:text-slate-950" />
                 <span>Agendar Mantenimiento por WhatsApp</span>
               </a>
             </div>

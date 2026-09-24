@@ -12,17 +12,23 @@ import {
   CheckCircle2, 
   Sparkles, 
   Save, 
-  X,
-  Clock,
-  Eye,
-  Camera,
-  Upload,
-  ExternalLink,
-  ShieldCheck,
-  Car,
-  Navigation,
-  Loader2,
-  Image as ImageIcon
+  X, 
+  Clock, 
+  Eye, 
+  Camera, 
+  Upload, 
+  ExternalLink, 
+  ShieldCheck, 
+  Car, 
+  Navigation, 
+  Loader2, 
+  Image as ImageIcon,
+  Video,
+  Film,
+  Phone,
+  Mail,
+  Search,
+  Globe
 } from "lucide-react";
 
 export default function AdminSedesPage() {
@@ -33,11 +39,13 @@ export default function AdminSedesPage() {
   const [saving, setSaving] = useState(false);
   const [statusMessage, setStatusMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
-  // Estados de subida de imágenes a Cloudflare R2
+  // Estados de subida multimedia
   const [uploadingCover, setUploadingCover] = useState(false);
   const [uploadingGallery, setUploadingGallery] = useState(false);
+  const [uploadingVideo, setUploadingVideo] = useState(false);
   const coverInputRef = useRef<HTMLInputElement | null>(null);
   const galleryInputRef = useRef<HTMLInputElement | null>(null);
+  const videoInputRef = useRef<HTMLInputElement | null>(null);
 
   // Form State
   const [formData, setFormData] = useState<SedeInfo>({
@@ -49,8 +57,12 @@ export default function AdminSedesPage() {
     address: "",
     neighborhood: "",
     postalCode: "",
+    phone: "+57 315 118 9795",
+    email: "contacto@protesiscapilarcolombia.com",
     coverImage: "/images/sedes/bogota.jpg",
     gallery: [],
+    videoUrl: "",
+    videoTitle: "",
     description: "",
     fullStory: "",
     amenities: ["Cabinas VIP individuales", "Climatización dérmica"],
@@ -67,10 +79,15 @@ export default function AdminSedesPage() {
     googleMapsEmbed: "https://www.google.com/maps/embed?pb=...",
     googleMapsUrl: "https://maps.google.com",
     wazeUrl: "https://waze.com",
-    whatsappMessage: "¡Hola Procap Natural! Deseo agendar mi valoración personalizada."
+    whatsappMessage: "¡Hola Procap Natural! Deseo agendar mi valoración personalizada.",
+    seoTitle: "",
+    seoDescription: "",
+    seoKeywords: []
   });
 
   const [newAmenity, setNewAmenity] = useState("");
+  const [newGalleryUrl, setNewGalleryUrl] = useState("");
+  const [newGalleryCaption, setNewGalleryCaption] = useState("");
 
   const showNotification = (text: string, type: "success" | "error" = "success") => {
     setStatusMessage({ type, text });
@@ -98,7 +115,21 @@ export default function AdminSedesPage() {
 
   const handleEdit = (sede: SedeInfo) => {
     setEditingSede(sede);
-    setFormData({ ...sede });
+    setFormData({
+      ...sede,
+      gallery: sede.gallery || [],
+      amenities: sede.amenities || [],
+      schedule: sede.schedule || {
+        weekdays: "8:00 AM – 7:00 PM (Previa Cita)",
+        saturdays: "8:00 AM – 6:00 PM (Previa Cita)",
+        sundays: "Cita previa agendada"
+      },
+      transitGuide: sede.transitGuide || {
+        car: "Acceso vehicular fácil y seguro.",
+        publicTransport: "Transporte público cercano.",
+        parking: "Parqueadero cercano."
+      }
+    });
     setIsCreating(false);
     window.scrollTo({ top: 300, behavior: "smooth" });
   };
@@ -114,11 +145,15 @@ export default function AdminSedesPage() {
       address: "",
       neighborhood: "",
       postalCode: "",
+      phone: "+57 315 118 9795",
+      email: "contacto@protesiscapilarcolombia.com",
       coverImage: "/images/sedes/bogota.jpg",
       gallery: [
         { url: "/images/sedes/bogota.jpg", caption: "Fachada de la Sede" },
         { url: "/images/sedes/cabina-vip.jpg", caption: "Cabina VIP Individual" }
       ],
+      videoUrl: "https://pub-426a082ba0a64de0bcf1da7c816f7c38.r2.dev/PROCAPS-OFICINA.mp4",
+      videoTitle: "Recorrido de la Sede",
       description: "Espacio privado y climatizado para atención de prótesis capilares.",
       fullStory: "Instalaciones diseñadas para máxima privacidad y confort.",
       amenities: ["Cabinas VIP individuales", "Climatización y aire acondicionado", "Atención personalizada 1 a 1"],
@@ -135,13 +170,16 @@ export default function AdminSedesPage() {
       googleMapsEmbed: "https://www.google.com/maps/embed?pb=...",
       googleMapsUrl: "https://maps.google.com",
       wazeUrl: "https://waze.com",
-      whatsappMessage: "¡Hola Procap Natural! Deseo agendar mi valoración personalizada."
+      whatsappMessage: "¡Hola Procap Natural! Deseo agendar mi valoración personalizada.",
+      seoTitle: "",
+      seoDescription: "",
+      seoKeywords: []
     });
     setIsCreating(true);
     window.scrollTo({ top: 300, behavior: "smooth" });
   };
 
-  // Subir portada a Cloudflare R2
+  // Subir portada a R2 / Supabase
   const handleCoverUpload = async (file: File) => {
     try {
       setUploadingCover(true);
@@ -160,7 +198,7 @@ export default function AdminSedesPage() {
       }
 
       setFormData((prev) => ({ ...prev, coverImage: result.url }));
-      showNotification(`¡Foto de fachada subida con éxito a ${result.provider === "cloudflare_r2" ? "Cloudflare R2" : result.provider}!`);
+      showNotification(`¡Foto de portada subida con éxito (${result.provider})!`);
     } catch (err: any) {
       showNotification(`Error: ${err.message || err}`, "error");
     } finally {
@@ -168,7 +206,7 @@ export default function AdminSedesPage() {
     }
   };
 
-  // Subir foto a la galería de la sede (Cloudflare R2)
+  // Subir foto a galería
   const handleGalleryUpload = async (file: File) => {
     try {
       setUploadingGallery(true);
@@ -191,11 +229,53 @@ export default function AdminSedesPage() {
         ...prev,
         gallery: [...(prev.gallery || []), newPhoto]
       }));
-      showNotification(`¡Foto de instalaciones añadida a Cloudflare R2!`);
+      showNotification(`¡Foto de instalaciones añadida con éxito!`);
     } catch (err: any) {
       showNotification(`Error: ${err.message || err}`, "error");
     } finally {
       setUploadingGallery(false);
+    }
+  };
+
+  const handleAddManualGalleryPhoto = () => {
+    if (!newGalleryUrl.trim()) return;
+    setFormData((prev) => ({
+      ...prev,
+      gallery: [...(prev.gallery || []), { url: newGalleryUrl.trim(), caption: newGalleryCaption.trim() || "Instalaciones" }]
+    }));
+    setNewGalleryUrl("");
+    setNewGalleryCaption("");
+    showNotification("Foto añadida a la galería");
+  };
+
+  // Subir video de la sede a R2 / Supabase
+  const handleVideoUpload = async (file: File) => {
+    try {
+      setUploadingVideo(true);
+      const data = new FormData();
+      data.append("file", file);
+      data.append("folder", "sedes-videos");
+
+      const res = await fetch("/api/upload", {
+        method: "POST",
+        body: data,
+      });
+
+      const result = await res.json();
+      if (!res.ok || !result.url) {
+        throw new Error(result.error || "Error al subir video");
+      }
+
+      setFormData((prev) => ({
+        ...prev,
+        videoUrl: result.url,
+        videoTitle: prev.videoTitle || `Recorrido de ${prev.name || "la Sede"}`
+      }));
+      showNotification(`¡Video subido con éxito (${result.provider})!`);
+    } catch (err: any) {
+      showNotification(`Error al subir video: ${err.message || err}`, "error");
+    } finally {
+      setUploadingVideo(false);
     }
   };
 
@@ -255,7 +335,7 @@ export default function AdminSedesPage() {
       setSedes(updatedList);
       setEditingSede(null);
       setIsCreating(false);
-      showNotification("¡Sede guardada y sincronizada en Supabase con éxito!");
+      showNotification("¡Sede, fotos, videos y datos de SEO guardados y sincronizados en tiempo real!");
     } catch (err: any) {
       showNotification(`Error: ${err.message || err}`, "error");
     } finally {
@@ -294,13 +374,13 @@ export default function AdminSedesPage() {
         <div>
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-500/10 border border-sky-400/20 text-sky-400 text-xs font-bold mb-1">
             <MapPin size={13} />
-            <span>Gestión de Ubicaciones Fijas</span>
+            <span>Gestión de Ubicaciones Fijas & Multimedia</span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-black font-heading text-white">
-            Sedes Oficiales & Instalaciones
+            Sedes Oficiales, Fotos, Videos & SEO
           </h1>
           <p className="text-xs sm:text-sm text-slate-400 mt-1">
-            Administra las fachadas, galerías de fotos de las cabinas, direcciones, horarios y enlaces de mapas para cada sede.
+            Sube fotos de cabinas, videos de recorridos, administra horarios, guías de acceso y optimización SEO para cada sede.
           </p>
         </div>
 
@@ -329,7 +409,7 @@ export default function AdminSedesPage() {
         </div>
       )}
 
-      {/* FORMULARIO EXPANDIBLE INLINE PARA EDITAR/CREAR SEDE */}
+      {/* FORMULARIO EXPANDIBLE PARA EDITAR/CREAR SEDE */}
       {(editingSede || isCreating) && (
         <div className="p-6 sm:p-8 rounded-3xl bg-slate-950 border border-amber-500/40 shadow-2xl relative animate-in fade-in duration-300">
           
@@ -343,7 +423,7 @@ export default function AdminSedesPage() {
                   {editingSede ? `Editar ${editingSede.name}` : "Crear Nueva Sede"}
                 </h2>
                 <p className="text-xs text-slate-400">
-                  Modifica la información que se muestra en la web pública (/ubicacion y /ubicacion/{formData.slug || "[slug]"}).
+                  Actualiza toda la información visible en /ubicacion/{formData.slug || "[slug]"} y páginas dedicadas.
                 </p>
               </div>
             </div>
@@ -372,7 +452,7 @@ export default function AdminSedesPage() {
                   required
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  placeholder="Ej: Sede Bogotá, Sede Cali..."
+                  placeholder="Ej: Sede Bogotá, Sede Barranquilla..."
                   className="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-amber-500"
                 />
               </div>
@@ -386,7 +466,7 @@ export default function AdminSedesPage() {
                   required
                   value={formData.city}
                   onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-                  placeholder="Ej: Bogotá, Cali, Neiva..."
+                  placeholder="Ej: Bogotá, Cali, Barranquilla, Neiva..."
                   className="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-amber-500"
                 />
               </div>
@@ -399,7 +479,7 @@ export default function AdminSedesPage() {
                   type="text"
                   value={formData.department}
                   onChange={(e) => setFormData({ ...formData, department: e.target.value })}
-                  placeholder="Ej: Cundinamarca, Valle, Huila..."
+                  placeholder="Ej: Cundinamarca, Atlántico, Huila..."
                   className="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-amber-500"
                 />
               </div>
@@ -413,15 +493,15 @@ export default function AdminSedesPage() {
                   required
                   value={formData.slug}
                   onChange={(e) => setFormData({ ...formData, slug: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, "") })}
-                  placeholder="bogota"
+                  placeholder="barranquilla"
                   className="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-sky-400 font-mono focus:outline-none focus:border-amber-500"
                 />
               </div>
             </div>
 
-            {/* Fila 2: Dirección, Barrio, Código Postal, Badge */}
+            {/* Fila 2: Dirección, Barrio, Código Postal, Badge, Teléfono, Email */}
             <div className="grid grid-cols-1 sm:grid-cols-12 gap-4">
-              <div className="sm:col-span-5">
+              <div className="sm:col-span-4">
                 <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-2">
                   Dirección Exacta *
                 </label>
@@ -430,20 +510,20 @@ export default function AdminSedesPage() {
                   required
                   value={formData.address}
                   onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                  placeholder="Ej: Carrera 16 #96-64"
+                  placeholder="Ej: Calle 64 #46-69"
                   className="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-amber-500"
                 />
               </div>
 
               <div className="sm:col-span-3">
                 <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-2">
-                  Barrio / Edificio / Estudio
+                  Barrio / Localidad / Edificio
                 </label>
                 <input
                   type="text"
                   value={formData.neighborhood}
                   onChange={(e) => setFormData({ ...formData, neighborhood: e.target.value })}
-                  placeholder="Ej: Barrio Chicó Norte"
+                  placeholder="Ej: Centro Histórico"
                   className="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-amber-500"
                 />
               </div>
@@ -456,12 +536,12 @@ export default function AdminSedesPage() {
                   type="text"
                   value={formData.postalCode}
                   onChange={(e) => setFormData({ ...formData, postalCode: e.target.value })}
-                  placeholder="110221"
+                  placeholder="080002"
                   className="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-amber-500"
                 />
               </div>
 
-              <div className="sm:col-span-2">
+              <div className="sm:col-span-3">
                 <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-2">
                   Etiqueta / Badge
                 </label>
@@ -469,9 +549,124 @@ export default function AdminSedesPage() {
                   type="text"
                   value={formData.badge}
                   onChange={(e) => setFormData({ ...formData, badge: e.target.value })}
-                  placeholder="Sede Principal"
+                  placeholder="Sede Costa Caribe"
                   className="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-amber-400 font-bold focus:outline-none focus:border-amber-500"
                 />
+              </div>
+            </div>
+
+            {/* Fila Contacto Directo: Teléfono y Email */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-2 flex items-center gap-1.5">
+                  <Phone size={13} className="text-emerald-400" />
+                  <span>Teléfono Directo de la Sede</span>
+                </label>
+                <input
+                  type="text"
+                  value={formData.phone || ""}
+                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                  placeholder="+57 315 118 9795"
+                  className="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-amber-500"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-2 flex items-center gap-1.5">
+                  <Mail size={13} className="text-sky-400" />
+                  <span>Email de Atención</span>
+                </label>
+                <input
+                  type="email"
+                  value={formData.email || ""}
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  placeholder="contacto@protesiscapilarcolombia.com"
+                  className="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-amber-500"
+                />
+              </div>
+            </div>
+
+            {/* SECCIÓN NUEVA: SUBIDA Y GESTIÓN DE VIDEO DE LA SEDE */}
+            <div className="p-5 rounded-2xl bg-gradient-to-br from-slate-900/90 via-slate-950 to-blue-950/40 border border-sky-500/30 space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-800">
+                <div>
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-sky-400 flex items-center gap-2">
+                    <Video size={16} className="text-cyan-400" />
+                    <span>Video de Recorrido / Presentación de la Sede</span>
+                  </h3>
+                  <p className="text-[11px] text-slate-400 mt-0.5">
+                    Sube un video en formato MP4 o WebM a Cloudflare R2, o ingresa un enlace directo para mostrar a los clientes.
+                  </p>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <input
+                    type="file"
+                    ref={videoInputRef}
+                    accept="video/mp4,video/webm,video/quicktime"
+                    className="hidden"
+                    onChange={(e) => {
+                      if (e.target.files?.[0]) handleVideoUpload(e.target.files[0]);
+                    }}
+                  />
+                  <button
+                    type="button"
+                    disabled={uploadingVideo}
+                    onClick={() => videoInputRef.current?.click()}
+                    className="px-4 py-2 rounded-xl bg-gradient-to-r from-sky-500 to-cyan-500 hover:from-sky-400 text-slate-950 text-xs font-black flex items-center gap-1.5 shadow-lg shadow-sky-500/20 transition-all"
+                  >
+                    {uploadingVideo ? <Loader2 size={14} className="animate-spin" /> : <Upload size={14} />}
+                    <span>{uploadingVideo ? "Subiendo Video..." : "Subir Video a R2"}</span>
+                  </button>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-12 gap-4">
+                <div className="sm:col-span-7 space-y-3">
+                  <div>
+                    <label className="block text-[11px] font-bold text-slate-300 mb-1">
+                      URL del Video (Cloudflare R2, MP4 o YouTube)
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.videoUrl || ""}
+                      onChange={(e) => setFormData({ ...formData, videoUrl: e.target.value })}
+                      placeholder="https://pub-xxxx.r2.dev/video-sede.mp4"
+                      className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-sky-300 font-mono focus:outline-none focus:border-sky-400"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[11px] font-bold text-slate-300 mb-1">
+                      Título del Video
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.videoTitle || ""}
+                      onChange={(e) => setFormData({ ...formData, videoTitle: e.target.value })}
+                      placeholder="Recorrido Sede Chicó Norte & Cabinas VIP"
+                      className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-sky-400"
+                    />
+                  </div>
+                </div>
+
+                <div className="sm:col-span-5">
+                  {formData.videoUrl ? (
+                    <div className="rounded-xl overflow-hidden border border-sky-500/30 bg-slate-950 aspect-video relative">
+                      <video
+                        src={formData.videoUrl}
+                        controls
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  ) : (
+                    <div className="rounded-xl border border-dashed border-slate-800 bg-slate-950/60 aspect-video flex flex-col items-center justify-center text-slate-500 p-4 text-center">
+                      <Film size={24} className="mb-1 text-slate-600" />
+                      <span className="text-xs">Sin video configurado</span>
+                      <span className="text-[10px] text-slate-600">Sube uno o pega la URL</span>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
 
@@ -481,10 +676,10 @@ export default function AdminSedesPage() {
                 <div>
                   <h3 className="text-xs font-bold uppercase tracking-wider text-sky-400 flex items-center gap-2">
                     <Camera size={15} />
-                    <span>Foto de Fachada / Portada de la Sede</span>
+                    <span>Foto de Fachada / Portada Principal</span>
                   </h3>
                   <p className="text-[11px] text-slate-400 mt-0.5">
-                    Esta imagen se muestra en la tarjeta de /ubicacion y como cabecera en /ubicacion/{formData.slug || "[slug]"}.
+                    Imagen de portada para la tarjeta de /ubicacion y cabecera de la página.
                   </p>
                 </div>
 
@@ -505,7 +700,7 @@ export default function AdminSedesPage() {
                     className="px-3.5 py-1.5 rounded-xl bg-sky-500/20 text-sky-300 hover:bg-sky-500/30 border border-sky-400/30 text-xs font-bold flex items-center gap-1.5 transition-all"
                   >
                     {uploadingCover ? <Loader2 size={13} className="animate-spin" /> : <Upload size={13} />}
-                    <span>{uploadingCover ? "Subiendo a R2..." : "Subir Foto a R2"}</span>
+                    <span>{uploadingCover ? "Subiendo..." : "Subir Foto a R2"}</span>
                   </button>
                 </div>
               </div>
@@ -539,11 +734,11 @@ export default function AdminSedesPage() {
 
             {/* SECCIÓN: GALERÍA DE FOTOS DE LAS INSTALACIONES */}
             <div className="p-5 rounded-2xl bg-slate-900/60 border border-slate-800 space-y-4">
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div>
                   <h3 className="text-xs font-bold uppercase tracking-wider text-amber-400 flex items-center gap-2">
                     <ImageIcon size={15} />
-                    <span>Galería de Instalaciones (Cabinas, Sillones, Lavado)</span>
+                    <span>Galería de Instalaciones (Cabinas VIP, Sillones, Lavacabezas)</span>
                   </h3>
                   <p className="text-[11px] text-slate-400 mt-0.5">
                     Fotos que verán los clientes en la sección "Mira las Instalaciones".
@@ -567,12 +762,37 @@ export default function AdminSedesPage() {
                     className="px-3.5 py-1.5 rounded-xl bg-amber-500/20 text-amber-300 hover:bg-amber-500/30 border border-amber-400/30 text-xs font-bold flex items-center gap-1.5 transition-all"
                   >
                     {uploadingGallery ? <Loader2 size={13} className="animate-spin" /> : <Upload size={13} />}
-                    <span>{uploadingGallery ? "Subiendo..." : "+ Añadir Foto a R2"}</span>
+                    <span>{uploadingGallery ? "Subiendo..." : "+ Subir Archivo"}</span>
                   </button>
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              {/* Agregar foto por URL directa */}
+              <div className="flex flex-col sm:flex-row gap-2 pt-2 border-t border-slate-800/60">
+                <input
+                  type="text"
+                  value={newGalleryUrl}
+                  onChange={(e) => setNewGalleryUrl(e.target.value)}
+                  placeholder="O pega URL de foto (https://...)"
+                  className="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500 font-mono"
+                />
+                <input
+                  type="text"
+                  value={newGalleryCaption}
+                  onChange={(e) => setNewGalleryCaption(e.target.value)}
+                  placeholder="Leyenda o pie de foto (opcional)"
+                  className="sm:w-64 bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500"
+                />
+                <button
+                  type="button"
+                  onClick={handleAddManualGalleryPhoto}
+                  className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold"
+                >
+                  + Añadir por URL
+                </button>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
                 {formData.gallery?.map((photo, index) => (
                   <div key={index} className="p-3 rounded-xl bg-slate-950 border border-slate-800 space-y-2 relative group">
                     <div className="relative aspect-video rounded-lg overflow-hidden bg-slate-900">
@@ -637,7 +857,65 @@ export default function AdminSedesPage() {
               </div>
             </div>
 
-            {/* Fila 4: Comodidades / Protocolos (Chips) */}
+            {/* SECCIÓN NUEVA: GUÍA DE TRANSPORTE Y ACCESO */}
+            <div className="p-5 rounded-2xl bg-slate-900/60 border border-slate-800 space-y-4">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-emerald-400 flex items-center gap-2">
+                <Car size={15} />
+                <span>Guía de Cómo Llegar (Vehículo, Transporte Público y Parqueadero)</span>
+              </h3>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div>
+                  <label className="block text-[11px] font-bold text-slate-300 mb-1">
+                    Acceso en Carro / Vehículo
+                  </label>
+                  <textarea
+                    rows={2}
+                    value={formData.transitGuide?.car || ""}
+                    onChange={(e) => setFormData({
+                      ...formData,
+                      transitGuide: { ...formData.transitGuide, car: e.target.value }
+                    })}
+                    placeholder="Vías de acceso vehicular..."
+                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500 resize-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-bold text-slate-300 mb-1">
+                    Transporte Público (TransMilenio, MIO, Metro...)
+                  </label>
+                  <textarea
+                    rows={2}
+                    value={formData.transitGuide?.publicTransport || ""}
+                    onChange={(e) => setFormData({
+                      ...formData,
+                      transitGuide: { ...formData.transitGuide, publicTransport: e.target.value }
+                    })}
+                    placeholder="Estaciones cercanas..."
+                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500 resize-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-bold text-slate-300 mb-1">
+                    Parqueaderos & Bahías
+                  </label>
+                  <textarea
+                    rows={2}
+                    value={formData.transitGuide?.parking || ""}
+                    onChange={(e) => setFormData({
+                      ...formData,
+                      transitGuide: { ...formData.transitGuide, parking: e.target.value }
+                    })}
+                    placeholder="Bahías o parqueaderos vigilados..."
+                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500 resize-none"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Fila: Comodidades / Protocolos (Chips) */}
             <div className="p-4 rounded-2xl bg-slate-900/60 border border-slate-800 space-y-3">
               <label className="block text-xs font-bold uppercase tracking-wider text-slate-300">
                 Comodidades & Protocolos de la Sede
@@ -685,7 +963,7 @@ export default function AdminSedesPage() {
               </div>
             </div>
 
-            {/* Fila 5: Horarios */}
+            {/* Fila: Horarios */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-2">
@@ -736,7 +1014,7 @@ export default function AdminSedesPage() {
               </div>
             </div>
 
-            {/* Fila 6: Enlaces de Mapas & WhatsApp */}
+            {/* Fila: Enlaces de Mapas & WhatsApp */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-2">
@@ -778,6 +1056,42 @@ export default function AdminSedesPage() {
               </div>
             </div>
 
+            {/* SECCIÓN NUEVA: CONFIGURACIÓN SEO DEDICADA PARA GOOGLE */}
+            <div className="p-5 rounded-2xl bg-gradient-to-br from-slate-900/80 via-slate-950 to-indigo-950/40 border border-indigo-500/30 space-y-4">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-indigo-400 flex items-center gap-2">
+                <Search size={15} />
+                <span>Optimización SEO Local para Google & Motores de Búsqueda</span>
+              </h3>
+              
+              <div className="space-y-3">
+                <div>
+                  <label className="block text-[11px] font-bold text-slate-300 mb-1">
+                    Meta Título SEO (Title Tag)
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.seoTitle || ""}
+                    onChange={(e) => setFormData({ ...formData, seoTitle: e.target.value })}
+                    placeholder="Prótesis Capilar en Barranquilla • Centro Histórico | Procap Natural"
+                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-indigo-400"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-bold text-slate-300 mb-1">
+                    Meta Descripción SEO
+                  </label>
+                  <textarea
+                    rows={2}
+                    value={formData.seoDescription || ""}
+                    onChange={(e) => setFormData({ ...formData, seoDescription: e.target.value })}
+                    placeholder="Sistemas capilares indetectables en Barranquilla. Calle 64 #46-69. Adhesivos médicos ultra-resistentes al calor y la playa..."
+                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-indigo-400 resize-none"
+                  />
+                </div>
+              </div>
+            </div>
+
             {/* Botones de Acción */}
             <div className="flex items-center justify-end gap-3 pt-6 border-t border-slate-800">
               <button
@@ -805,7 +1119,7 @@ export default function AdminSedesPage() {
         </div>
       )}
 
-      {/* LISTA DE SEDES ACTUALES (4 CARDS) */}
+      {/* LISTA DE SEDES ACTUALES (CARDS) */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {sedes.map((sede) => (
           <div
@@ -825,8 +1139,17 @@ export default function AdminSedesPage() {
                 <div className="absolute top-2.5 left-2.5 px-3 py-1 bg-slate-950/80 backdrop-blur-md text-amber-400 font-bold text-[11px] rounded-full border border-amber-500/30">
                   {sede.badge}
                 </div>
-                <div className="absolute bottom-2.5 right-2.5 px-2.5 py-1 bg-slate-950/80 backdrop-blur-md text-white font-semibold text-[10px] rounded-lg">
-                  {sede.gallery?.length || 0} fotos en galería
+                
+                <div className="absolute bottom-2.5 right-2.5 flex items-center gap-1.5">
+                  {sede.videoUrl && (
+                    <span className="px-2.5 py-1 bg-sky-950/90 border border-sky-400/30 text-sky-300 font-bold text-[10px] rounded-lg flex items-center gap-1">
+                      <Video size={11} />
+                      <span>Con Video</span>
+                    </span>
+                  )}
+                  <span className="px-2.5 py-1 bg-slate-950/80 backdrop-blur-md text-white font-semibold text-[10px] rounded-lg">
+                    {sede.gallery?.length || 0} fotos
+                  </span>
                 </div>
               </div>
 
@@ -846,6 +1169,12 @@ export default function AdminSedesPage() {
                   <MapPin size={14} className="text-sky-400 shrink-0 mt-0.5" />
                   <span>{sede.address} ({sede.neighborhood})</span>
                 </p>
+                {sede.phone && (
+                  <p className="flex items-start gap-2 text-emerald-400">
+                    <Phone size={14} className="shrink-0 mt-0.5" />
+                    <span>{sede.phone}</span>
+                  </p>
+                )}
                 <p className="flex items-start gap-2 text-slate-400">
                   <Clock size={14} className="text-amber-400 shrink-0 mt-0.5" />
                   <span>{sede.schedule.weekdays}</span>

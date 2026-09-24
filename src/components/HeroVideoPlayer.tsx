@@ -145,6 +145,7 @@ export function HeroVideoPlayer({
             ref={videoRef}
             src={videoUrl}
             poster={posterUrl}
+            preload="metadata"
             autoPlay
             loop
             muted={isMuted}

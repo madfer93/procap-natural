@@ -18,21 +18,25 @@ interface SedeVideoPlayerProps {
   subtitle?: string;
   className?: string;
   autoPlay?: boolean;
+  videoUrl?: string;
+  badgeText?: string;
+  addressText?: string;
 }
 
 export function SedeVideoPlayer({
   title = "Recorrido & Acceso a Nuestras Instalaciones",
-  subtitle = "Conoce nuestra sede privada en Chicó Norte, Bogotá (Calle 16 #83a-15) antes de tu visita.",
+  subtitle = "Conoce nuestra sede privada antes de tu visita.",
   className = "",
   autoPlay = false,
+  videoUrl = "https://pub-426a082ba0a64de0bcf1da7c816f7c38.r2.dev/PROCAPS-OFICINA.mp4",
+  badgeText = "Sede Chicó Norte • Bogotá",
+  addressText = "Cra 16 #96-64 • Chicó Norte",
 }: SedeVideoPlayerProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
   const [isLoaded, setIsLoaded] = useState(false);
-
-  const videoUrl = "https://pub-426a082ba0a64de0bcf1da7c816f7c38.r2.dev/PROCAPS-OFICINA.mp4";
 
   // Solo reproducir cuando el usuario realmente hace scroll y llega a la sección del video
   useEffect(() => {
@@ -118,7 +122,7 @@ export function SedeVideoPlayer({
             <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-950/80 backdrop-blur-md border border-white/10 text-white text-[11px] sm:text-xs font-bold shadow-lg">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
               <MapPin size={13} className="text-sky-400" />
-              <span>Sede Chicó Norte • Bogotá</span>
+              <span>{badgeText}</span>
             </div>
 
             <div className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-950/80 backdrop-blur-md border border-white/10 text-slate-300 text-[11px] font-semibold shadow-lg">
@@ -135,6 +139,7 @@ export function SedeVideoPlayer({
               <button
                 type="button"
                 onClick={togglePlay}
+                aria-label={isPlaying ? "Pausar video de la sede" : "Reproducir video de la sede"}
                 className="w-10 h-10 rounded-xl bg-sky-500 hover:bg-sky-400 text-slate-950 flex items-center justify-center shadow-lg shadow-sky-500/30 transition-all hover:scale-105 active:scale-95"
                 title={isPlaying ? "Pausar video" : "Reproducir video"}
               >
@@ -144,6 +149,7 @@ export function SedeVideoPlayer({
               <button
                 type="button"
                 onClick={toggleMute}
+                aria-label={isMuted ? "Activar audio del video" : "Silenciar audio del video"}
                 className="w-10 h-10 rounded-xl bg-slate-900/80 hover:bg-slate-800 text-white border border-white/10 flex items-center justify-center transition-all hover:scale-105 active:scale-95"
                 title={isMuted ? "Activar audio" : "Silenciar audio"}
               >
@@ -152,7 +158,7 @@ export function SedeVideoPlayer({
 
               <div className="hidden sm:flex flex-col ml-2">
                 <span className="text-xs font-bold text-white tracking-wide">Acceso & Cabinas VIP</span>
-                <span className="text-[10px] text-slate-400">Cra 16 #96-64 • Chicó Norte</span>
+                <span className="text-[10px] text-slate-400">{addressText}</span>
               </div>
             </div>
 
@@ -161,6 +167,7 @@ export function SedeVideoPlayer({
               <button
                 type="button"
                 onClick={handleFullscreen}
+                aria-label="Ver video en pantalla completa"
                 className="w-10 h-10 rounded-xl bg-slate-900/80 hover:bg-slate-800 text-slate-300 hover:text-white border border-white/10 flex items-center justify-center transition-all hover:scale-105"
                 title="Pantalla Completa"
               >

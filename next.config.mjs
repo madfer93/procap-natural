@@ -10,6 +10,21 @@ const nextConfig = {
       },
     ],
   },
+  async redirects() {
+    return [
+      {
+        source: '/:path*',
+        has: [
+          {
+            type: 'host',
+            value: 'www.protesiscapilarcolombia.com',
+          },
+        ],
+        destination: 'https://protesiscapilarcolombia.com/:path*',
+        permanent: true,
+      },
+    ];
+  },
   async headers() {
     return [
       {

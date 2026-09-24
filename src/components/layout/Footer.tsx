@@ -2,6 +2,8 @@
 
 import React from "react";
 import Link from "next/link";
+import { MapPin } from "lucide-react";
+import { WhatsAppIcon, InstagramIcon, TikTokIcon, FacebookIcon } from "@/components/BrandIcons";
 
 export function Footer() {
   const whatsappPhone = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "573151189795";
@@ -28,7 +30,7 @@ export function Footer() {
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900/90 hover:bg-sky-500/20 text-slate-300 hover:text-sky-300 border border-slate-800 hover:border-sky-500/40 transition-all font-medium text-[11px] group"
               >
-                <i className="fa-solid fa-location-dot text-sky-400 group-hover:scale-110 transition-transform"></i>
+                <MapPin size={13} className="text-sky-400 group-hover:scale-110 transition-transform" />
                 <span>Cra 16 #96-64 (Bogotá)</span>
               </a>
 
@@ -38,7 +40,7 @@ export function Footer() {
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900/90 hover:bg-amber-500/20 text-slate-300 hover:text-amber-300 border border-slate-800 hover:border-amber-500/40 transition-all font-medium text-[11px] group"
               >
-                <i className="fa-solid fa-location-dot text-amber-400 group-hover:scale-110 transition-transform"></i>
+                <MapPin size={13} className="text-amber-400 group-hover:scale-110 transition-transform" />
                 <span>Cali • Neiva • Barranquilla</span>
               </a>
 
@@ -48,7 +50,7 @@ export function Footer() {
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900/90 hover:bg-emerald-500/20 text-slate-300 hover:text-emerald-300 border border-slate-800 hover:border-emerald-500/40 transition-all font-medium text-[11px] group"
               >
-                <i className="fa-brands fa-whatsapp text-emerald-400 group-hover:scale-110 transition-transform"></i>
+                <WhatsAppIcon className="w-3.5 h-3.5 text-emerald-400 group-hover:scale-110 transition-transform" />
                 <span>+{whatsappPhone}</span>
               </a>
             </div>
@@ -85,16 +87,16 @@ export function Footer() {
             <span className="text-xs font-bold uppercase tracking-wider text-white block mb-2">Síguenos</span>
             <div className="flex gap-3 text-base text-slate-300">
               <a href="https://www.tiktok.com/@procapnatural" target="_blank" rel="noopener noreferrer" className="hover:text-cyan-400 transition-colors" aria-label="TikTok">
-                <i className="fa-brands fa-tiktok"></i>
+                <TikTokIcon className="w-5 h-5 text-slate-300 hover:text-cyan-400" />
               </a>
               <a href="https://instagram.com/protesiscapilarnatural" target="_blank" rel="noopener noreferrer" className="hover:text-pink-400 transition-colors" aria-label="Instagram">
-                <i className="fa-brands fa-instagram"></i>
+                <InstagramIcon className="w-5 h-5 text-slate-300 hover:text-pink-400" />
               </a>
               <a href="https://facebook.com/procapnatural" target="_blank" rel="noopener noreferrer" className="hover:text-blue-500 transition-colors" aria-label="Facebook">
-                <i className="fa-brands fa-facebook"></i>
+                <FacebookIcon className="w-5 h-5 text-slate-300 hover:text-blue-500" />
               </a>
               <a href={`https://wa.me/${whatsappPhone}`} target="_blank" rel="noopener noreferrer" className="hover:text-emerald-400 transition-colors" aria-label="WhatsApp">
-                <i className="fa-brands fa-whatsapp"></i>
+                <WhatsAppIcon className="w-5 h-5 text-slate-300 hover:text-emerald-400" />
               </a>
             </div>
             <p className="text-[11px] text-slate-500 pt-2 leading-relaxed">

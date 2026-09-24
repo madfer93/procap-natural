@@ -4,7 +4,8 @@ import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { MapPin, Mail, Menu, X } from "lucide-react";
+import { MapPin, Mail, Menu, X, CalendarCheck } from "lucide-react";
+import { WhatsAppIcon, InstagramIcon, TikTokIcon } from "@/components/BrandIcons";
 
 export function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -37,11 +38,11 @@ export function Navbar() {
           </div>
           <div className="flex items-center gap-3 shrink-0">
             <a href="https://www.tiktok.com/@procapnatural" target="_blank" rel="noopener noreferrer" className="hover:text-cyan-300 transition-colors flex items-center gap-1">
-              <i className="fa-brands fa-tiktok text-xs text-cyan-400"></i>
+              <TikTokIcon className="w-3.5 h-3.5 text-cyan-400" />
               <span className="hidden md:inline">TikTok</span>
             </a>
             <a href="https://instagram.com/protesiscapilarnatural" target="_blank" rel="noopener noreferrer" className="hover:text-pink-300 transition-colors flex items-center gap-1">
-              <i className="fa-brands fa-instagram text-xs text-pink-400"></i>
+              <InstagramIcon className="w-3.5 h-3.5 text-pink-400" />
               <span className="hidden md:inline">@protesiscapilarnatural</span>
             </a>
           </div>
@@ -104,7 +105,7 @@ export function Navbar() {
                 href="/agendar"
                 className="px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-400 hover:from-emerald-400 hover:to-emerald-300 text-slate-950 font-black text-xs flex items-center gap-1.5 shadow-md shadow-emerald-500/20 transition-all hover:scale-[1.02] whitespace-nowrap"
               >
-                <i className="fa-regular fa-calendar-check text-slate-950"></i>
+                <CalendarCheck size={16} className="text-slate-950" />
                 <span className="hidden sm:inline">Agendar Cita</span>
                 <span className="sm:hidden">Cita</span>
               </Link>
@@ -145,7 +146,7 @@ export function Navbar() {
                 rel="noopener noreferrer"
                 className="w-full py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-center flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20"
               >
-                <i className="fa-brands fa-whatsapp text-base"></i>
+                <WhatsAppIcon className="w-5 h-5 text-slate-950" />
                 <span>Agendar Valoración Inmediata</span>
               </a>
             </div>

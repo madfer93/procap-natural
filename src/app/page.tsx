@@ -25,6 +25,7 @@ import {
   Clock,
   ExternalLink
 } from "lucide-react";
+import { WhatsAppIcon } from "@/components/BrandIcons";
 import { Product, INITIAL_PRODUCTS, formatPriceCOP } from "@/lib/products-store";
 
 export default function HomePage() {
@@ -104,9 +105,9 @@ export default function HomePage() {
                   <span>4 Sedes Oficiales • Bogotá • Cali • Neiva • Barranquilla</span>
                 </div>
 
-                {/* Main Title */}
+                {/* Main Title - Optimizado SEO con Keyword Exacta */}
                 <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black font-heading text-white tracking-tight leading-[1.15]">
-                  Recupera tu Cabello y Confianza con <span className="text-cyan-gradient">Resultados 100% Naturales</span>
+                  Prótesis Capilares Indetectables en Colombia: <span className="text-cyan-gradient">Cabello 100% Humano y Natural</span>
                 </h1>
 
                 {/* Description */}
@@ -120,9 +121,10 @@ export default function HomePage() {
                     href={`https://wa.me/${whatsappPhone}?text=Hola%20Procap%20Natural,%20quiero%20solicitar%20asesoría%20personalizada%20para%20una%20prótesis%20capilar.`}
                     target="_blank"
                     rel="noopener noreferrer"
+                    aria-label="Agendar Valoración Gratuita por WhatsApp"
                     className="w-full sm:w-auto px-7 py-3.5 rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-slate-950 font-black text-sm flex items-center justify-center gap-2.5 shadow-xl shadow-emerald-500/25 transition-all hover:scale-105"
                   >
-                    <i className="fa-brands fa-whatsapp text-lg"></i>
+                    <WhatsAppIcon className="w-5 h-5 text-slate-950" />
                     <span>Agendar Valoración Gratuita</span>
                   </a>
 
@@ -274,9 +276,10 @@ export default function HomePage() {
                     href={`https://wa.me/${whatsappPhone}?text=Hola,%20deseo%20agendar%20instalación%20en%20Bogotá.`}
                     target="_blank"
                     rel="noopener noreferrer"
+                    aria-label="Agendar Cita de Instalación por WhatsApp"
                     className="flex-1 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20"
                   >
-                    <i className="fa-brands fa-whatsapp"></i>
+                    <WhatsAppIcon className="w-4 h-4 text-slate-950" />
                     <span>Agendar Cita</span>
                   </a>
                   <Link
@@ -307,9 +310,10 @@ export default function HomePage() {
                     href={`https://wa.me/${whatsappPhone}?text=Hola,%20deseo%20agendar%20mantenimiento%20en%20Bogotá.`}
                     target="_blank"
                     rel="noopener noreferrer"
+                    aria-label="Agendar Mantenimiento por WhatsApp"
                     className="flex-1 py-3 rounded-xl bg-slate-900 hover:bg-emerald-500 text-white hover:text-slate-950 font-bold text-xs flex items-center justify-center gap-2 border border-slate-700 hover:border-emerald-400 transition-all"
                   >
-                    <i className="fa-brands fa-whatsapp text-emerald-400"></i>
+                    <WhatsAppIcon className="w-4 h-4 text-emerald-400 group-hover:text-slate-950" />
                     <span>Agendar Mantenimiento</span>
                   </a>
                   <Link
@@ -431,9 +435,10 @@ export default function HomePage() {
                           href={`https://wa.me/${whatsappPhone}?text=${waMessage}`}
                           target="_blank"
                           rel="noopener noreferrer"
+                          aria-label={`Pedir ${product.name} por WhatsApp`}
                           className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-slate-900/90 hover:bg-emerald-500 text-slate-200 hover:text-slate-950 font-bold text-xs border border-slate-700 hover:border-emerald-400 transition-all"
                         >
-                          <i className="fa-brands fa-whatsapp text-sm text-emerald-400 group-hover:text-slate-950"></i>
+                          <WhatsAppIcon className="w-4 h-4 text-emerald-400 group-hover:text-slate-950" />
                           <span>Pedir por WhatsApp</span>
                         </a>
                       </div>
@@ -475,10 +480,12 @@ export default function HomePage() {
               <form onSubmit={handleWizardSubmit} className="space-y-5">
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-2">
+                    <label htmlFor="wizard-need-select" className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-2">
                       1. Necesidad
                     </label>
                     <select
+                      id="wizard-need-select"
+                      aria-label="Selecciona tu necesidad"
                       value={wizardNeed}
                       onChange={(e) => setWizardNeed(e.target.value)}
                       className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-xs sm:text-sm text-white focus:outline-none focus:border-sky-400"
@@ -490,10 +497,12 @@ export default function HomePage() {
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-2">
+                    <label htmlFor="wizard-style-select" className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-2">
                       2. Textura
                     </label>
                     <select
+                      id="wizard-style-select"
+                      aria-label="Selecciona la textura de cabello"
                       value={wizardStyle}
                       onChange={(e) => setWizardStyle(e.target.value)}
                       className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-xs sm:text-sm text-white focus:outline-none focus:border-sky-400"
@@ -506,11 +515,13 @@ export default function HomePage() {
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-2">
+                    <label htmlFor="wizard-city-input" className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-2">
                       3. Tu Ciudad
                     </label>
                     <input
+                      id="wizard-city-input"
                       type="text"
+                      aria-label="Tu ciudad de residencia"
                       value={wizardCity}
                       onChange={(e) => setWizardCity(e.target.value)}
                       placeholder="Ej: Bogotá, Medellín..."
@@ -522,9 +533,10 @@ export default function HomePage() {
                 <div className="pt-2 flex flex-col sm:flex-row gap-3">
                   <button
                     type="submit"
+                    aria-label="Cotizar Directo por WhatsApp"
                     className="flex-1 py-3.5 rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-slate-950 font-black text-sm flex items-center justify-center gap-2.5 shadow-lg shadow-emerald-500/20 transition-all hover:scale-[1.01]"
                   >
-                    <i className="fa-brands fa-whatsapp text-lg"></i>
+                    <WhatsAppIcon className="w-5 h-5 text-slate-950" />
                     <span>Cotizar Directo por WhatsApp</span>
                   </button>
 
@@ -579,9 +591,10 @@ export default function HomePage() {
                     href={`https://wa.me/${whatsappPhone}?text=¡Hola%20Procap%20Natural!%20👋%20Deseo%20agendar%20una%20cita%20o%20valoración%20en%20sede.`}
                     target="_blank"
                     rel="noopener noreferrer"
+                    aria-label="Agendar Cita en Cabina Privada por WhatsApp"
                     className="w-full py-3.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 transition-all hover:scale-[1.02]"
                   >
-                    <i className="fa-brands fa-whatsapp text-lg"></i>
+                    <WhatsAppIcon className="w-5 h-5 text-slate-950" />
                     <span>Agendar Cita en Cabina Privada</span>
                   </a>
 

@@ -12,6 +12,11 @@ export interface SedeInfo {
     url: string;
     caption: string;
   }[];
+  videoUrl?: string;
+  videoTitle?: string;
+  phone?: string;
+  email?: string;
+  cityPageUrl?: string;
   description: string;
   fullStory: string;
   amenities: string[];
@@ -29,6 +34,13 @@ export interface SedeInfo {
   googleMapsUrl: string;
   wazeUrl: string;
   whatsappMessage: string;
+  geo?: {
+    latitude: number;
+    longitude: number;
+  };
+  seoTitle?: string;
+  seoDescription?: string;
+  seoKeywords?: string[];
 }
 
 export const SEDES_DATA: SedeInfo[] = [
@@ -66,6 +78,24 @@ export const SEDES_DATA: SedeInfo[] = [
       publicTransport: "A 5 minutos a pie de la Estación TransMilenio Calle 100 o Virrey (Autopista Norte).",
       parking: "Parqueaderos públicos y bahías de estacionamiento a menos de 50 metros sobre la Carrera 16."
     },
+    phone: "+57 315 118 9795",
+    email: "contacto@protesiscapilarcolombia.com",
+    videoUrl: "https://pub-426a082ba0a64de0bcf1da7c816f7c38.r2.dev/PROCAPS-OFICINA.mp4",
+    videoTitle: "Recorrido Sede Chicó Norte & Cabinas VIP Bogotá",
+    cityPageUrl: "/protesis-capilar-bogota",
+    geo: {
+      latitude: 4.682855,
+      longitude: -74.055698,
+    },
+    seoTitle: "Prótesis Capilar en Bogotá • Chicó Norte | Cabello Humano Indetectable",
+    seoDescription: "Sede principal en Chicó Norte (Cra 16 #96-64). Prótesis capilares masculinas 100% indetectables, cabello humano virgen. Agenda tu cita privada.",
+    seoKeywords: [
+      "prótesis capilar bogota",
+      "prótesis capilar chicó norte",
+      "prótesis capilares masculinas bogotá",
+      "salón capilar bogotá",
+      "mantenimiento prótesis capilar bogotá"
+    ],
     googleMapsEmbed: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3976.5413158957445!2d-74.05569762414777!3d4.682855041870198!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e3f9a941f6e0b35%3A0x6a0397732d8479e!2sCra.%2016%20%2396-64%2C%20Bogot%C3%A1!5e0!3m2!1ses!2sco!4v1725490000000!5m2!1ses!2sco",
     googleMapsUrl: "https://maps.google.com/?q=Cra.+16+%2396-64,+Bogot%C3%A1",
     wazeUrl: "https://waze.com/ul?q=Cra.+16+%2396-64,+Bogota",
@@ -85,6 +115,24 @@ export const SEDES_DATA: SedeInfo[] = [
       { url: "/images/sedes/cali.jpg", caption: "Fachada Boutique y Estudio de Adaptación en Cali" },
       { url: "/images/sedes/cabina-vip.jpg", caption: "Cabina de Aplicación de Adhesivos Médicos" },
       { url: "/og-image.jpg", caption: "Muestra de Mallas French Lace y Skin Ultra Fino" }
+    ],
+    videoUrl: "https://pub-426a082ba0a64de0bcf1da7c816f7c38.r2.dev/PROCAPS-OFICINA.mp4",
+    videoTitle: "Estudio de Adaptación Capilar Edificio María Mercedes Cali",
+    phone: "+57 315 118 9795",
+    email: "contacto@protesiscapilarcolombia.com",
+    cityPageUrl: "/protesis-capilar-cali",
+    geo: {
+      latitude: 3.378036,
+      longitude: -76.536977,
+    },
+    seoTitle: "Prótesis Capilar en Cali • El Ingenio 3 | Procap Natural Valle",
+    seoDescription: "Estudio privado en el Edificio María Mercedes (Calle 16 #83A-15 Est. 402). Adhesivos médicos resistentes al calor y sudor. Valoración personalizada.",
+    seoKeywords: [
+      "prótesis capilar cali",
+      "prótesis capilares cali ingenio",
+      "sistemas capilares cali valle",
+      "pegamento prótesis capilar cali",
+      "mantenimiento prótesis capilar cali"
     ],
     description: "Espacio moderno, fresco y reservado en el sur de Cali (El Ingenio 3), ideal para clientes del Valle del Cauca, Cauca, Nariño y el Eje Cafetero.",
     fullStory: "En el exclusivo sector de El Ingenio 3 en Cali, el Edificio María Mercedes alberga el Estudio 402 de Procap Natural. Un ambiente con aire acondicionado de alto rendimiento, formulado especialmente para realizar adaptaciones capilares con adhesivos acrílicos de máxima fijación resistentes al sudor, la humedad y el clima cálido.",
@@ -125,6 +173,24 @@ export const SEDES_DATA: SedeInfo[] = [
       { url: "/images/sedes/cabina-vip.jpg", caption: "Cabina Privada de Instalación y Mantenimiento" },
       { url: "/og-image.jpg", caption: "Cabello 100% Humano Virgen Importado" }
     ],
+    videoUrl: "https://pub-426a082ba0a64de0bcf1da7c816f7c38.r2.dev/PROCAPS-OFICINA.mp4",
+    videoTitle: "Instalaciones Sede Canaima Neiva",
+    phone: "+57 315 118 9795",
+    email: "contacto@protesiscapilarcolombia.com",
+    cityPageUrl: "/protesis-capilar-neiva",
+    geo: {
+      latitude: 2.901567,
+      longitude: -75.289124,
+    },
+    seoTitle: "Prótesis Capilar en Neiva • Barrio Canaima | Procap Natural Huila",
+    seoDescription: "Sede exclusiva en Neiva (Cra 22 #25C-12, Canaima). Prótesis capilares masculinas indetectables para Neiva, Pitalito, Garzón y Florencia.",
+    seoKeywords: [
+      "prótesis capilar neiva",
+      "prótesis capilares huila",
+      "peluquines indetectables neiva",
+      "prótesis capilar canaima neiva",
+      "mantenimiento capilar neiva"
+    ],
     description: "Punto de atención integral para Neiva y todo el departamento del Huila, Caquetá y Putumayo, con atención especializada en prótesis indetectables.",
     fullStory: "Nuestra sede en el Barrio Canaima de Neiva acerca la tecnología capilar indetectable de estándar internacional a la región del Huila y el sur del país. Con instalaciones climatizadas y profesionales certificados en recorte de plantillas y degradados naturales.",
     amenities: [
@@ -163,6 +229,24 @@ export const SEDES_DATA: SedeInfo[] = [
       { url: "/images/sedes/barranquilla.jpg", caption: "Fachada Boutique en Centro Histórico de Barranquilla" },
       { url: "/images/sedes/cabina-vip.jpg", caption: "Cabina de Integración Capilar con Aire Acondicionado" },
       { url: "/og-image.jpg", caption: "Sistemas Capilares Resistentes a Piscina, Playa y Calor" }
+    ],
+    videoUrl: "https://pub-426a082ba0a64de0bcf1da7c816f7c38.r2.dev/PROCAPS-OFICINA.mp4",
+    videoTitle: "Instalaciones Sede Centro Histórico Barranquilla",
+    phone: "+57 315 118 9795",
+    email: "contacto@protesiscapilarcolombia.com",
+    cityPageUrl: "/protesis-capilar-barranquilla",
+    geo: {
+      latitude: 10.992891,
+      longitude: -74.792341,
+    },
+    seoTitle: "Prótesis Capilar en Barranquilla • Centro Histórico | Procap Natural Caribe",
+    seoDescription: "Sede Centro Histórico (Calle 64 #46-69). Prótesis capilares de alta fijación resistentes a calor, playa y gimnasio en Barranquilla y la Costa.",
+    seoKeywords: [
+      "prótesis capilar barranquilla",
+      "prótesis capilares costa caribe",
+      "sistemas capilares barranquilla",
+      "pegamento prótesis capilar clima caliente",
+      "mantenimiento prótesis capilar barranquilla"
     ],
     description: "Sede de referencia para la Costa Caribe colombiana en el Centro Histórico de Barranquilla. Especialistas en adhesivos médicos de ultra-resistencia al calor, playa y humedad.",
     fullStory: "En el tradicional y accesible Centro Histórico de Barranquilla (Calle 64 #46-69), Procap Natural brinda atención con protocolos especiales de preparación dérmica para clima caribeño. Permite a los usuarios bañarse en el mar, hacer ejercicio de alto rendimiento y disfrutar del clima costero con fijación 100% segura.",

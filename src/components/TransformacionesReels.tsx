@@ -14,6 +14,7 @@ import {
   ChevronLeft,
   ChevronRight
 } from "lucide-react";
+import { WhatsAppIcon, TikTokIcon, InstagramIcon } from "@/components/BrandIcons";
 
 interface ReelItem {
   id: string;
@@ -134,7 +135,7 @@ export function TransformacionesReels() {
               rel="noopener noreferrer"
               className="px-4 py-2.5 rounded-xl glass-panel hover:bg-white/10 text-white font-bold text-xs flex items-center gap-2 border border-slate-700 hover:border-cyan-400 transition-all"
             >
-              <i className="fa-brands fa-tiktok text-cyan-400 text-sm"></i>
+              <TikTokIcon className="w-4 h-4 text-cyan-400" />
               <span>TikTok Oficial</span>
             </a>
 
@@ -144,7 +145,7 @@ export function TransformacionesReels() {
               rel="noopener noreferrer"
               className="px-4 py-2.5 rounded-xl glass-panel hover:bg-white/10 text-white font-bold text-xs flex items-center gap-2 border border-slate-700 hover:border-pink-400 transition-all"
             >
-              <i className="fa-brands fa-instagram text-pink-400 text-sm"></i>
+              <InstagramIcon className="w-4 h-4 text-pink-400" />
               <span>Instagram (5.7K)</span>
             </a>
 
@@ -201,9 +202,9 @@ export function TransformacionesReels() {
                     </span>
                     <span className="px-2 py-0.5 rounded-full bg-slate-900/80 backdrop-blur-md text-[10px] text-slate-300 flex items-center gap-1 border border-white/5">
                       {reel.source === "instagram" ? (
-                        <i className="fa-brands fa-instagram text-pink-400"></i>
+                        <InstagramIcon className="w-3 h-3 text-pink-400" />
                       ) : (
-                        <i className="fa-brands fa-tiktok text-cyan-400"></i>
+                        <TikTokIcon className="w-3 h-3 text-cyan-400" />
                       )}
                       <span>{reel.views}</span>
                     </span>
@@ -227,6 +228,7 @@ export function TransformacionesReels() {
                       e.stopPropagation();
                       setIsMuted(!isMuted);
                     }}
+                    aria-label={isMuted ? "Activar audio del reel" : "Silenciar audio del reel"}
                     className="absolute bottom-24 right-3 w-8 h-8 rounded-full bg-slate-950/80 backdrop-blur-md text-white flex items-center justify-center border border-white/10 shadow z-20 hover:scale-105"
                   >
                     {isMuted ? <VolumeX size={14} className="text-slate-400" /> : <Volume2 size={14} className="text-emerald-400" />}
@@ -273,9 +275,10 @@ export function TransformacionesReels() {
             href={`https://wa.me/${whatsappPhone}?text=¡Hola%20Procap%20Natural!%20👋%20Vi%20sus%20videos%20de%20transformaciones%20y%20deseo%20una%20valoración%20para%20mi%20caso.`}
             target="_blank"
             rel="noopener noreferrer"
+            aria-label="Solicitar Valoración para mi Caso por WhatsApp"
             className="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-slate-950 font-black text-xs sm:text-sm shadow-xl shadow-emerald-500/20 transition-all hover:scale-105"
           >
-            <i className="fa-brands fa-whatsapp text-lg"></i>
+            <WhatsAppIcon className="w-5 h-5 text-slate-950" />
             <span>Solicitar Valoración para mi Caso</span>
           </a>
         </div>

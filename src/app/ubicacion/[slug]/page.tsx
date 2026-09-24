@@ -6,6 +6,8 @@ import { notFound } from "next/navigation";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { SEDES_DATA, getSedeBySlug } from "@/lib/sedes-data";
+import { SedeVideoPlayer } from "@/components/SedeVideoPlayer";
+import { WhatsAppIcon } from "@/components/BrandIcons";
 import { 
   MapPin, 
   Clock, 
@@ -13,15 +15,15 @@ import {
   Navigation, 
   CheckCircle2, 
   ShieldCheck, 
-  ExternalLink,
-  Sparkles,
-  ArrowLeft,
-  Phone,
-  Calendar,
-  Layers,
-  ChevronRight,
-  Eye,
-  Camera
+  ExternalLink, 
+  Sparkles, 
+  ArrowLeft, 
+  Phone, 
+  Calendar, 
+  ChevronRight, 
+  Eye, 
+  Camera,
+  Video
 } from "lucide-react";
 
 interface PageProps {
@@ -44,19 +46,26 @@ export function generateMetadata({ params }: PageProps): Metadata {
     };
   }
 
+  const title = sede.seoTitle || `${sede.name} (${sede.city}) • Instalaciones, Video y Dirección | Procap Natural`;
+  const description = sede.seoDescription || `Conoce las instalaciones, video de recorrido y dirección de ${sede.name} en ${sede.neighborhood}, ${sede.city}. ${sede.address}. Cabinas privadas para prótesis capilares.`;
+
   return {
-    title: `${sede.name} (${sede.city}) • Instalaciones y Dirección | Procap Natural`,
-    description: `Conoce las instalaciones, galería de fotos y dirección de ${sede.name} en ${sede.neighborhood}, ${sede.city}. ${sede.address}. Cabinas privadas para prótesis capilares.`,
-    keywords: [
+    title,
+    description,
+    keywords: sede.seoKeywords && sede.seoKeywords.length > 0 ? sede.seoKeywords : [
       `prótesis capilar ${sede.city.toLowerCase()}`,
       `procap natural ${sede.slug}`,
       `instalaciones protesis capilar ${sede.city.toLowerCase()}`,
       `${sede.address.toLowerCase()}`,
       `salón prótesis capilar ${sede.city.toLowerCase()}`
     ],
+    alternates: {
+      canonical: `https://protesiscapilarcolombia.com/ubicacion/${sede.slug}`,
+    },
     openGraph: {
-      title: `${sede.name} (${sede.city}) • Procap Natural Colombia`,
-      description: sede.description,
+      title,
+      description,
+      url: `https://protesiscapilarcolombia.com/ubicacion/${sede.slug}`,
       images: [
         {
           url: sede.coverImage,
@@ -78,8 +87,82 @@ export default function SedeDetailPage({ params }: PageProps) {
   const whatsappPhone = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "573151189795";
   const otherSedes = SEDES_DATA.filter((s) => s.slug !== sede.slug);
 
+  const schemaOrgData = {
+    "@context": "https://schema.org",
+    "@type": "HairSalon",
+    "name": `Procap Natural - ${sede.name}`,
+    "image": [sede.coverImage, ...(sede.gallery?.map((g) => g.url) || [])],
+    "description": sede.seoDescription || sede.description,
+    "telephone": sede.phone || "+573151189795",
+    "email": sede.email || "contacto@protesiscapilarcolombia.com",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": sede.address,
+      "addressLocality": sede.city,
+      "addressRegion": sede.department,
+      "postalCode": sede.postalCode,
+      "addressCountry": "CO"
+    },
+    "geo": sede.geo ? {
+      "@type": "GeoCoordinates",
+      "latitude": sede.geo.latitude,
+      "longitude": sede.geo.longitude
+    } : undefined,
+    "url": `https://protesiscapilarcolombia.com/ubicacion/${sede.slug}`,
+    "hasMap": sede.googleMapsUrl,
+    "priceRange": "$$",
+    "openingHoursSpecification": [
+      {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+        "opens": "08:00",
+        "closes": "19:00"
+      },
+      {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": ["Saturday"],
+        "opens": "08:00",
+        "closes": "18:00"
+      }
+    ]
+  };
+
+  const breadcrumbData = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Inicio",
+        "item": "https://protesiscapilarcolombia.com"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Sedes",
+        "item": "https://protesiscapilarcolombia.com/ubicacion"
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": sede.name,
+        "item": `https://protesiscapilarcolombia.com/ubicacion/${sede.slug}`
+      }
+    ]
+  };
+
   return (
     <div className="min-h-screen flex flex-col relative overflow-x-hidden">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaOrgData) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbData) }}
+      />
+
       <Navbar />
 
       <main className="flex-1 pt-6 pb-20 relative z-10">
@@ -89,7 +172,7 @@ export default function SedeDetailPage({ params }: PageProps) {
         <div className="glow-ambient top-[40%] right-[-100px]"></div>
 
         {/* Back Link & Breadcrumb */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-6 flex items-center justify-between flex-wrap gap-3">
           <Link
             href="/ubicacion"
             className="inline-flex items-center gap-2 text-xs font-bold text-slate-400 hover:text-sky-400 transition-colors py-1 px-3 rounded-full bg-slate-900/80 border border-slate-800"
@@ -97,6 +180,16 @@ export default function SedeDetailPage({ params }: PageProps) {
             <ArrowLeft size={14} />
             <span>Volver a Todas las Sedes</span>
           </Link>
+
+          {sede.cityPageUrl && (
+            <Link
+              href={sede.cityPageUrl}
+              className="inline-flex items-center gap-1.5 text-xs font-bold text-sky-400 hover:text-white transition-colors py-1 px-3 rounded-full bg-sky-950/60 border border-sky-400/30"
+            >
+              <span>Ver Guía & Precios de Prótesis en {sede.city}</span>
+              <ChevronRight size={13} />
+            </Link>
+          )}
         </div>
 
         {/* HERO SECTION DE LA SEDE */}
@@ -126,6 +219,13 @@ export default function SedeDetailPage({ params }: PageProps) {
                     <span className="text-xs text-slate-400">{sede.neighborhood} • Código Postal: {sede.postalCode}</span>
                   </div>
                 </div>
+
+                {sede.phone && (
+                  <div className="flex items-center gap-2.5 pt-2 border-t border-slate-800/80 text-xs text-emerald-400">
+                    <Phone size={14} className="shrink-0" />
+                    <span>Línea Directa: <strong>{sede.phone}</strong></span>
+                  </div>
+                )}
               </div>
 
               {/* Action Buttons */}
@@ -136,7 +236,7 @@ export default function SedeDetailPage({ params }: PageProps) {
                   rel="noopener noreferrer"
                   className="flex-1 py-3.5 px-6 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-sm flex items-center justify-center gap-2.5 shadow-xl shadow-emerald-500/20 transition-all hover:scale-[1.02]"
                 >
-                  <i className="fa-brands fa-whatsapp text-lg"></i>
+                  <WhatsAppIcon className="w-5 h-5 text-slate-950" />
                   <span>Agendar en {sede.city}</span>
                 </a>
 
@@ -198,7 +298,7 @@ export default function SedeDetailPage({ params }: PageProps) {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {sede.gallery.map((photo, index) => (
+              {sede.gallery?.map((photo, index) => (
                 <div 
                   key={index}
                   className="glass-panel rounded-2xl p-2.5 border border-white/10 hover:border-sky-400/40 transition-all group overflow-hidden shadow-xl"
@@ -224,6 +324,32 @@ export default function SedeDetailPage({ params }: PageProps) {
           </div>
         </div>
 
+        {/* SECCIÓN VIDEO DE LA SEDE */}
+        {sede.videoUrl && (
+          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 mb-16">
+            <div className="text-center max-w-2xl mx-auto mb-6">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-sky-500/10 text-sky-300 text-xs font-bold mb-2">
+                <Video size={13} className="text-cyan-400" />
+                <span>Recorrido en Video</span>
+              </div>
+              <h2 className="text-2xl sm:text-3xl font-black font-heading text-white">
+                {sede.videoTitle || `Conoce Nuestras Instalaciones en ${sede.city}`}
+              </h2>
+              <p className="text-slate-400 text-xs sm:text-sm mt-1">
+                Visualiza nuestras cabinas VIP y la privacidad que brindamos en cada sesión.
+              </p>
+            </div>
+
+            <SedeVideoPlayer
+              videoUrl={sede.videoUrl}
+              badgeText={`${sede.name} • ${sede.city}`}
+              addressText={`${sede.address} • ${sede.neighborhood}`}
+              title={sede.videoTitle || `Recorrido ${sede.name}`}
+              subtitle={`Conoce nuestras instalaciones en ${sede.city} antes de tu visita.`}
+            />
+          </div>
+        )}
+
         {/* COMODIDADES & HISTORIA DE LA SEDE */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
@@ -243,7 +369,7 @@ export default function SedeDetailPage({ params }: PageProps) {
                   <span>Comodidades y Protocolos de la Sede</span>
                 </h4>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {sede.amenities.map((amenity, i) => (
+                  {sede.amenities?.map((amenity, i) => (
                     <div key={i} className="flex items-start gap-2.5 text-xs text-slate-300 bg-slate-900/60 p-3 rounded-xl border border-slate-800">
                       <CheckCircle2 size={16} className="text-emerald-400 shrink-0 mt-0.5" />
                       <span>{amenity}</span>
@@ -339,6 +465,7 @@ export default function SedeDetailPage({ params }: PageProps) {
                   allowFullScreen
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"
+                  title={`Mapa de ubicación de ${sede.name}`}
                 ></iframe>
               </div>
 
@@ -349,7 +476,7 @@ export default function SedeDetailPage({ params }: PageProps) {
                     <Car size={16} className="text-sky-400" />
                     <span>En Vehículo / Taxi</span>
                   </div>
-                  <p className="text-slate-400 leading-relaxed">{sede.transitGuide.car}</p>
+                  <p className="text-slate-400 leading-relaxed">{sede.transitGuide?.car}</p>
                 </div>
 
                 <div className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 space-y-1">
@@ -357,7 +484,7 @@ export default function SedeDetailPage({ params }: PageProps) {
                     <Navigation size={16} className="text-emerald-400" />
                     <span>Transporte Público</span>
                   </div>
-                  <p className="text-slate-400 leading-relaxed">{sede.transitGuide.publicTransport}</p>
+                  <p className="text-slate-400 leading-relaxed">{sede.transitGuide?.publicTransport}</p>
                 </div>
 
                 <div className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 space-y-1">
@@ -365,7 +492,7 @@ export default function SedeDetailPage({ params }: PageProps) {
                     <MapPin size={16} className="text-amber-400" />
                     <span>Parqueadero</span>
                   </div>
-                  <p className="text-slate-400 leading-relaxed">{sede.transitGuide.parking}</p>
+                  <p className="text-slate-400 leading-relaxed">{sede.transitGuide?.parking}</p>
                 </div>
               </div>
             </div>
