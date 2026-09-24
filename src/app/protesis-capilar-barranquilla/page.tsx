@@ -17,12 +17,12 @@ export const metadata: Metadata = {
   title: "Prótesis Capilares en Barranquilla | Sede Centro Histórico - Procap Natural",
   description: "Prótesis capilares masculinas 100% indetectables de cabello humano en Barranquilla. Calle 64 #46-69. Adhesivos médicos ultra-resistentes al calor, playa y humedad.",
   alternates: {
-    canonical: "https://protesiscapilarcolombia.com/protesis-capilar-barranquilla",
+    canonical: "https://www.protesiscapilarcolombia.com/protesis-capilar-barranquilla",
   },
   openGraph: {
     title: "Prótesis Capilares en Barranquilla | Procap Natural Costa Caribe",
     description: "Sistemas capilares indetectables en Barranquilla. Diseñados para clima cálido, playa y deporte.",
-    url: "https://protesiscapilarcolombia.com/protesis-capilar-barranquilla",
+    url: "https://www.protesiscapilarcolombia.com/protesis-capilar-barranquilla",
   },
 };
 

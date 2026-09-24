@@ -17,12 +17,12 @@ export const metadata: Metadata = {
   title: "Prótesis Capilares en Cali | Sede Edificio María Mercedes - Procap Natural",
   description: "Prótesis capilares masculinas 100% indetectables de cabello humano en Cali. Sede en Calle 16 #83A-15, Estudio 402. Instalación y mantenimiento experto.",
   alternates: {
-    canonical: "https://protesiscapilarcolombia.com/protesis-capilar-cali",
+    canonical: "https://www.protesiscapilarcolombia.com/protesis-capilar-cali",
   },
   openGraph: {
     title: "Prótesis Capilares en Cali | Procap Natural",
     description: "Recupera tu cabello y confianza en Cali con prótesis capilares indetectables de cabello 100% humano.",
-    url: "https://protesiscapilarcolombia.com/protesis-capilar-cali",
+    url: "https://www.protesiscapilarcolombia.com/protesis-capilar-cali",
   },
 };
 

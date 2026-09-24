@@ -37,7 +37,7 @@ export const DEFAULT_LEGAL_DOCUMENTS: LegalDocument[] = [
 - **Sede Cali:** Calle 16 #83A-15, Estudio 402, Edificio María Mercedes, Cali, Valle del Cauca.
 - **Correo Electrónico de Contacto Legal & PQR:** infprocap@gmail.com
 - **Línea Oficial de Atención:** +57 315 118 9795
-- **Sitio Web Oficial:** https://protesiscapilarcolombia.com
+- **Sitio Web Oficial:** https://www.protesiscapilarcolombia.com
 
 ---
 
@@ -155,7 +155,7 @@ Procap Natural garantiza la autenticidad y calidad de los materiales (cabello hu
 ---
 
 ### 1. OBJETO Y ACEPTACIÓN
-El presente documento regula el uso de la plataforma web https://protesiscapilarcolombia.com y la contratación de los servicios de asesoría, venta de prótesis capilares indetectables, insumos de fijación, instalación y mantenimiento prestados por Procap Natural. El acceso y uso del sitio web implica la aceptación plena y sin reservas de estos términos.
+El presente documento regula el uso de la plataforma web https://www.protesiscapilarcolombia.com y la contratación de los servicios de asesoría, venta de prótesis capilares indetectables, insumos de fijación, instalación y mantenimiento prestados por Procap Natural. El acceso y uso del sitio web implica la aceptación plena y sin reservas de estos términos.
 
 ---
 

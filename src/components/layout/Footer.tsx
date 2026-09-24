@@ -123,7 +123,7 @@ export function Footer() {
                 <WhatsAppIcon className="w-5 h-5 text-slate-300 hover:text-emerald-400" />
               </a>
             </div>
-            <p className="text-[11px] text-slate-500 pt-2 leading-relaxed">
+            <p className="text-[11px] text-slate-300 pt-2 leading-relaxed">
               Atención 100% personalizada con reserva previa en cabinas individuales.
             </p>
           </div>
@@ -131,7 +131,7 @@ export function Footer() {
         </div>
 
         {/* Firma Oficial SEO J&M Tech Solutions */}
-        <div className="pt-8 border-t border-slate-900 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left text-[11px] text-slate-500 footer-copyright">
+        <div className="pt-8 border-t border-slate-900 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left text-[11px] text-slate-300 footer-copyright">
           <p>&copy; 2026 Procap Natural. Todos los derechos reservados.</p>
           <p>Desarrollado por <a href="https://www.jymtechsolutions.online/es" hrefLang="es" target="_blank" rel="noopener noreferrer" style={{ textDecoration: "underline", color: "inherit" }} className="hover:text-sky-400 font-semibold transition-colors">J&M Tech Solutions</a></p>
         </div>

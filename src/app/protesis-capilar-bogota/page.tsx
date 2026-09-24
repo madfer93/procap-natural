@@ -22,12 +22,12 @@ export const metadata: Metadata = {
   title: "Prótesis Capilares en Bogotá | Sede Chicó Norte - Procap Natural",
   description: "Prótesis capilares masculinas 100% indetectables de cabello humano en Bogotá. Sede en Chicó Norte (Cra 16 #96-64). Instalación anatómica, corte y mantenimiento.",
   alternates: {
-    canonical: "https://protesiscapilarcolombia.com/protesis-capilar-bogota",
+    canonical: "https://www.protesiscapilarcolombia.com/protesis-capilar-bogota",
   },
   openGraph: {
     title: "Prótesis Capilares en Bogotá | Procap Natural Chicó Norte",
     description: "Recupera tu imagen con prótesis capilares indetectables en Bogotá. Cabinas VIP privadas en Chicó Norte.",
-    url: "https://protesiscapilarcolombia.com/protesis-capilar-bogota",
+    url: "https://www.protesiscapilarcolombia.com/protesis-capilar-bogota",
   },
 };
 

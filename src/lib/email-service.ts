@@ -41,7 +41,7 @@ function escapeHtml(str: string | undefined | null): string {
  */
 export function generateOrderConfirmationHtml(order: OrderShipment): string {
   const whatsappNumber = escapeHtml(process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "");
-  const siteUrl = escapeHtml(process.env.NEXT_PUBLIC_SITE_URL || "https://protesiscapilarcolombia.com");
+  const siteUrl = escapeHtml(process.env.NEXT_PUBLIC_SITE_URL || "https://www.protesiscapilarcolombia.com");
 
   // Sanitizar todos los campos provenientes del usuario
   const safeCustomerName = escapeHtml(order.customer_name);
@@ -451,7 +451,7 @@ export function generateAppointmentConfirmationHtml(appointment: {
   notes?: string;
 }): string {
   const whatsappNumber = escapeHtml(process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "573151189795");
-  const siteUrl = escapeHtml(process.env.NEXT_PUBLIC_SITE_URL || "https://protesiscapilarcolombia.com");
+  const siteUrl = escapeHtml(process.env.NEXT_PUBLIC_SITE_URL || "https://www.protesiscapilarcolombia.com");
 
   const safeClientName = escapeHtml(appointment.client_name);
   const safeServiceName = escapeHtml(appointment.service_name);

@@ -60,12 +60,12 @@ export function generateMetadata({ params }: PageProps): Metadata {
       `salón prótesis capilar ${sede.city.toLowerCase()}`
     ],
     alternates: {
-      canonical: `https://protesiscapilarcolombia.com/ubicacion/${sede.slug}`,
+      canonical: `https://www.protesiscapilarcolombia.com/ubicacion/${sede.slug}`,
     },
     openGraph: {
       title,
       description,
-      url: `https://protesiscapilarcolombia.com/ubicacion/${sede.slug}`,
+      url: `https://www.protesiscapilarcolombia.com/ubicacion/${sede.slug}`,
       images: [
         {
           url: sede.coverImage,
@@ -108,7 +108,7 @@ export default function SedeDetailPage({ params }: PageProps) {
       "latitude": sede.geo.latitude,
       "longitude": sede.geo.longitude
     } : undefined,
-    "url": `https://protesiscapilarcolombia.com/ubicacion/${sede.slug}`,
+    "url": `https://www.protesiscapilarcolombia.com/ubicacion/${sede.slug}`,
     "hasMap": sede.googleMapsUrl,
     "priceRange": "$$",
     "openingHoursSpecification": [
@@ -135,19 +135,19 @@ export default function SedeDetailPage({ params }: PageProps) {
         "@type": "ListItem",
         "position": 1,
         "name": "Inicio",
-        "item": "https://protesiscapilarcolombia.com"
+        "item": "https://www.protesiscapilarcolombia.com"
       },
       {
         "@type": "ListItem",
         "position": 2,
         "name": "Sedes",
-        "item": "https://protesiscapilarcolombia.com/ubicacion"
+        "item": "https://www.protesiscapilarcolombia.com/ubicacion"
       },
       {
         "@type": "ListItem",
         "position": 3,
         "name": sede.name,
-        "item": `https://protesiscapilarcolombia.com/ubicacion/${sede.slug}`
+        "item": `https://www.protesiscapilarcolombia.com/ubicacion/${sede.slug}`
       }
     ]
   };

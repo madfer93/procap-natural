@@ -10,7 +10,7 @@ export async function POST(req: NextRequest) {
 
     const transporter = getEmailTransporter();
     const senderEmail = process.env.SMTP_USER || "admin@protesiscapilarcolombia.com";
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://protesiscapilarcolombia.com";
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.protesiscapilarcolombia.com";
 
     const info = await transporter.sendMail({
       from: `"Procap Natural (Test)" <${senderEmail}>`,

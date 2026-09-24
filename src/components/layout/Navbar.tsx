@@ -28,9 +28,9 @@ export function Navbar() {
       <header className="border-b border-slate-800/80 bg-slate-950/90 text-xs text-slate-400 py-1.5 px-4 z-30">
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-2 text-[11px]">
           <div className="flex items-center gap-3">
-            <Link href="/ubicacion" className="flex items-center gap-1.5 text-sky-400 hover:text-sky-300 transition-colors font-medium truncate">
+            <Link href="/ubicacion" className="flex items-center gap-1.5 text-sky-400 hover:text-sky-300 transition-colors font-medium truncate min-h-[44px]">
               <MapPin size={12} className="shrink-0 text-sky-400" />
-              <span className="truncate">Sede Bogotá: Calle 16 #83a-15</span>
+              <span className="truncate">Sede Bogotá: Cra 16 #96-64 • Chicó Norte</span>
             </Link>
             <span className="hidden sm:inline-flex items-center gap-1.5 text-emerald-400 font-medium">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> Atendiendo Citas
@@ -42,7 +42,7 @@ export function Navbar() {
               target="_blank" 
               rel="noopener noreferrer" 
               aria-label="Perfil oficial de TikTok de Procap Natural"
-              className="hover:text-cyan-300 transition-colors flex items-center gap-1 min-h-[32px] py-1"
+              className="hover:text-cyan-300 transition-colors flex items-center gap-1 min-h-[44px] px-2 py-1"
             >
               <TikTokIcon className="w-3.5 h-3.5 text-cyan-400" />
               <span className="hidden md:inline">TikTok</span>
@@ -52,7 +52,7 @@ export function Navbar() {
               target="_blank" 
               rel="noopener noreferrer" 
               aria-label="Perfil oficial de Instagram de Procap Natural"
-              className="hover:text-pink-300 transition-colors flex items-center gap-1 min-h-[32px] py-1"
+              className="hover:text-pink-300 transition-colors flex items-center gap-1 min-h-[44px] px-2 py-1"
             >
               <InstagramIcon className="w-3.5 h-3.5 text-pink-400" />
               <span className="hidden md:inline">@protesiscapilarnatural</span>

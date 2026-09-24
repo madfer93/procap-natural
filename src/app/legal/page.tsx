@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   title: "Centro de Políticas Legales & Transparencia | Procap Natural Colombia",
   description: "Conoce nuestras políticas oficiales de Habeas Data (Ley 1581), Garantías y Devoluciones (Ley 1480), Uso Ético de IA (ISO/IEC 42001) y Términos del Servicio de Procap Natural.",
   alternates: {
-    canonical: "https://protesiscapilarcolombia.com/legal"
+    canonical: "https://www.protesiscapilarcolombia.com/legal"
   }
 };
 

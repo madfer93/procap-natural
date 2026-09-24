@@ -65,7 +65,10 @@ export function HeroVideoPlayer({
               setVideoUrl(data.settings.hero_video_url);
             }
             if (data.settings.hero_video_poster) {
-              setPosterUrl(data.settings.hero_video_poster);
+              const poster = data.settings.hero_video_poster === "/og-image.jpg" 
+                ? "/hero-poster.webp" 
+                : data.settings.hero_video_poster;
+              setPosterUrl(poster);
             }
             if (data.settings.hero_video_title) {
               setTitle(data.settings.hero_video_title);

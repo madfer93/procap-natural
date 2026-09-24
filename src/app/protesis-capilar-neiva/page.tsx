@@ -17,12 +17,12 @@ export const metadata: Metadata = {
   title: "Prótesis Capilares en Neiva | Sede Canaima Huila - Procap Natural",
   description: "Prótesis capilares masculinas 100% indetectables de cabello humano en Neiva y Huila. Carrera 22 #25C-12, Barrio Canaima. Instalación y mantenimiento.",
   alternates: {
-    canonical: "https://protesiscapilarcolombia.com/protesis-capilar-neiva",
+    canonical: "https://www.protesiscapilarcolombia.com/protesis-capilar-neiva",
   },
   openGraph: {
     title: "Prótesis Capilares en Neiva | Procap Natural Huila",
     description: "Sistemas capilares indetectables de cabello humano en Neiva y sur de Colombia.",
-    url: "https://protesiscapilarcolombia.com/protesis-capilar-neiva",
+    url: "https://www.protesiscapilarcolombia.com/protesis-capilar-neiva",
   },
 };
 

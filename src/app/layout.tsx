@@ -21,11 +21,13 @@ const syne = Syne({
 });
 
 export const metadata: Metadata = {
-  title: "Procap Natural | Prótesis Capilares Indetectables en Bogotá y Cali",
-  description: "Prótesis capilares masculinas 100% indetectables de cabello humano en Bogotá y Cali. Instalación anatómica, mantenimiento experto y envíos a Colombia.",
+  title: "Procap Natural | Prótesis Capilares en Bogotá, Cali, Neiva y Barranquilla",
+  description: "Prótesis capilares masculinas 100% indetectables de cabello humano en Bogotá, Cali, Neiva y Barranquilla. Instalación y mantenimiento con envíos a Colombia.",
   keywords: [
     "prótesis capilares bogota",
     "protesis capilares cali",
+    "protesis capilares barranquilla",
+    "protesis capilares neiva",
     "protesis capilar hombres colombia",
     "protesis capilar villavicencio",
     "protesis capilar medellin",
@@ -42,13 +44,13 @@ export const metadata: Metadata = {
   authors: [{ name: "J&M Tech Solutions", url: "https://www.jymtechsolutions.online/es" }],
   creator: "J&M Tech Solutions",
   publisher: "Procap Natural",
-  metadataBase: new URL("https://protesiscapilarcolombia.com"),
+  metadataBase: new URL("https://www.protesiscapilarcolombia.com"),
   alternates: {
-    canonical: "https://protesiscapilarcolombia.com",
+    canonical: "https://www.protesiscapilarcolombia.com",
     languages: {
-      "es-CO": "https://protesiscapilarcolombia.com",
-      "es": "https://protesiscapilarcolombia.com",
-      "x-default": "https://protesiscapilarcolombia.com",
+      "es-CO": "https://www.protesiscapilarcolombia.com",
+      "es": "https://www.protesiscapilarcolombia.com",
+      "x-default": "https://www.protesiscapilarcolombia.com",
     },
   },
   robots: {
@@ -65,14 +67,14 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: "Procap Natural | Prótesis Capilares Indetectables en Colombia",
-    description: "Prótesis capilares masculinas 100% indetectables de cabello humano en Bogotá y Cali. Instalación anatómica, mantenimiento y envíos asegurados.",
-    url: "https://protesiscapilarcolombia.com",
+    description: "Prótesis capilares masculinas 100% indetectables de cabello humano en Bogotá, Cali, Neiva y Barranquilla. Instalación y mantenimiento.",
+    url: "https://www.protesiscapilarcolombia.com",
     siteName: "Procap Natural",
     locale: "es_CO",
     type: "website",
     images: [
       {
-        url: "https://protesiscapilarcolombia.com/og-image.jpg",
+        url: "https://www.protesiscapilarcolombia.com/og-image.jpg",
         width: 1200,
         height: 630,
         alt: "Procap Natural - Prótesis Capilares Indetectables en Colombia",
@@ -83,8 +85,8 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Procap Natural | Prótesis Capilares Indetectables Colombia",
-    description: "Prótesis capilares masculinas 100% indetectables de cabello humano en Bogotá y Cali. Instalación anatómica y mantenimiento.",
-    images: ["https://protesiscapilarcolombia.com/og-image.jpg"],
+    description: "Prótesis capilares masculinas 100% indetectables de cabello humano en Bogotá, Cali, Neiva y Barranquilla.",
+    images: ["https://www.protesiscapilarcolombia.com/og-image.jpg"],
     creator: "@procapnatural",
   },
   icons: {
@@ -125,18 +127,18 @@ export default function RootLayout({
         <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
         
         {/* Canonical & Hreflang Tags */}
-        <link rel="canonical" href="https://protesiscapilarcolombia.com" />
-        <link rel="alternate" hrefLang="es-CO" href="https://protesiscapilarcolombia.com" />
-        <link rel="alternate" hrefLang="es" href="https://protesiscapilarcolombia.com" />
-        <link rel="alternate" hrefLang="x-default" href="https://protesiscapilarcolombia.com" />
+        <link rel="canonical" href="https://www.protesiscapilarcolombia.com" />
+        <link rel="alternate" hrefLang="es-CO" href="https://www.protesiscapilarcolombia.com" />
+        <link rel="alternate" hrefLang="es" href="https://www.protesiscapilarcolombia.com" />
+        <link rel="alternate" hrefLang="x-default" href="https://www.protesiscapilarcolombia.com" />
 
         {/* OpenGraph & Social Meta Fallback */}
-        <meta property="og:image" content="https://protesiscapilarcolombia.com/og-image.jpg" />
-        <meta property="og:image:secure_url" content="https://protesiscapilarcolombia.com/og-image.jpg" />
+        <meta property="og:image" content="https://www.protesiscapilarcolombia.com/og-image.jpg" />
+        <meta property="og:image:secure_url" content="https://www.protesiscapilarcolombia.com/og-image.jpg" />
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="630" />
         <meta property="og:image:type" content="image/jpeg" />
-        <meta name="twitter:image" content="https://protesiscapilarcolombia.com/og-image.jpg" />
+        <meta name="twitter:image" content="https://www.protesiscapilarcolombia.com/og-image.jpg" />
         <meta name="twitter:card" content="summary_large_image" />
 
         {/* Google Tag Manager (Carga diferida lazyOnload para 0% bloqueo de hilo principal y LCP rápido) */}
@@ -161,12 +163,12 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
               "@graph": [
                 {
                   "@type": ["Organization", "HealthAndBeautyBusiness", "Store"],
-                  "@id": "https://protesiscapilarcolombia.com/#organization",
+                  "@id": "https://www.protesiscapilarcolombia.com/#organization",
                   "name": "Procap Natural - Solución Capilar Indetectable",
                   "alternateName": ["Procap Natural", "ProCap Colombia", "Prótesis Capilar Natural"],
-                  "url": "https://protesiscapilarcolombia.com/",
-                  "logo": "https://protesiscapilarcolombia.com/favicons/android-chrome-512x512.png",
-                  "image": "https://protesiscapilarcolombia.com/og-image.jpg",
+                  "url": "https://www.protesiscapilarcolombia.com/",
+                  "logo": "https://www.protesiscapilarcolombia.com/favicons/android-chrome-512x512.png",
+                  "image": "https://www.protesiscapilarcolombia.com/og-image.jpg",
                   "telephone": "+573151189795",
                   "email": "infprocap@gmail.com",
                   "priceRange": "$$",
@@ -210,11 +212,11 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                 },
                 {
                   "@type": ["HairSalon", "LocalBusiness"],
-                  "@id": "https://protesiscapilarcolombia.com/#sede-bogota",
+                  "@id": "https://www.protesiscapilarcolombia.com/#sede-bogota",
                   "name": "Procap Natural - Sede Bogotá Chicó Norte",
-                  "parentOrganization": { "@id": "https://protesiscapilarcolombia.com/#organization" },
-                  "image": "https://protesiscapilarcolombia.com/og-image.jpg",
-                  "url": "https://protesiscapilarcolombia.com/ubicacion",
+                  "parentOrganization": { "@id": "https://www.protesiscapilarcolombia.com/#organization" },
+                  "image": "https://www.protesiscapilarcolombia.com/og-image.jpg",
+                  "url": "https://www.protesiscapilarcolombia.com/ubicacion",
                   "telephone": "+573151189795",
                   "priceRange": "$$",
                   "paymentAccepted": [
@@ -323,11 +325,11 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                 },
                 {
                   "@type": ["HairSalon", "LocalBusiness"],
-                  "@id": "https://protesiscapilarcolombia.com/#sede-cali",
+                  "@id": "https://www.protesiscapilarcolombia.com/#sede-cali",
                   "name": "Procap Natural - Sede Cali Edificio María Mercedes",
-                  "parentOrganization": { "@id": "https://protesiscapilarcolombia.com/#organization" },
-                  "image": "https://protesiscapilarcolombia.com/og-image.jpg",
-                  "url": "https://protesiscapilarcolombia.com/ubicacion",
+                  "parentOrganization": { "@id": "https://www.protesiscapilarcolombia.com/#organization" },
+                  "image": "https://www.protesiscapilarcolombia.com/og-image.jpg",
+                  "url": "https://www.protesiscapilarcolombia.com/ubicacion",
                   "telephone": "+573151189795",
                   "priceRange": "$$",
                   "paymentAccepted": [
@@ -365,7 +367,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                 },
                 {
                   "@type": "FAQPage",
-                  "@id": "https://protesiscapilarcolombia.com/#faqs",
+                  "@id": "https://www.protesiscapilarcolombia.com/#faqs",
                   "mainEntity": [
                     {
                       "@type": "Question",
@@ -427,12 +429,12 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                 },
                 {
                   "@type": "WebSite",
-                  "@id": "https://protesiscapilarcolombia.com/#website",
-                  "url": "https://protesiscapilarcolombia.com/",
+                  "@id": "https://www.protesiscapilarcolombia.com/#website",
+                  "url": "https://www.protesiscapilarcolombia.com/",
                   "name": "Procap Natural | Prótesis Capilares Indetectables",
                   "alternateName": "Procap Colombia",
                   "description": "Prótesis capilares masculinas 100% indetectables de cabello humano en Bogotá y Cali.",
-                  "publisher": { "@id": "https://protesiscapilarcolombia.com/#organization" },
+                  "publisher": { "@id": "https://www.protesiscapilarcolombia.com/#organization" },
                   "creator": {
                     "@type": "Organization",
                     "@id": "https://www.jymtechsolutions.online/#organization",

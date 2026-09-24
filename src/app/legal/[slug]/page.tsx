@@ -50,7 +50,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     title: `${doc.title} | Procap Natural Colombia`,
     description: doc.summary,
     alternates: {
-      canonical: `https://protesiscapilarcolombia.com/legal/${doc.slug}`
+      canonical: `https://www.protesiscapilarcolombia.com/legal/${doc.slug}`
     }
   };
 }

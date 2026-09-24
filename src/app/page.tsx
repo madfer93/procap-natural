@@ -141,19 +141,19 @@ export default function HomePage() {
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-6 border-t border-slate-800/80">
                   <div className="flex flex-col items-center lg:items-start">
                     <span className="text-2xl font-black text-sky-400 font-heading">100%</span>
-                    <span className="text-xs text-slate-400 font-medium">Cabello Humano</span>
+                    <span className="text-xs text-slate-300 font-medium">Cabello Humano</span>
                   </div>
                   <div className="flex flex-col items-center lg:items-start">
                     <span className="text-2xl font-black text-white font-heading">0.03mm</span>
-                    <span className="text-xs text-slate-400 font-medium">Base Indetectable</span>
+                    <span className="text-xs text-slate-300 font-medium">Base Indetectable</span>
                   </div>
                   <div className="flex flex-col items-center lg:items-start">
                     <span className="text-2xl font-black text-emerald-400 font-heading">+5.7K</span>
-                    <span className="text-xs text-slate-400 font-medium">Comunidad Instagram</span>
+                    <span className="text-xs text-slate-300 font-medium">Comunidad Instagram</span>
                   </div>
                   <div className="flex flex-col items-center lg:items-start">
                     <span className="text-2xl font-black text-sky-400 font-heading">Chicó</span>
-                    <span className="text-xs text-slate-400 font-medium">Sede Norte Bogotá</span>
+                    <span className="text-xs text-slate-300 font-medium">Sede Norte Bogotá</span>
                   </div>
                 </div>
 
@@ -195,7 +195,7 @@ export default function HomePage() {
                   <ShieldCheck size={24} />
                 </div>
                 <h3 className="text-lg font-bold text-white mb-2">100% Indetectable</h3>
-                <p className="text-slate-400 text-sm leading-relaxed">
+                <p className="text-slate-300 text-sm leading-relaxed">
                   Línea frontal invisible que replica el nacimiento folicular exacto, imperceptible a simple vista.
                 </p>
               </div>
@@ -205,7 +205,7 @@ export default function HomePage() {
                   <Waves size={24} />
                 </div>
                 <h3 className="text-lg font-bold text-white mb-2">Vida Activa & Deporte</h3>
-                <p className="text-slate-400 text-sm leading-relaxed">
+                <p className="text-slate-300 text-sm leading-relaxed">
                   Entrena en el gimnasio, usa casco de moto o nada en piscina sin miedo a desprendimientos.
                 </p>
               </div>
@@ -215,7 +215,7 @@ export default function HomePage() {
                   <Wind size={24} />
                 </div>
                 <h3 className="text-lg font-bold text-white mb-2">Transpirable & Cómodo</h3>
-                <p className="text-slate-400 text-sm leading-relaxed">
+                <p className="text-slate-300 text-sm leading-relaxed">
                   Micro-malla que permite a tu cuero cabelludo respirar con naturalidad y frescura continua.
                 </p>
               </div>
@@ -225,7 +225,7 @@ export default function HomePage() {
                   <Scissors size={24} />
                 </div>
                 <h3 className="text-lg font-bold text-white mb-2">Estilo & Corte Libre</h3>
-                <p className="text-slate-400 text-sm leading-relaxed">
+                <p className="text-slate-300 text-sm leading-relaxed">
                   100% cabello humano genuino para moldear con ceras, secador o corte degradado personalizado.
                 </p>
               </div>
@@ -402,7 +402,7 @@ export default function HomePage() {
                         <span className="text-xl font-black text-sky-400 font-heading">
                           {formatPriceCOP(product.price_offer)}
                         </span>
-                        <span className="text-xs text-slate-400 line-through">
+                        <span className="text-xs text-slate-300 line-through">
                           {formatPriceCOP(product.price_regular)}
                         </span>
                       </div>
@@ -440,7 +440,7 @@ export default function HomePage() {
                           target="_blank"
                           rel="noopener noreferrer"
                           aria-label={`Pedir ${product.name} por WhatsApp`}
-                          className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-slate-900/90 hover:bg-emerald-500 text-slate-200 hover:text-slate-950 font-bold text-xs border border-slate-700 hover:border-emerald-400 transition-all"
+                          className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-slate-900/90 hover:bg-emerald-500 text-slate-200 hover:text-slate-950 font-bold text-xs border border-slate-700 hover:border-emerald-400 transition-all min-h-[44px]"
                         >
                           <WhatsAppIcon className="w-4 h-4 text-emerald-400 group-hover:text-slate-950" />
                           <span>Pedir por WhatsApp</span>
@@ -646,8 +646,10 @@ export default function HomePage() {
                 ].map((faq, idx) => (
                   <div key={idx} className="glass-panel rounded-2xl border border-slate-800 overflow-hidden">
                     <button
+                      type="button"
                       onClick={() => handleToggleFaq(idx)}
-                      className="w-full p-4 text-left flex items-center justify-between gap-4 font-bold text-sm text-white hover:text-sky-300 transition-colors"
+                      aria-expanded={openFaqIndex === idx}
+                      className="w-full p-4 text-left flex items-center justify-between gap-4 font-bold text-sm text-white hover:text-sky-300 transition-colors min-h-[48px]"
                     >
                       <span>{faq.q}</span>
                       <ChevronDown
