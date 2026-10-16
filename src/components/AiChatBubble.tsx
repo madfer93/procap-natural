@@ -74,7 +74,9 @@ export function AiChatBubble() {
     setMessages([DEFAULT_WELCOME]);
   };
 
-  if (pathname && pathname.startsWith("/admin")) {
+  // Deshabilitar IA si la plataforma está en modo mantenimiento
+  const isMaintenanceMode = process.env.NEXT_PUBLIC_MAINTENANCE_MODE !== "false";
+  if (isMaintenanceMode || (pathname && (pathname.startsWith("/admin") || pathname === "/mantenimiento"))) {
     return null;
   }
   const [inputValue, setInputValue] = useState("");

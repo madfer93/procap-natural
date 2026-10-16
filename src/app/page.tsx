@@ -27,8 +27,15 @@ import {
 } from "lucide-react";
 import { WhatsAppIcon } from "@/components/BrandIcons";
 import { Product, INITIAL_PRODUCTS, formatPriceCOP } from "@/lib/products-store";
+import { MaintenanceView } from "@/components/MaintenanceView";
 
 export default function HomePage() {
+  const isMaintenanceMode = process.env.NEXT_PUBLIC_MAINTENANCE_MODE !== "false";
+
+  if (isMaintenanceMode) {
+    return <MaintenanceView />;
+  }
+
   const [products, setProducts] = useState<Product[]>(INITIAL_PRODUCTS);
   const [loading, setLoading] = useState(true);
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
