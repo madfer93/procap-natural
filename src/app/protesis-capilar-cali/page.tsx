@@ -14,8 +14,8 @@ import {
 import { WhatsAppIcon } from "@/components/BrandIcons";
 
 export const metadata: Metadata = {
-  title: "Prótesis Capilares en Cali | Sede Edificio María Mercedes - Procap Natural",
-  description: "Prótesis capilares masculinas 100% indetectables de cabello humano en Cali. Sede en Calle 16 #83A-15, Estudio 402. Instalación y mantenimiento experto.",
+  title: "Prótesis Capilares en Cali | Procap Natural",
+  description: "Prótesis capilares masculinas 100% indetectables en Cali (Calle 16 #83A-15, Edificio María Mercedes). Instalación y mantenimiento experto. ¡Agenda tu cita!",
   alternates: {
     canonical: "https://www.protesiscapilarcolombia.com/protesis-capilar-cali",
   },

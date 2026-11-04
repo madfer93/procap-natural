@@ -21,22 +21,27 @@ const syne = Syne({
 });
 
 export const metadata: Metadata = {
-  title: "Procap Natural | Prótesis Capilares en Bogotá, Cali, Neiva y Barranquilla",
-  description: "Prótesis capilares masculinas 100% indetectables de cabello humano en Bogotá, Cali, Neiva y Barranquilla. Instalación y mantenimiento con envíos a Colombia.",
+  title: "Prótesis Capilares en Bogotá y Cali | Procap Natural",
+  description: "Prótesis capilares masculinas indetectables de cabello 100% humano en Bogotá y Cali. Instalación, mantenimiento y envíos a toda Colombia. ¡Agenda tu cita!",
   keywords: [
     "prótesis capilares bogota",
     "protesis capilares cali",
     "protesis capilares barranquilla",
     "protesis capilares neiva",
     "protesis capilar hombres colombia",
-    "protesis capilar villavicencio",
+    "precio protesis capilar colombia",
+    "cuanto vale una protesis capilar en colombia",
     "protesis capilar medellin",
-    "protesis capilar manizales",
+    "protesis capilar villavicencio",
     "mantenimiento protesis capilar bogota",
     "mantenimiento protesis capilar cali",
+    "solucion calvicie hombres colombia",
+    "protesis capilar masculina indetectable",
+    "donde comprar protesis capilar bogota",
     "sistemas capilares chico norte",
     "sistemas capilares cali calle 16",
     "pegamento walker tape colombia",
+    "cabello 100% humano colombia",
     "procap natural cali",
     "procap natural bogota",
     "solucion natural protesis capilar"
@@ -66,8 +71,8 @@ export const metadata: Metadata = {
     },
   },
   openGraph: {
-    title: "Procap Natural | Prótesis Capilares Indetectables en Colombia",
-    description: "Prótesis capilares masculinas 100% indetectables de cabello humano en Bogotá, Cali, Neiva y Barranquilla. Instalación y mantenimiento.",
+    title: "Prótesis Capilares en Bogotá y Cali | Procap Natural",
+    description: "Prótesis capilares masculinas indetectables de cabello 100% humano en Bogotá y Cali. Instalación, mantenimiento y envíos a toda Colombia.",
     url: "https://www.protesiscapilarcolombia.com",
     siteName: "Procap Natural",
     locale: "es_CO",
@@ -84,8 +89,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Procap Natural | Prótesis Capilares Indetectables Colombia",
-    description: "Prótesis capilares masculinas 100% indetectables de cabello humano en Bogotá, Cali, Neiva y Barranquilla.",
+    title: "Prótesis Capilares en Bogotá y Cali | Procap Natural",
+    description: "Prótesis capilares masculinas indetectables de cabello 100% humano en Bogotá y Cali. Instalación y mantenimiento.",
     images: ["https://www.protesiscapilarcolombia.com/og-image.jpg"],
     creator: "@procapnatural",
   },
@@ -172,6 +177,19 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                   "telephone": "+573151189795",
                   "email": "infprocap@gmail.com",
                   "priceRange": "$$",
+                  "address": {
+                    "@type": "PostalAddress",
+                    "streetAddress": "Carrera 16 #96-64, Barrio Chicó Norte",
+                    "addressLocality": "Bogotá",
+                    "addressRegion": "Bogotá D.C.",
+                    "postalCode": "110221",
+                    "addressCountry": "CO"
+                  },
+                  "geo": {
+                    "@type": "GeoCoordinates",
+                    "latitude": 4.682855,
+                    "longitude": -74.053123
+                  },
                   "paymentAccepted": [
                     "Efectivo",
                     "Wompi",

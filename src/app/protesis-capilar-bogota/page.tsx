@@ -19,8 +19,8 @@ import {
 import { WhatsAppIcon } from "@/components/BrandIcons";
 
 export const metadata: Metadata = {
-  title: "Prótesis Capilares en Bogotá | Sede Chicó Norte - Procap Natural",
-  description: "Prótesis capilares masculinas 100% indetectables de cabello humano en Bogotá. Sede en Chicó Norte (Cra 16 #96-64). Instalación anatómica, corte y mantenimiento.",
+  title: "Prótesis Capilares en Bogotá | Procap Chicó Norte",
+  description: "Prótesis capilares masculinas 100% indetectables de cabello humano en Bogotá Chicó Norte (Cra 16 #96-64). Instalación, corte y mantenimiento. ¡Agenda tu cita!",
   alternates: {
     canonical: "https://www.protesiscapilarcolombia.com/protesis-capilar-bogota",
   },
