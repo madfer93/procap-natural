@@ -34,6 +34,11 @@ export function AiChatBubble() {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   
+  const isMaintenanceMode = process.env.NEXT_PUBLIC_MAINTENANCE_MODE === "true";
+  if (isMaintenanceMode || (pathname && (pathname.startsWith("/admin") || pathname === "/mantenimiento"))) {
+    return null;
+  }
+  
   const DEFAULT_WELCOME: ChatMessage = {
     id: "welcome-1",
     role: "assistant",
@@ -74,11 +79,6 @@ export function AiChatBubble() {
     setMessages([DEFAULT_WELCOME]);
   };
 
-  // Deshabilitar IA si la plataforma está en modo mantenimiento
-  const isMaintenanceMode = process.env.NEXT_PUBLIC_MAINTENANCE_MODE !== "false";
-  if (isMaintenanceMode || (pathname && (pathname.startsWith("/admin") || pathname === "/mantenimiento"))) {
-    return null;
-  }
   const [inputValue, setInputValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);

@@ -30,7 +30,7 @@ import { Product, INITIAL_PRODUCTS, formatPriceCOP } from "@/lib/products-store"
 import { MaintenanceView } from "@/components/MaintenanceView";
 
 export default function HomePage() {
-  const isMaintenanceMode = process.env.NEXT_PUBLIC_MAINTENANCE_MODE !== "false";
+  const isMaintenanceMode = process.env.NEXT_PUBLIC_MAINTENANCE_MODE === "true";
 
   if (isMaintenanceMode) {
     return <MaintenanceView />;

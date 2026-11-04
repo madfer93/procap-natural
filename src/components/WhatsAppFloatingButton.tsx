@@ -9,7 +9,7 @@ export function WhatsAppFloatingButton() {
   const pathname = usePathname();
   const whatsappPhone = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "573151189795";
 
-  const isMaintenanceMode = process.env.NEXT_PUBLIC_MAINTENANCE_MODE !== "false";
+  const isMaintenanceMode = process.env.NEXT_PUBLIC_MAINTENANCE_MODE === "true";
   if (isMaintenanceMode || (pathname && (pathname.startsWith("/admin") || pathname === "/mantenimiento"))) {
     return null;
   }
