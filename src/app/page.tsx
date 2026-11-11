@@ -8,6 +8,8 @@ import { Footer } from "@/components/layout/Footer";
 import { SedeVideoPlayer } from "@/components/SedeVideoPlayer";
 import { TransformacionesReels } from "@/components/TransformacionesReels";
 import { HeroVideoPlayer } from "@/components/HeroVideoPlayer";
+import { BeforeAfterSlider } from "@/components/BeforeAfterSlider";
+import { LocalSedeBanner } from "@/components/LocalSedeBanner";
 import {
   Sparkles,
   MapPin,
@@ -28,6 +30,7 @@ import {
 import { WhatsAppIcon } from "@/components/BrandIcons";
 import { Product, INITIAL_PRODUCTS, formatPriceCOP } from "@/lib/products-store";
 import { MaintenanceView } from "@/components/MaintenanceView";
+import { useCurrency } from "@/context/CurrencyContext";
 
 export default function HomePage() {
   const isMaintenanceMode = process.env.NEXT_PUBLIC_MAINTENANCE_MODE === "true";
@@ -36,6 +39,7 @@ export default function HomePage() {
     return <MaintenanceView />;
   }
 
+  const { formatPrice } = useCurrency();
   const [products, setProducts] = useState<Product[]>(INITIAL_PRODUCTS);
   const [loading, setLoading] = useState(true);
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
@@ -89,6 +93,7 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen flex flex-col relative overflow-x-hidden">
+      <LocalSedeBanner />
       <Navbar />
 
       <main className="flex-1 relative z-10">
@@ -342,6 +347,9 @@ export default function HomePage() {
         {/* Sección: Transformaciones & Reels de TikTok / Instagram */}
         <TransformacionesReels />
 
+        {/* Sección Interactiva: Slider 50/50 Antes y Después */}
+        <BeforeAfterSlider />
+
         {/* Sección 4: Catálogo Destacado */}
         <section className="py-16 bg-[#031C45]/90 border-t border-slate-800 relative">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -407,10 +415,10 @@ export default function HomePage() {
                     <div className="pt-4 border-t border-white/10">
                       <div className="flex items-baseline gap-2 mb-4">
                         <span className="text-xl font-black text-sky-400 font-heading">
-                          {formatPriceCOP(product.price_offer)}
+                          {formatPrice(product.price_offer)}
                         </span>
                         <span className="text-xs text-slate-300 line-through">
-                          {formatPriceCOP(product.price_regular)}
+                          {formatPrice(product.price_regular)}
                         </span>
                       </div>
 

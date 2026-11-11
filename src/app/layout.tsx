@@ -4,6 +4,9 @@ import Script from "next/script";
 import "./globals.css";
 import { AiChatBubble } from "@/components/AiChatBubble";
 import { WhatsAppFloatingButton } from "@/components/WhatsAppFloatingButton";
+import { CartDrawer } from "@/components/CartDrawer";
+import { CurrencyProvider } from "@/context/CurrencyContext";
+import { CartProvider } from "@/context/CartContext";
 import { Analytics } from "@vercel/analytics/next";
 
 const plusJakarta = Plus_Jakarta_Sans({
@@ -130,7 +133,7 @@ export default function RootLayout({
         {/* Verification & Meta Tags */}
         <meta name="google-site-verification" content="OWgJcQ-rxT4oQfCfVTKLt_002O9SLeg5gRa4BfADuZM" />
         <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
-        
+
         {/* Canonical & Hreflang Tags */}
         <link rel="canonical" href="https://www.protesiscapilarcolombia.com" />
         <link rel="alternate" hrefLang="es-CO" href="https://www.protesiscapilarcolombia.com" />
@@ -158,7 +161,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-5RR6XK2W');`,
           }}
         />
-        
+
         {/* Schema JSON-LD SEO Multi-Location, Catalog, FAQ & J&M Tech Solutions Creator */}
         <script
           type="application/ld+json"
@@ -485,10 +488,15 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             style={{ display: "none", visibility: "hidden" }}
           />
         </noscript>
-        
-        {children}
-        <AiChatBubble />
-        <WhatsAppFloatingButton />
+
+        <CurrencyProvider>
+          <CartProvider>
+            {children}
+            <CartDrawer />
+            <AiChatBubble />
+            <WhatsAppFloatingButton />
+          </CartProvider>
+        </CurrencyProvider>
         <Analytics />
       </body>
     </html>

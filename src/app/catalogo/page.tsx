@@ -18,6 +18,8 @@ import {
   CheckCircle2
 } from "lucide-react";
 import { Product, INITIAL_PRODUCTS, formatPriceCOP } from "@/lib/products-store";
+import { useCurrency } from "@/context/CurrencyContext";
+import { useCart } from "@/context/CartContext";
 
 export default function CatalogoPage() {
   const [products, setProducts] = useState<Product[]>(INITIAL_PRODUCTS);
@@ -25,6 +27,8 @@ export default function CatalogoPage() {
   const [selectedCategory, setSelectedCategory] = useState<string>("todos");
   const [searchQuery, setSearchQuery] = useState("");
   const [activeViews, setActiveViews] = useState<Record<string, "primary" | "secondary">>({});
+  const { formatPrice } = useCurrency();
+  const { addItem, items } = useCart();
 
   const whatsappPhone = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "573151189795";
 
@@ -266,47 +270,45 @@ export default function CatalogoPage() {
                     <div className="pt-4 border-t border-white/10">
                       <div className="flex items-baseline gap-2 mb-4">
                         <span className="text-2xl font-black text-sky-400 font-heading">
-                          {formatPriceCOP(product.price_offer)}
+                          {formatPrice(product.price_offer)}
                         </span>
                         <span className="text-sm text-slate-400 line-through">
-                          {formatPriceCOP(product.price_regular)}
+                          {formatPrice(product.price_regular)}
                         </span>
                       </div>
 
                       <div className="flex flex-col gap-2">
+                        {/* Botón Agregar al Carrito */}
+                        <button
+                          type="button"
+                          onClick={() => addItem(product)}
+                          className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-sky-500 hover:bg-sky-400 text-slate-950 font-black text-xs shadow-md shadow-sky-500/20 transition-all hover:scale-[1.02]"
+                        >
+                          <ShoppingBag size={14} className="text-slate-950" />
+                          <span>Agregar a Mi Pedido</span>
+                        </button>
+
                         {/* Botón Wompi */}
                         {product.payment_link && (
                           <a
                             href={product.payment_link}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-gradient-to-r from-amber-500 to-amber-400 hover:from-amber-400 hover:to-amber-300 text-slate-950 font-black text-xs shadow-md shadow-amber-500/20 transition-all hover:scale-[1.02]"
+                            className="w-full flex items-center justify-center gap-2 py-2 px-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-400 hover:from-amber-400 hover:to-amber-300 text-slate-950 font-black text-[11px] shadow-sm transition-all"
                           >
-                            <span>💳 Pagar con Wompi (PSE / Tarjeta)</span>
+                            <span>💳 Pagar Directo con Wompi</span>
                           </a>
                         )}
 
-                        {/* Botón Sistecrédito / Addi */}
-                        {product.payment_link_credit && (
-                          <a
-                            href={product.payment_link_credit}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white font-black text-xs shadow-md shadow-sky-500/20 transition-all hover:scale-[1.02]"
-                          >
-                            <span>⚡ Financiar a Cuotas (Sistecrédito / Addi)</span>
-                          </a>
-                        )}
-
-                        {/* Botón WhatsApp */}
+                        {/* Botón WhatsApp Directo */}
                         <a
                           href={`https://wa.me/${whatsappPhone}?text=${waMessage}`}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-slate-900 hover:bg-emerald-500 text-slate-200 hover:text-slate-950 border border-slate-700 hover:border-emerald-400 font-bold text-xs transition-all duration-200 shadow-sm group"
+                          className="w-full flex items-center justify-center gap-2 py-2 px-3 rounded-xl bg-slate-900 hover:bg-emerald-500 text-slate-200 hover:text-slate-950 border border-slate-700 hover:border-emerald-400 font-bold text-[11px] transition-all duration-200 shadow-sm group"
                         >
-                          <i className="fa-brands fa-whatsapp text-base text-emerald-400 group-hover:text-slate-950"></i>
-                          <span>Pedir por WhatsApp</span>
+                          <i className="fa-brands fa-whatsapp text-sm text-emerald-400 group-hover:text-slate-950"></i>
+                          <span>Consultar Solo Este por WhatsApp</span>
                         </a>
                       </div>
                     </div>

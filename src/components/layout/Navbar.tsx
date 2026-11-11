@@ -4,13 +4,17 @@ import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { MapPin, Mail, Menu, X, CalendarCheck } from "lucide-react";
+import { MapPin, Mail, Menu, X, CalendarCheck, ShoppingBag, Globe } from "lucide-react";
 import { WhatsAppIcon, InstagramIcon, TikTokIcon } from "@/components/BrandIcons";
+import { useCurrency } from "@/context/CurrencyContext";
+import { useCart } from "@/context/CartContext";
 
 export function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const pathname = usePathname();
   const whatsappPhone = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "573151189795";
+  const { currency, setCurrency } = useCurrency();
+  const { totalItems, setIsOpen: setCartOpen } = useCart();
 
   const navLinks = [
     { href: "/", label: "Inicio", exact: true },
@@ -111,8 +115,51 @@ export function Navbar() {
               })}
             </div>
 
-            {/* CTA Button */}
+            {/* CTA Button & Utilities */}
             <div className="flex items-center gap-2 shrink-0">
+              {/* Selector Multimoneda COP / USD */}
+              <div className="flex items-center bg-slate-900 border border-slate-700 rounded-xl p-0.5 text-[11px] font-bold">
+                <button
+                  type="button"
+                  onClick={() => setCurrency("COP")}
+                  className={`px-2 py-1 rounded-lg transition-all ${
+                    currency === "COP"
+                      ? "bg-sky-500 text-slate-950 font-black shadow-sm"
+                      : "text-slate-400 hover:text-white"
+                  }`}
+                  title="Moneda Colombia (COP)"
+                >
+                  🇨🇴 COP
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setCurrency("USD")}
+                  className={`px-2 py-1 rounded-lg transition-all ${
+                    currency === "USD"
+                      ? "bg-emerald-400 text-slate-950 font-black shadow-sm"
+                      : "text-slate-400 hover:text-white"
+                  }`}
+                  title="Dólares (USD - Panamá / Internacional)"
+                >
+                  🇺🇸 USD
+                </button>
+              </div>
+
+              {/* Botón de Carrito con Contador */}
+              <button
+                type="button"
+                onClick={() => setCartOpen(true)}
+                aria-label="Abrir pedido o carrito"
+                className="relative p-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-200 border border-slate-700 transition-colors flex items-center justify-center min-w-[42px] min-h-[42px]"
+              >
+                <ShoppingBag size={18} className="text-sky-400" />
+                {totalItems > 0 && (
+                  <span className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-emerald-500 text-slate-950 text-[10px] font-black flex items-center justify-center shadow-md animate-pulse">
+                    {totalItems}
+                  </span>
+                )}
+              </button>
+
               <Link
                 href="/agendar"
                 aria-label="Agendar cita de prótesis capilar"
