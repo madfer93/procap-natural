@@ -21,6 +21,7 @@ import {
   TrendingUp,
   Menu,
   X,
+  Film,
   LucideIcon
 } from "lucide-react";
 
@@ -63,6 +64,7 @@ export function AdminNav({ onLogout }: AdminNavProps) {
         { href: "/admin/contabilidad", label: "Contabilidad & P&L", icon: TrendingUp },
         { href: "/admin/vendedores", label: "Vendedores & Sedes", icon: Users },
         { href: "/admin/products", label: "Productos & Stock", icon: Package },
+        { href: "/admin/videos", label: "Videos & Reels", icon: Film, badge: "Nuevo" },
         { href: "/admin/sedes", label: "Sedes & Instalaciones", icon: Building2 },
         { href: "/admin/events", label: "Giras & Eventos", icon: MapPin },
       ],

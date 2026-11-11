@@ -20,7 +20,9 @@ import {
   Layers,
   Image as ImageIcon,
   Loader2,
-  CreditCard
+  CreditCard,
+  FileSpreadsheet,
+  Download
 } from "lucide-react";
 import { supabase, isSupabaseConfigured } from "@/lib/supabase";
 import { Product, INITIAL_PRODUCTS, formatPriceCOP } from "@/lib/products-store";
@@ -34,6 +36,11 @@ export default function ProductsAdminPage() {
   // Panel de edición / creación (Inline Panel, cero modales)
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+
+  // Panel de importación masiva (Bulk CSV / Excel)
+  const [isBulkOpen, setIsBulkOpen] = useState(false);
+  const [bulkText, setBulkText] = useState("");
+  const [importingBulk, setImportingBulk] = useState(false);
 
   // Form state
   const [formData, setFormData] = useState<Partial<Product>>({
@@ -228,6 +235,97 @@ export default function ProductsAdminPage() {
     }
   };
 
+  // Procesar importación masiva de productos (CSV / Texto tabulado / Excel)
+  const handleProcessBulkImport = async () => {
+    if (!bulkText.trim()) {
+      showNotification("Pega el contenido o escribe al menos un producto.", "error");
+      return;
+    }
+
+    try {
+      setImportingBulk(true);
+      const lines = bulkText.split("\n").filter((l) => l.trim().length > 0);
+      const parsedProducts: any[] = [];
+
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i].trim();
+        // Ignorar encabezados comunes si existen
+        if (i === 0 && (line.toLowerCase().includes("nombre") || line.toLowerCase().includes("producto") || line.toLowerCase().includes("name"))) {
+          continue;
+        }
+
+        // Soportar separación por coma, punto y coma o tabulador
+        const separator = line.includes("\t") ? "\t" : line.includes(";") ? ";" : ",";
+        const parts = line.split(separator).map((p) => p.trim());
+
+        if (parts.length >= 2) {
+          const name = parts[0];
+          // Limpiar caracteres de moneda como $, COP, puntos o comas de miles
+          const rawPrice = parts[1].replace(/[^0-9]/g, "");
+          const price = Number(rawPrice) || 100000;
+          const category = parts[2] ? parts[2].toLowerCase() : "sistemas";
+          const description = parts[3] || "";
+          const imageUrl = parts[4] || "";
+
+          if (name) {
+            parsedProducts.push({
+              name,
+              price_offer: price,
+              price_regular: Math.round(price * 1.2),
+              category,
+              description,
+              image_url: imageUrl,
+              is_available: true
+            });
+          }
+        }
+      }
+
+      if (parsedProducts.length === 0) {
+        throw new Error("No se pudo detectar ningún producto válido. Verifica el formato.");
+      }
+
+      const res = await fetch("/api/products/bulk", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ products: parsedProducts })
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || "Error en la carga masiva");
+      }
+
+      showNotification(`¡Éxito! Se importaron ${data.count || parsedProducts.length} productos a la base de datos.`);
+      setBulkText("");
+      setIsBulkOpen(false);
+      fetchProducts();
+    } catch (err: any) {
+      showNotification(`Error al importar: ${err.message}`, "error");
+    } finally {
+      setImportingBulk(false);
+    }
+  };
+
+  // Descargar plantilla CSV de ejemplo
+  const handleDownloadTemplate = () => {
+    const csvContent = "Nombre del Producto;Precio COP;Categoria;Descripcion;URL Foto (Opcional)\n" +
+      "Sistema Capilar Ultra Skin 0.03mm;1450000;sistemas;Base poly-skin invisible de alta duracion;\n" +
+      "Pegamento Ultra Hold Walker 1.4oz;140000;adhesivos;Adhesivo de grado medico maxima fijacion;\n" +
+      "Cinta Double Sided No-Shine 36u;65000;cintas;Cintas mate indetectables resistentes al agua;\n" +
+      "Removedor Citrico C-22 Solvente;60000;cuidados;Disolvente protector para limpieza profunda;\n" +
+      "Mantenimiento en Cabina Privada;75000;servicios;Servicio de limpieza y re-adhesion;";
+
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", "plantilla_productos_procap.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   // Cambiar Visibilidad (Ocultar / Mostrar producto)
   const handleToggleVisibility = async (product: Product) => {
     const newStatus = product.is_available === false ? true : false;
@@ -297,13 +395,23 @@ export default function ProductsAdminPage() {
         </div>
 
         {!isFormOpen && (
-          <button
-            onClick={handleOpenCreate}
-            className="px-5 py-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs flex items-center gap-2 shadow-lg shadow-amber-500/25 transition-all hover:scale-105"
-          >
-            <Plus size={18} />
-            <span>Agregar Nuevo Producto</span>
-          </button>
+          <div className="flex flex-wrap items-center gap-3">
+            <button
+              onClick={() => setIsBulkOpen(!isBulkOpen)}
+              className="px-4 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs flex items-center gap-2 border border-slate-700 transition-all"
+            >
+              <FileSpreadsheet size={16} className="text-emerald-400" />
+              <span>{isBulkOpen ? "Cerrar Carga Masiva" : "Carga Masiva (Excel / CSV)"}</span>
+            </button>
+
+            <button
+              onClick={handleOpenCreate}
+              className="px-5 py-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs flex items-center gap-2 shadow-lg shadow-amber-500/25 transition-all hover:scale-105"
+            >
+              <Plus size={18} />
+              <span>Agregar 1 Producto</span>
+            </button>
+          </div>
         )}
       </div>
 
@@ -319,6 +427,96 @@ export default function ProductsAdminPage() {
           <button onClick={() => setStatusMessage(null)}>
             <X size={16} />
           </button>
+        </div>
+      )}
+
+      {/* PANEL DE CARGA MASIVA (Excel / CSV / Lista Rápida) */}
+      {isBulkOpen && !isFormOpen && (
+        <div className="p-6 sm:p-8 rounded-3xl bg-slate-950 border border-emerald-500/40 shadow-2xl relative animate-in fade-in duration-300 space-y-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-800">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center">
+                <FileSpreadsheet size={22} />
+              </div>
+              <div>
+                <h2 className="text-lg font-bold text-white flex items-center gap-2">
+                  <span>Carga Masiva de Productos (50+ en segundos)</span>
+                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 font-bold">Rápido</span>
+                </h2>
+                <p className="text-xs text-slate-400">
+                  Copia y pega desde Excel o escribe los productos separados por comas o punto y coma.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={handleDownloadTemplate}
+                className="px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-200 text-xs font-bold flex items-center gap-1.5 border border-slate-700 transition-colors"
+              >
+                <Download size={14} className="text-emerald-400" />
+                <span>Descargar Plantilla Excel/CSV</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setIsBulkOpen(false)}
+                className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+              >
+                <X size={18} />
+              </button>
+            </div>
+          </div>
+
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <label className="text-xs font-bold uppercase tracking-wider text-slate-300">
+                Pega tus productos aquí (Formato: Nombre; Precio; Categoría; Descripción; URL_Foto)
+              </label>
+              <span className="text-[11px] text-slate-500">
+                Categorías: sistemas, adhesivos, cintas, cuidados, servicios
+              </span>
+            </div>
+
+            <textarea
+              rows={8}
+              value={bulkText}
+              onChange={(e) => setBulkText(e.target.value)}
+              placeholder="Ejemplo:
+Sistema Capilar Ultra Skin; 1450000; sistemas; Prótesis invisible 0.03mm
+Pegamento Ultra Hold Walker; 140000; adhesivos; Adhesivo de máxima fijación
+Cinta Ultra Hold 36u; 65000; cintas; Cintas doble faz impermeables
+Removedor C-22; 60000; cuidados; Disolvente cítrico protector"
+              className="w-full bg-slate-900 border border-slate-700 rounded-2xl p-4 text-xs sm:text-sm text-white font-mono placeholder-slate-600 focus:outline-none focus:border-emerald-400 leading-relaxed"
+            />
+
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2">
+              <span className="text-xs text-slate-400">
+                Líneas detectadas: <strong>{bulkText.split('\n').filter((l) => l.trim().length > 0).length}</strong> productos
+              </span>
+
+              <div className="flex items-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => setBulkText("")}
+                  className="px-4 py-2.5 rounded-xl text-slate-400 hover:text-white text-xs font-bold transition-colors"
+                >
+                  Limpiar
+                </button>
+
+                <button
+                  type="button"
+                  disabled={importingBulk || !bulkText.trim()}
+                  onClick={handleProcessBulkImport}
+                  className="px-6 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 disabled:opacity-50 text-slate-950 font-black text-xs flex items-center gap-2 shadow-lg shadow-emerald-500/20 transition-all hover:scale-105"
+                >
+                  {importingBulk ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
+                  <span>Subir Productos Masivamente a la Web</span>
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       )}
 

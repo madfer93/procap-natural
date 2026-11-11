@@ -72,12 +72,31 @@ const DEFAULT_REELS: ReelItem[] = [
 ];
 
 export function TransformacionesReels() {
+  const [reels, setReels] = useState<ReelItem[]>(DEFAULT_REELS);
   const [activeReel, setActiveReel] = useState<string | null>(null);
   const [isMuted, setIsMuted] = useState(true);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const videoRefs = useRef<{ [key: string]: HTMLVideoElement | null }>({});
 
   const whatsappPhone = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "573151189795";
+
+  // Cargar reels dinámicos desde Supabase / API
+  React.useEffect(() => {
+    async function loadReels() {
+      try {
+        const res = await fetch("/api/reels");
+        if (res.ok) {
+          const data = await res.json();
+          if (data.reels && Array.isArray(data.reels) && data.reels.length > 0) {
+            setReels(data.reels);
+          }
+        }
+      } catch (err) {
+        // Fallback a DEFAULT_REELS ya cargado
+      }
+    }
+    loadReels();
+  }, []);
 
   const handlePlayToggle = (id: string) => {
     const currentVideo = videoRefs.current[id];
@@ -173,7 +192,7 @@ export function TransformacionesReels() {
           ref={scrollContainerRef}
           className="flex gap-4 sm:gap-6 overflow-x-auto pb-6 pt-2 snap-x snap-mandatory no-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0"
         >
-          {DEFAULT_REELS.map((reel) => {
+          {reels.map((reel) => {
             const isThisPlaying = activeReel === reel.id;
 
             return (
