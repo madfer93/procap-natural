@@ -25,12 +25,14 @@ import {
   Layers,
   Zap,
   Clock,
-  ExternalLink
+  ExternalLink,
+  ShoppingBag
 } from "lucide-react";
 import { WhatsAppIcon } from "@/components/BrandIcons";
 import { Product, INITIAL_PRODUCTS, formatPriceCOP } from "@/lib/products-store";
 import { MaintenanceView } from "@/components/MaintenanceView";
 import { useCurrency } from "@/context/CurrencyContext";
+import { useCart } from "@/context/CartContext";
 
 export default function HomePage() {
   const isMaintenanceMode = process.env.NEXT_PUBLIC_MAINTENANCE_MODE === "true";
@@ -40,6 +42,7 @@ export default function HomePage() {
   }
 
   const { formatPrice } = useCurrency();
+  const { addItem } = useCart();
   const [products, setProducts] = useState<Product[]>(INITIAL_PRODUCTS);
   const [loading, setLoading] = useState(true);
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
@@ -423,6 +426,16 @@ export default function HomePage() {
                       </div>
 
                       <div className="flex flex-col gap-2">
+                        {/* Botón Agregar al Carrito */}
+                        <button
+                          type="button"
+                          onClick={() => addItem(product)}
+                          className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-sky-500 hover:bg-sky-400 text-slate-950 font-black text-xs shadow-md shadow-sky-500/20 transition-all hover:scale-[1.02] min-h-[44px]"
+                        >
+                          <ShoppingBag size={14} className="text-slate-950" />
+                          <span>Agregar a Mi Pedido</span>
+                        </button>
+
                         {/* Botón Wompi */}
                         {product.payment_link && (
                           <a
