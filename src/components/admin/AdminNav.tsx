@@ -22,6 +22,7 @@ import {
   Menu,
   X,
   Film,
+  BookOpen,
   LucideIcon
 } from "lucide-react";
 
@@ -75,6 +76,7 @@ export function AdminNav({ onLogout }: AdminNavProps) {
         { href: "/admin/leads", label: "Leads & Chatbot IA", icon: Bot },
         { href: "/admin/legal", label: "Políticas & Legal (ISO)", icon: Scale },
         { href: "/admin/settings", label: "Ajustes & Pasarelas", icon: Settings },
+        { href: "/admin/guia", label: "Manual & Guía de Uso", icon: BookOpen, badge: "Guía" },
       ],
     },
   ];

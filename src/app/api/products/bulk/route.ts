@@ -48,6 +48,10 @@ export async function POST(req: NextRequest) {
         secondary_image_url: item.secondary_image_url || "",
         payment_link: item.payment_link || "",
         payment_link_credit: item.payment_link_credit || "",
+        promo_hook_active: Boolean(item.promo_hook_active),
+        promo_hook_title: item.promo_hook_title || "",
+        promo_hook_desc: item.promo_hook_desc || "",
+        promo_hook_price: Number(item.promo_hook_price) || 0,
         is_available: item.is_available !== false,
         is_featured: Boolean(item.is_featured),
         order_index: item.order_index || (idx + 1)

@@ -27,9 +27,9 @@ export function Navbar() {
   ];
 
   return (
-    <>
+    <div className="sticky top-0 z-50 w-full shadow-2xl">
       {/* Top Bar (Informativo, compacto y clickeable) */}
-      <header className="border-b border-slate-800/80 bg-slate-950/90 text-xs text-slate-400 py-1.5 px-4 z-30">
+      <header className="border-b border-slate-800/80 bg-slate-950/95 text-xs text-slate-400 py-1.5 px-4">
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-2 text-[11px]">
           <div className="flex items-center gap-3">
             <Link href="/ubicacion" className="flex items-center gap-1.5 text-sky-400 hover:text-sky-300 transition-colors font-medium truncate min-h-[44px]">
@@ -65,8 +65,8 @@ export function Navbar() {
         </div>
       </header>
 
-      {/* Navbar Principal (Sticky Top 0 Limpio y Ultra-Responsivo) */}
-      <nav className="glass-nav sticky top-0 z-40 transition-all duration-300 border-b border-white/10 bg-[#031C45]/95 backdrop-blur-xl">
+      {/* Navbar Principal (Limpio y Ultra-Responsivo) */}
+      <nav className="glass-nav border-b border-white/10 bg-[#031C45]/95 backdrop-blur-xl transition-all duration-300">
         <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16 sm:h-18 gap-2">
 
@@ -213,7 +213,7 @@ export function Navbar() {
             </div>
           </div>
         )}
-      </nav >
-    </>
+      </nav>
+    </div>
   );
 }

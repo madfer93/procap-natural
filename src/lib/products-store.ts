@@ -18,6 +18,11 @@ export interface Product {
   is_available: boolean;
   is_featured?: boolean;
   order_index?: number;
+  // Gancho de Venta / Promoción Cruzada (Upsell en Carrito)
+  promo_hook_active?: boolean;
+  promo_hook_title?: string;
+  promo_hook_desc?: string;
+  promo_hook_price?: number;
 }
 
 export const INITIAL_PRODUCTS: Product[] = [
@@ -33,7 +38,11 @@ export const INITIAL_PRODUCTS: Product[] = [
     badge: "⭐ Alta Gama",
     is_available: true,
     is_featured: true,
-    order_index: 1
+    order_index: 1,
+    promo_hook_active: true,
+    promo_hook_title: "⚡ Combo Cuidados Pro (Ahorra $40.000)",
+    promo_hook_desc: "Agrega Pegamento Ultra Hold + Removedor C-22 con 25% OFF especial con tu prótesis.",
+    promo_hook_price: 150000
   },
   {
     id: "sistema-mixto",
@@ -46,7 +55,11 @@ export const INITIAL_PRODUCTS: Product[] = [
     badge: "🔥 Más Vendido",
     is_available: true,
     is_featured: true,
-    order_index: 2
+    order_index: 2,
+    promo_hook_active: true,
+    promo_hook_title: "⚡ Kit Adhesivo Walker Tape Ultra Hold (Oferta)",
+    promo_hook_desc: "Lleva la cinta Walker Tape de larga duración (4 semanas) a precio mayorista.",
+    promo_hook_price: 110000
   },
   {
     id: "sistema-afro-curly",

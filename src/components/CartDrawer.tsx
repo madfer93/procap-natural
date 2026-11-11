@@ -16,18 +16,26 @@ import { useCurrency } from "@/context/CurrencyContext";
 import { WhatsAppIcon } from "@/components/BrandIcons";
 
 export function CartDrawer() {
-  const { items, isOpen, setIsOpen, updateQuantity, removeItem, clearCart, totalItems, totalCOP } = useCart();
+  const { items, isOpen, setIsOpen, addItem, updateQuantity, removeItem, clearCart, totalItems, totalCOP } = useCart();
   const { formatPrice, currency } = useCurrency();
   const whatsappPhone = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "573151189795";
 
   if (!isOpen) return null;
+
+  // Detectar si hay un gancho promocional activo en los productos del carrito
+  const activePromoHook = items.find(
+    (item) => item.product.promo_hook_active && item.product.promo_hook_title
+  );
+  const promoId = activePromoHook ? `promo-${activePromoHook.product.id}` : null;
+  const isPromoAlreadyInCart = promoId ? items.some((i) => i.product.id === promoId) : false;
 
   const handleCheckoutWhatsApp = () => {
     if (items.length === 0) return;
 
     let message = `¡Hola Procap Natural! 💈 Deseo realizar un pedido de los siguientes productos:\n\n`;
     items.forEach((item, idx) => {
-      message += `${idx + 1}. *${item.product.name}* (x${item.quantity})\n`;
+      const isPromo = item.product.id.startsWith("promo-");
+      message += `${idx + 1}. ${isPromo ? "⚡ *[PROMOCIÓN GANCHO]* " : "*"}*${item.product.name}* (x${item.quantity})\n`;
       message += `   Subtotal: ${formatPrice(item.product.price_offer * item.quantity)}\n`;
     });
 
@@ -77,6 +85,58 @@ export function CartDrawer() {
 
           {/* Cart Items List */}
           <div className="flex-1 overflow-y-auto p-5 space-y-4">
+            {/* GANCHO DE VENTA / ORDER BUMP PROMOCIONAL */}
+            {activePromoHook && !isPromoAlreadyInCart && (
+              <div className="p-4 rounded-2xl bg-gradient-to-br from-amber-500/20 via-slate-900 to-amber-950/40 border border-amber-400/50 shadow-lg relative overflow-hidden group animate-in fade-in slide-in-from-top-2 duration-300">
+                <div className="flex items-start gap-3">
+                  <div className="w-9 h-9 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center shrink-0 border border-amber-400/30">
+                    <Sparkles size={18} className="animate-pulse" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-amber-400 text-slate-950">
+                        ⚡ Promoción Gancho
+                      </span>
+                      <span className="text-[10px] text-amber-300 font-semibold">Exclusivo con tu compra</span>
+                    </div>
+                    <h5 className="font-bold text-xs text-white leading-tight">
+                      {activePromoHook.product.promo_hook_title}
+                    </h5>
+                    {activePromoHook.product.promo_hook_desc && (
+                      <p className="text-[11px] text-slate-300 mt-1 leading-relaxed">
+                        {activePromoHook.product.promo_hook_desc}
+                      </p>
+                    )}
+                    <div className="flex items-center justify-between mt-3 pt-2 border-t border-white/10">
+                      <span className="text-sm font-black text-amber-400 font-heading">
+                        +{formatPrice(activePromoHook.product.promo_hook_price || 0)}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          addItem({
+                            id: `promo-${activePromoHook.product.id}`,
+                            name: activePromoHook.product.promo_hook_title || "Combo Promocional",
+                            category: "cuidados",
+                            type: "Promoción Combo",
+                            description: activePromoHook.product.promo_hook_desc || "",
+                            price_offer: activePromoHook.product.promo_hook_price || 0,
+                            price_regular: (activePromoHook.product.promo_hook_price || 0) * 1.3,
+                            badge: "🔥 Oferta Gancho",
+                            is_available: true,
+                          });
+                        }}
+                        className="px-3 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs flex items-center gap-1.5 shadow-md shadow-amber-500/20 transition-all hover:scale-105"
+                      >
+                        <Plus size={13} />
+                        <span>Añadir Gancho</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
             {items.length === 0 ? (
               <div className="h-full flex flex-col items-center justify-center text-center p-8 space-y-3">
                 <div className="w-16 h-16 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-600">

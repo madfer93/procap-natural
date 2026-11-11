@@ -22,7 +22,8 @@ import {
   Loader2,
   CreditCard,
   FileSpreadsheet,
-  Download
+  Download,
+  Zap
 } from "lucide-react";
 import { supabase, isSupabaseConfigured } from "@/lib/supabase";
 import { Product, INITIAL_PRODUCTS, formatPriceCOP } from "@/lib/products-store";
@@ -107,6 +108,10 @@ export default function ProductsAdminPage() {
       secondary_image_url: "",
       payment_link: "",
       payment_link_credit: "",
+      promo_hook_active: false,
+      promo_hook_title: "",
+      promo_hook_desc: "",
+      promo_hook_price: 0,
       is_available: true,
       is_featured: false,
       order_index: products.length + 1
@@ -125,7 +130,11 @@ export default function ProductsAdminPage() {
       image_url: product.image_url || "",
       secondary_image_url: product.secondary_image_url || "",
       payment_link: product.payment_link || "",
-      payment_link_credit: product.payment_link_credit || ""
+      payment_link_credit: product.payment_link_credit || "",
+      promo_hook_active: product.promo_hook_active || false,
+      promo_hook_title: product.promo_hook_title || "",
+      promo_hook_desc: product.promo_hook_desc || "",
+      promo_hook_price: product.promo_hook_price || 0
     });
     setIsFormOpen(true);
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -929,6 +938,78 @@ Removedor C-22; 60000; cuidados; Disolvente cítrico protector"
                 </span>
               </div>
 
+              {/* Gancho de Venta / Promoción Cruzada (Order Bump / Upsell en Carrito) */}
+              <div className="sm:col-span-12 p-5 rounded-2xl bg-gradient-to-br from-amber-500/10 via-slate-900 to-amber-950/20 border border-amber-400/40 space-y-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-white/10">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-8 h-8 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center">
+                      <Zap size={16} />
+                    </div>
+                    <div>
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-amber-300">
+                        ⚡ Gancho de Venta / Promoción Cruzada (Upsell en Carrito)
+                      </h4>
+                      <p className="text-[11px] text-slate-400">
+                        Ofrece un producto adicional con descuento (pegamento, kit o cinta) cuando el cliente agregue este producto.
+                      </p>
+                    </div>
+                  </div>
+
+                  <label className="flex items-center gap-2 cursor-pointer bg-slate-950/80 px-3 py-1.5 rounded-xl border border-slate-700">
+                    <input
+                      type="checkbox"
+                      checked={formData.promo_hook_active === true}
+                      onChange={(e) => setFormData({ ...formData, promo_hook_active: e.target.checked })}
+                      className="w-4 h-4 rounded text-amber-500 bg-slate-900 border-slate-700 focus:ring-amber-400"
+                    />
+                    <span className="text-xs font-bold text-white">Activar Gancho</span>
+                  </label>
+                </div>
+
+                {formData.promo_hook_active && (
+                  <div className="grid grid-cols-1 sm:grid-cols-12 gap-4 animate-in fade-in duration-200">
+                    <div className="sm:col-span-7">
+                      <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
+                        Título de la Oferta Gancho *
+                      </label>
+                      <input
+                        type="text"
+                        value={formData.promo_hook_title || ""}
+                        onChange={(e) => setFormData({ ...formData, promo_hook_title: e.target.value })}
+                        placeholder="Ej: 🔥 Combo Cuidados Pro (Ahorra $40.000)"
+                        className="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-amber-400"
+                      />
+                    </div>
+
+                    <div className="sm:col-span-5">
+                      <label className="block text-xs font-bold uppercase tracking-wider text-amber-400 mb-1.5">
+                        Precio Promocional Gancho (COP) *
+                      </label>
+                      <input
+                        type="number"
+                        value={formData.promo_hook_price || ""}
+                        onChange={(e) => setFormData({ ...formData, promo_hook_price: Number(e.target.value) })}
+                        placeholder="Ej: 150000"
+                        className="w-full bg-slate-950 border border-amber-400/50 rounded-xl px-4 py-2.5 text-xs text-amber-300 font-bold focus:outline-none focus:border-amber-400"
+                      />
+                    </div>
+
+                    <div className="sm:col-span-12">
+                      <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
+                        Descripción o Beneficio del Gancho
+                      </label>
+                      <input
+                        type="text"
+                        value={formData.promo_hook_desc || ""}
+                        onChange={(e) => setFormData({ ...formData, promo_hook_desc: e.target.value })}
+                        placeholder="Ej: Agrega Pegamento Ultra Hold + Removedor C-22 con 25% OFF especial con tu prótesis."
+                        className="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 text-xs text-slate-300 focus:outline-none focus:border-amber-400"
+                      />
+                    </div>
+                  </div>
+                )}
+              </div>
+
               {/* Opciones de Visibilidad */}
               <div className="sm:col-span-12 flex flex-wrap items-center gap-6 pt-2">
                 <label className="flex items-center gap-3 cursor-pointer">
@@ -1076,6 +1157,11 @@ Removedor C-22; 60000; cuidados; Disolvente cítrico protector"
                               {product.badge && (
                                 <span className="text-[10px] px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20 font-semibold">
                                   {product.badge}
+                                </span>
+                              )}
+                              {product.promo_hook_active && (
+                                <span className="text-[10px] px-2 py-0.5 rounded bg-amber-400 text-slate-950 font-black flex items-center gap-1 shadow-sm" title={`Gancho: ${product.promo_hook_title} (+$${product.promo_hook_price})`}>
+                                  ⚡ Gancho Activo
                                 </span>
                               )}
                             </div>
