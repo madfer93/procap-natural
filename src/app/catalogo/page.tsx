@@ -204,18 +204,21 @@ export default function CatalogoPage() {
                         }
 
                         return (
-                          <div className="relative w-full h-56 rounded-2xl overflow-hidden mb-4 bg-slate-950 border border-slate-800 shadow-inner group-hover:border-sky-400/40 transition-all">
-                            <Image
-                              key={displayImage}
-                              src={displayImage}
-                              alt={`${product.name} - ${currentView === "secondary" ? "Base o Malla" : "Look Cabello"}`}
-                              fill
-                              className="object-cover group-hover:scale-105 transition-transform duration-500"
-                            />
+                          <div className="space-y-2.5 mb-4">
+                            <div className="relative w-full h-64 rounded-2xl overflow-hidden bg-white border border-white/20 shadow-lg group-hover:border-sky-400/50 group-hover:shadow-sky-500/10 transition-all flex items-center justify-center p-3">
+                              <Image
+                                key={displayImage}
+                                src={displayImage}
+                                alt={`${product.name} - ${currentView === "secondary" ? "Base o Malla" : "Look Cabello"}`}
+                                fill
+                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                className="object-contain p-2 group-hover:scale-105 transition-transform duration-500"
+                              />
+                            </div>
 
-                            {/* Selector de vistas si tiene ambas fotos */}
+                            {/* Selector de vistas si tiene ambas fotos (debajo de la foto para no tapar el producto) */}
                             {hasPrimary && hasSecondary && (
-                              <div className="absolute bottom-2.5 left-2.5 right-2.5 flex items-center justify-center gap-1.5 p-1 rounded-xl bg-slate-950/85 backdrop-blur-md border border-white/15 z-10 shadow-lg">
+                              <div className="flex items-center justify-center gap-1.5 p-1 rounded-xl bg-slate-900 border border-slate-700/80 shadow-sm">
                                 <button
                                   type="button"
                                   onClick={(e) => {
@@ -223,14 +226,14 @@ export default function CatalogoPage() {
                                     e.stopPropagation();
                                     setActiveViews((prev) => ({ ...prev, [product.id]: "primary" }));
                                   }}
-                                  className={`flex-1 py-1 px-2 rounded-lg text-[10.5px] font-bold transition-all flex items-center justify-center gap-1 ${
+                                  className={`flex-1 py-1.5 px-2 rounded-lg text-[11px] font-bold transition-all flex items-center justify-center gap-1.5 ${
                                     currentView === "primary"
-                                      ? "bg-amber-400 text-slate-950 shadow-md"
+                                      ? "bg-amber-400 text-slate-950 shadow-md font-black"
                                       : "text-slate-300 hover:text-white hover:bg-white/10"
                                   }`}
                                 >
-                                  <Sparkles size={11} />
-                                  <span>Cabello</span>
+                                  <Sparkles size={12} />
+                                  <span>Look Cabello</span>
                                 </button>
 
                                 <button
@@ -240,13 +243,13 @@ export default function CatalogoPage() {
                                     e.stopPropagation();
                                     setActiveViews((prev) => ({ ...prev, [product.id]: "secondary" }));
                                   }}
-                                  className={`flex-1 py-1 px-2 rounded-lg text-[10.5px] font-bold transition-all flex items-center justify-center gap-1 ${
+                                  className={`flex-1 py-1.5 px-2 rounded-lg text-[11px] font-bold transition-all flex items-center justify-center gap-1.5 ${
                                     currentView === "secondary"
-                                      ? "bg-sky-400 text-slate-950 shadow-md"
+                                      ? "bg-sky-400 text-slate-950 shadow-md font-black"
                                       : "text-slate-300 hover:text-white hover:bg-white/10"
                                   }`}
                                 >
-                                  <Layers size={11} />
+                                  <Layers size={12} />
                                   <span>Base / Malla</span>
                                 </button>
                               </div>

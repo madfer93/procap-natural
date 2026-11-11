@@ -404,6 +404,19 @@ export default function HomePage() {
                         )}
                       </div>
 
+                      {/* Foto del Producto con Fondo Blanco Limpio y Sin Recortes */}
+                      {product.image_url && (
+                        <div className="relative w-full h-52 rounded-2xl overflow-hidden mb-4 bg-white border border-white/20 shadow-md flex items-center justify-center p-2 group-hover:border-sky-400/50 transition-all">
+                          <Image
+                            src={product.image_url}
+                            alt={product.name}
+                            fill
+                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                            className="object-contain p-2 group-hover:scale-105 transition-transform duration-500"
+                          />
+                        </div>
+                      )}
+
                       <span className="text-xs font-medium text-slate-400 uppercase tracking-wider block mb-1">
                         {product.type}
                       </span>

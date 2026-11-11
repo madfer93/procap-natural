@@ -153,12 +153,12 @@ export function CartDrawer() {
                   key={item.product.id}
                   className="p-3.5 rounded-2xl bg-slate-900/80 border border-slate-800 hover:border-sky-400/40 transition-all flex items-center gap-3"
                 >
-                  <div className="w-14 h-14 rounded-xl bg-slate-950 border border-slate-800 overflow-hidden shrink-0 flex items-center justify-center">
+                  <div className="w-14 h-14 rounded-xl bg-white border border-white/30 overflow-hidden shrink-0 flex items-center justify-center p-1 shadow-sm">
                     {item.product.image_url ? (
                       <img 
                         src={item.product.image_url} 
                         alt={item.product.name} 
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-contain"
                       />
                     ) : (
                       <ShoppingBag size={20} className="text-slate-600" />
